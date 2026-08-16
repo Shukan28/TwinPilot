@@ -1,2 +1,0 @@
-# TwinPilot
-Accenture PS Prototype

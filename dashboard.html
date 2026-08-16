@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +9,7 @@
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
 </head>
+
 <body>
 
   <!-- Shared Header Navigation -->
@@ -18,16 +20,20 @@
       </div>
       <span class="logo-text">TwinPilot<span class="logo-dot">.</span></span>
     </a>
-    
+
     <nav>
       <ul class="nav-links">
-        <li class="nav-item"><a href="index.html"><i data-lucide="home" style="width:14px;height:14px;"></i> Concept</a></li>
-        <li class="nav-item active"><a href="dashboard.html"><i data-lucide="layout" style="width:14px;height:14px;"></i> Cockpit</a></li>
-        <li class="nav-item"><a href="analytics.html"><i data-lucide="activity" style="width:14px;height:14px;"></i> Diagnostics</a></li>
-        <li class="nav-item"><a href="responsible-ai.html"><i data-lucide="shield-check" style="width:14px;height:14px;"></i> Trust Center</a></li>
+        <li class="nav-item"><a href="index.html"><i data-lucide="home" style="width:14px;height:14px;"></i> Concept</a>
+        </li>
+        <li class="nav-item active"><a href="dashboard.html"><i data-lucide="layout"
+              style="width:14px;height:14px;"></i> Cockpit</a></li>
+        <li class="nav-item"><a href="analytics.html"><i data-lucide="activity" style="width:14px;height:14px;"></i>
+            Diagnostics</a></li>
+        <li class="nav-item"><a href="responsible-ai.html"><i data-lucide="shield-check"
+              style="width:14px;height:14px;"></i> Trust Center</a></li>
       </ul>
     </nav>
-    
+
     <div class="header-telemetry">
       <div class="header-status-badge">
         <span class="live-dot"></span> Live Twin
@@ -49,7 +55,7 @@
 
   <!-- Page Content Container -->
   <main class="page-container">
-    
+
     <!-- Live Stations status banner -->
     <section class="glass-card">
       <div class="card-title-bar">
@@ -57,9 +63,10 @@
           <i data-lucide="layers" style="width:16px;height:16px;"></i>
           Live Stations & Sensor Status
         </h3>
-        <span class="header-subtitle" style="font-size:11px; color:var(--text-secondary);">Cycle times jitter in real-time</span>
+        <span class="header-subtitle" style="font-size:11px; color:var(--text-secondary);">Cycle times jitter in
+          real-time</span>
       </div>
-      
+
       <div class="factory-twin-row" id="stations-row">
         <!-- Station 1 -->
         <div class="station-node healthy" id="node-S1">
@@ -73,28 +80,28 @@
           <div class="station-indicator">2</div>
           <span class="station-name">Welding</span>
           <span class="station-cycle" id="cycle-S2">38.4s</span>
-          <span class="station-badge">12 sensors</span>
+          <span class="station-badge">2 sensors</span>
         </div>
         <!-- Station 3 -->
         <div class="station-node healthy" id="node-S3">
           <div class="station-indicator">3</div>
           <span class="station-name">Underbody</span>
           <span class="station-cycle" id="cycle-S3">45.0s</span>
-          <span class="station-badge">6 sensors</span>
+          <span class="station-badge">1 sensor</span>
         </div>
         <!-- Station 4 -->
         <div class="station-node healthy" id="node-S4">
           <div class="station-indicator">4</div>
           <span class="station-name">Painting</span>
           <span class="station-cycle" id="cycle-S4">40.2s</span>
-          <span class="station-badge">10 sensors</span>
+          <span class="station-badge">4 sensors</span>
         </div>
         <!-- Station 5 -->
         <div class="station-node healthy" id="node-S5">
           <div class="station-indicator">5</div>
           <span class="station-name">Powertrain</span>
           <span class="station-cycle" id="cycle-S5">44.1s</span>
-          <span class="station-badge">8 sensors</span>
+          <span class="station-badge">3 sensors</span>
         </div>
         <!-- Station 6 -->
         <div class="station-node healthy" id="node-S6">
@@ -115,7 +122,7 @@
           <div class="station-indicator">8</div>
           <span class="station-name">Electronics</span>
           <span class="station-cycle" id="cycle-S8">36.2s</span>
-          <span class="station-badge">No Sensor</span>
+          <span class="station-badge">NO SENSOR</span>
         </div>
         <!-- Station 9 -->
         <div class="station-node healthy" id="node-S9">
@@ -129,19 +136,20 @@
 
     <!-- Two-Column Cockpit Grid -->
     <div class="grid-dashboard">
-      
+
       <!-- Column 1: Alerts, Simulator & Chatbot -->
       <div class="dashboard-column">
-        
+
         <!-- Predictive Alert Card -->
         <div class="glass-card predictive-alert-card" id="predictive-alert-card">
           <div class="predict-pulse-glow"></div>
           <div class="alert-header">
             <i data-lucide="alert-triangle" style="width:18px;height:18px;"></i>
-            <span>Bottleneck Predicted in 18 Minutes</span>
+            <span id="alert-title-text">Bottleneck Predicted in 18 Minutes</span>
           </div>
-          <div class="alert-message">
-            Line simulation indicates Station 7 (Interior) has <strong>78% probability</strong> of buffer starvation/overflow due to upstream torque instability.
+          <div class="alert-message" id="alert-msg-text">
+            <strong>Station 7</strong> has a <strong id="alert-prob-text">68% probability</strong> of becoming the
+            primary bottleneck within <span id="alert-eta-text">18 minutes</span>.
           </div>
           <div class="alert-details">
             <div class="alert-detail-item">
@@ -151,6 +159,15 @@
             <div class="alert-detail-item">
               <span class="alert-detail-label">Est. Downtime</span>
               <span class="alert-detail-value">40 mins</span>
+            </div>
+          </div>
+          <div class="prediction-factors" id="pred-factors" style="font-size: 11px; margin-top: 12px; padding: 10px; background: rgba(0,0,0,0.15); border-radius: 6px; border: 1px solid rgba(255,255,255,0.05); color: var(--text-secondary); line-height: 1.6;">
+            <div style="margin-bottom:4px; font-weight:600; color:var(--text-primary);">Prediction Factors:</div>
+            <div style="display:flex; justify-content:space-between;"><span>Cycle time</span> <span style="color:var(--accent-warning);">↑ <span id="factor-cycle">11</span>%</span></div>
+            <div style="display:flex; justify-content:space-between;"><span>Queue growth</span> <span style="color:var(--accent-warning);">↑ 8%</span></div>
+            <div style="display:flex; justify-content:space-between;"><span>Downstream capacity</span> <span style="color:var(--accent-critical);">↓ 4%</span></div>
+            <div style="margin-top:6px; padding-top:6px; border-top:1px solid rgba(255,255,255,0.1); display:flex; justify-content:space-between; font-weight:600;">
+              <span>Computed Probability</span> <span id="factor-prob" style="color:var(--accent-critical);">68%</span>
             </div>
           </div>
           <a href="analytics.html" class="why-link">
@@ -166,30 +183,35 @@
               <i data-lucide="sliders" style="width:16px;height:16px;"></i>
               Counterfactual What-If Simulator
             </h3>
-            <span class="header-subtitle" style="font-size:11px; color:var(--text-secondary);">Select & compare simulation scenarios</span>
+            <span class="header-subtitle" style="font-size:11px; color:var(--text-secondary);">Select & compare
+              simulation scenarios</span>
           </div>
-          
+
           <div class="what-if-panel">
             <div class="scenarios-grid">
-              
+
               <!-- Option A -->
               <div class="scenario-card" id="scenario-a" onclick="selectScenario('A')">
                 <div class="scenario-header">
                   <span class="scenario-badge">Option A</span>
-                  <span class="scenario-name">Increase Speed</span>
+                  <span class="scenario-name">Move Operator</span>
                 </div>
                 <div class="scenario-bars">
                   <div class="scenario-bar-item">
-                    <div class="bar-label"><span>Throughput</span><span>+6%</span></div>
-                    <div class="bar-bg"><div class="bar-fill positive" style="width: 70%;"></div></div>
+                    <div class="bar-label"><span>Throughput</span><span id="val-a-tput">-2.1%</span></div>
+                    <div class="bar-bg">
+                      <div class="bar-fill negative" id="bar-a-tput" style="width: 30%;"></div>
+                    </div>
                   </div>
                   <div class="scenario-bar-item">
-                    <div class="bar-label"><span>Defect Risk</span><span>+14%</span></div>
-                    <div class="bar-bg"><div class="bar-fill negative" style="width: 80%;"></div></div>
+                    <div class="bar-label"><span>Queue Size</span><span id="val-a-queue">+5</span></div>
+                    <div class="bar-bg">
+                      <div class="bar-fill negative" id="bar-a-queue" style="width: 60%;"></div>
+                    </div>
                   </div>
                 </div>
                 <div class="scenario-impact">
-                  High risk of scrap buildup. Not recommended.
+                  Throughput loss and minor queue buildup.
                 </div>
               </div>
 
@@ -197,20 +219,24 @@
               <div class="scenario-card" id="scenario-b" onclick="selectScenario('B')">
                 <div class="scenario-header">
                   <span class="scenario-badge">Option B</span>
-                  <span class="scenario-name">Slow Station 5</span>
+                  <span class="scenario-name">Reduce S6 Cycle</span>
                 </div>
                 <div class="scenario-bars">
                   <div class="scenario-bar-item">
-                    <div class="bar-label"><span>Throughput</span><span>-2%</span></div>
-                    <div class="bar-bg"><div class="bar-fill negative" style="width: 30%;"></div></div>
+                    <div class="bar-label"><span>Throughput</span><span id="val-b-tput">+1.4%</span></div>
+                    <div class="bar-bg">
+                      <div class="bar-fill positive" id="bar-b-tput" style="width: 50%;"></div>
+                    </div>
                   </div>
                   <div class="scenario-bar-item">
-                    <div class="bar-label"><span>Defect Risk</span><span>0%</span></div>
-                    <div class="bar-bg"><div class="bar-fill neutral" style="width: 45%;"></div></div>
+                    <div class="bar-label"><span>Queue Size</span><span id="val-b-queue">Stable</span></div>
+                    <div class="bar-bg">
+                      <div class="bar-fill neutral" id="bar-b-queue" style="width: 45%;"></div>
+                    </div>
                   </div>
                 </div>
                 <div class="scenario-impact">
-                  Stable, but causes a minor throughput penalty.
+                  Stable, but marginal throughput gain.
                 </div>
               </div>
 
@@ -218,30 +244,36 @@
               <div class="scenario-card active-option" id="scenario-c" onclick="selectScenario('C')">
                 <div class="scenario-header">
                   <span class="scenario-badge" style="color:var(--accent-healthy);">AI Recommended</span>
-                  <span class="scenario-name">Reroute Workload</span>
+                  <span class="scenario-name">Change Sequence</span>
                 </div>
                 <div class="scenario-bars">
                   <div class="scenario-bar-item">
-                    <div class="bar-label"><span>Throughput</span><span>+10%</span></div>
-                    <div class="bar-bg"><div class="bar-fill positive" style="width: 90%;"></div></div>
+                    <div class="bar-label"><span>Throughput</span><span id="val-c-tput">+4.7%</span></div>
+                    <div class="bar-bg">
+                      <div class="bar-fill positive" id="bar-c-tput" style="width: 75%;"></div>
+                    </div>
                   </div>
                   <div class="scenario-bar-item">
-                    <div class="bar-label"><span>Defect Risk</span><span>-3%</span></div>
-                    <div class="bar-bg"><div class="bar-fill positive" style="width: 15%;"></div></div>
+                    <div class="bar-label"><span>Defect Risk</span><span id="val-c-defect">+0.8%</span></div>
+                    <div class="bar-bg">
+                      <div class="bar-fill warning" id="bar-c-defect"
+                        style="width: 20%; background-color: var(--accent-warning);"></div>
+                    </div>
                   </div>
                 </div>
                 <div class="scenario-impact">
-                  Reroutes parts via Station 8. Prevents defect.
+                  Maximizes throughput within safe constraints.
                 </div>
               </div>
 
             </div>
 
-            <!-- Dynamic Business Line -->
             <div class="comparison-card new" style="padding: 12px; margin-top: 2px;">
-              <div style="font-size:10px; font-weight:800; text-transform:uppercase; color:var(--accent-healthy);">Business Impact Analysis</div>
+              <div style="font-size:10px; font-weight:800; text-transform:uppercase; color:var(--accent-healthy);">
+                Constraint-Aware Recommendation</div>
               <div style="font-size:12px; margin-top:4px;" id="scenario-impact-text">
-                Recommended action: Option C — prevents ~$18,000 in downstream scrap and 40 minutes of downtime.
+                Recommended: Intervention C, because it maximizes throughput without exceeding the 3% defect-risk
+                threshold.
               </div>
             </div>
 
@@ -264,24 +296,30 @@
               <i data-lucide="message-square" style="width:16px;height:16px;"></i>
               Ask the Twin
             </h3>
-            <span class="header-subtitle" style="font-size:11px; color:var(--text-secondary);">Direct Q&A with Causal Chain</span>
+            <span class="header-subtitle" style="font-size:11px; color:var(--text-secondary);">Direct Q&A with Causal
+              Chain</span>
           </div>
-          
+
           <div class="ask-twin-panel">
             <div class="chat-history" id="chat-history-box">
               <div class="chat-message bot">
-                Hello, I am TwinPilot AI. Ask me anything about the current state, predicted anomalies, or scenario mitigations.
+                Hello, I am TwinPilot AI. Ask me anything about the current state, predicted anomalies, or scenario
+                mitigations.
               </div>
             </div>
 
             <div class="chat-quick-asks">
-              <div class="quick-ask-chip" onclick="askPredefined('Why is Station 7 slowing down?')">Why is Station 7 slowing down?</div>
-              <div class="quick-ask-chip" onclick="askPredefined('What is the root cause of the anomaly?')">What is the root cause?</div>
-              <div class="quick-ask-chip" onclick="askPredefined('How does Option C prevent the defect?')">How does Option C help?</div>
+              <div class="quick-ask-chip" onclick="askPredefined('Why is Station 7 slowing down?')">Why is Station 7
+                slowing down?</div>
+              <div class="quick-ask-chip" onclick="askPredefined('What is the root cause of the anomaly?')">What is the
+                root cause?</div>
+              <div class="quick-ask-chip" onclick="askPredefined('How does Option C prevent the defect?')">How does
+                Option C help?</div>
             </div>
 
             <div class="chat-input-row">
-              <input type="text" class="chat-input" id="chat-user-input" placeholder="Type a question or select a chip..." onkeypress="handleChatEnter(event)">
+              <input type="text" class="chat-input" id="chat-user-input"
+                placeholder="Type a question or select a chip..." onkeypress="handleChatEnter(event)">
               <button class="send-btn" onclick="sendChat()">
                 <i data-lucide="send" style="width:14px;height:14px;"></i>
               </button>
@@ -291,14 +329,14 @@
 
       </div>
 
-      <!-- Column 2: Timeline Controller & Stress Test -->
+      <!-- Column 2: Time Machine & Audit -->
       <div class="dashboard-column">
-        
-        <!-- Simulation Stepper widget -->
+
+        <!-- Time Machine widget -->
         <section class="glass-card">
           <div class="timeline-controller">
             <div class="timeline-header">
-              <span class="timeline-title">Simulation Control</span>
+              <span class="timeline-title">Factory Time Machine</span>
               <div class="timeline-controls">
                 <button class="control-btn" id="btn-play-pause" title="Play/Pause Simulation">
                   <i data-lucide="pause" style="width:14px;height:14px;"></i>
@@ -308,30 +346,30 @@
                 </button>
               </div>
             </div>
-            
+
             <div class="timeline-steps">
-              <div class="timeline-step active" id="step-0" onclick="setTimelineStep(0)">
+              <div class="timeline-step" id="step-0" onclick="setTimelineStep(0)">
                 <div class="step-indicator"></div>
                 <div class="step-info">
-                  <span class="step-time">10:02 AM</span>
-                  <span class="step-title">Normal Operation</span>
-                  <span class="step-desc">All lines green. High efficiency.</span>
+                  <span class="step-time">Past (10:42)</span>
+                  <span class="step-title">Queue Buildup Began</span>
+                  <span class="step-desc">Station 7 began accumulating queue.</span>
                 </div>
               </div>
-              <div class="timeline-step" id="step-1" onclick="setTimelineStep(1)">
+              <div class="timeline-step active" id="step-1" onclick="setTimelineStep(1)">
                 <div class="step-indicator"></div>
                 <div class="step-info">
-                  <span class="step-time">10:05 AM</span>
-                  <span class="step-title">Early Anomaly</span>
-                  <span class="step-desc">S3 cycle variance propagates downstream.</span>
+                  <span class="step-time">Present (Now)</span>
+                  <span class="step-title">68% Bottleneck Prob.</span>
+                  <span class="step-desc">Predicted bottleneck in 18 minutes.</span>
                 </div>
               </div>
               <div class="timeline-step" id="step-2" onclick="setTimelineStep(2)">
                 <div class="step-indicator"></div>
                 <div class="step-info">
-                  <span class="step-time">10:07 AM</span>
-                  <span class="step-title">Bottleneck Prediction</span>
-                  <span class="step-desc">Twin predicts S7 bottleneck. What-If opens.</span>
+                  <span class="step-time">Future (+18 min)</span>
+                  <span class="step-title">Simulated Intervention</span>
+                  <span class="step-desc">Testing dynamic options before failure.</span>
                 </div>
               </div>
             </div>
@@ -345,11 +383,14 @@
               <i data-lucide="history" style="width:14px;height:14px;"></i>
               Recent Overrides
             </h3>
-            <a href="responsible-ai.html" style="font-size:11px; color:var(--accent-healthy); text-decoration:none; font-weight:700;">Full Log</a>
+            <a href="responsible-ai.html"
+              style="font-size:11px; color:var(--accent-healthy); text-decoration:none; font-weight:700;">Full Log</a>
           </div>
-          <div class="override-log-container" id="override-log" style="max-height: 150px; border:none; padding:0; background:transparent;">
+          <div class="override-log-container" id="override-log"
+            style="max-height: 150px; border:none; padding:0; background:transparent;">
             <div class="override-log-entry">[10:02 AM] System: Running nominal AI forecasting loops.</div>
-            <div class="override-log-entry rejected">[Yesterday 14:35] Intervention rejected by plant manager. Reason: safety drill.</div>
+            <div class="override-log-entry rejected">[Yesterday 14:35] Intervention rejected by plant manager. Reason:
+              safety drill.</div>
           </div>
         </section>
 
@@ -358,9 +399,11 @@
           <div class="stress-flex" style="flex-direction:column; align-items:stretch; gap:12px;">
             <div class="stress-desc-box">
               <div class="stress-title">⚡ Stress-Test Simulator</div>
-              <div class="stress-desc-txt" id="stress-test-desc">Simulate a critical Station 5 machine failure to inspect the twin's rapid-rebalancing response.</div>
+              <div class="stress-desc-txt" id="stress-test-desc">Simulate a critical Station 5 machine failure to
+                inspect the twin's rapid-rebalancing response.</div>
             </div>
-            <button class="stress-btn" id="btn-stress-test" onclick="triggerStressTest()" style="justify-content:center; width:100%;">
+            <button class="stress-btn" id="btn-stress-test" onclick="triggerStressTest()"
+              style="justify-content:center; width:100%;">
               <i data-lucide="zap" style="width:14px;height:14px;"></i>
               Run Simulation
             </button>
@@ -379,4 +422,5 @@
   <!-- JS Logic -->
   <script src="app.js"></script>
 </body>
+
 </html>

@@ -6,23 +6,29 @@ const defaultState = {
   activeStep: 0,        // 0: Normal, 1: Anomaly, 2: Prediction, -1: Stress
   isPlaying: true,
   selectedScenario: 'C',
-  trustScore: 94,
+  trustScore: 98,
   overallHealth: 98.4,
   throughput: 42.2,
-  isStressed: false,
   isStressSolved: false,
+  interventionStatus: null,
+  autonomousCountdown: 0,
   stepProgress: 0,
   auditLogs: [
-    "[10:02 AM] System: Running nominal AI forecasting loops.",
-    "[Yesterday 14:35] Operator (ID-4890) rejected Option A speed increases. Logged: safety drill override.",
-    "[Aug 14 09:15] System Autonomous override: Adjusted Station 5 conveyor limits."
+    "[06:00 AM] System: Initialized nominal AI forecasting loops.",
+    "[08:12 AM] System: Predicted minor variance at S4. Self-corrected conveyor speed.",
+    "[10:02 AM] Operator (ID-4890) approved AI Recommendation C. Bottleneck avoided.",
+    "[10:02 AM] Twin learning: prediction validated, model weights updated"
   ],
   chatHistory: [
     { sender: 'bot', text: "Hello, I am TwinPilot AI. Ask me anything about the current state, predicted anomalies, or scenario mitigations." }
-  ]
+  ],
+  telemetryHistory: { S7: [], S9: [] },
+  bottleneckProb: 68,
+  bottleneckETA: 18,
+  s8Confidence: 78
 };
 
-let state = { ...defaultState };
+let state = JSON.parse(JSON.stringify(defaultState));
 
 // --- Station Nominal Configs ---
 const stations = {
@@ -92,12 +98,12 @@ function playSound(type) {
 
 // --- LocalStorage State Management ---
 function saveState() {
-  localStorage.setItem('twinpilot_state', JSON.stringify(state));
+  localStorage.setItem('twinpilot_state_v2', JSON.stringify(state));
   updatePageUI();
 }
 
 function loadState() {
-  const data = localStorage.getItem('twinpilot_state');
+  const data = localStorage.getItem('twinpilot_state_v2');
   if (data) {
     state = JSON.parse(data);
   } else {
@@ -116,7 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Sync state between tabs dynamically
   window.addEventListener('storage', (e) => {
-    if (e.key === 'twinpilot_state') {
+    if (e.key === 'twinpilot_state_v2') {
       loadState();
     }
   });
@@ -342,15 +348,24 @@ function updatePredictiveAlertUI() {
   if (state.isStressed) {
     card.classList.add('active');
     card.className = "glass-card predictive-alert-card active critical-alert";
-    card.querySelector('.alert-header span').innerText = "CRITICAL FAULT CASCADE IN PROGRESS";
-    card.querySelector('.alert-message').innerHTML = `Station 5 (Powertrain) drivetrain motor fault detected. Line starvation will halt assembly line in <strong>4 minutes</strong>.`;
+    card.querySelector('#alert-title-text').innerText = "CRITICAL FAULT CASCADE IN PROGRESS";
+    card.querySelector('#alert-msg-text').innerHTML = `Station 5 (Powertrain) drivetrain motor fault detected. Line starvation will halt assembly line in <strong>4 minutes</strong>.`;
     card.querySelector('.alert-detail-value').innerText = "99% Probability";
-  } else if (state.activeStep === 2) {
+  } else if ((state.activeStep === 1 || state.activeStep === 2) && state.bottleneckProb > 0) {
     card.classList.add('active');
     card.className = "glass-card predictive-alert-card active";
-    card.querySelector('.alert-header span').innerText = "Bottleneck Predicted in 18 Minutes";
-    card.querySelector('.alert-message').innerHTML = `Line simulation indicates Station 7 (Interior) has <strong>78% probability</strong> of buffer starvation/overflow due to upstream torque instability.`;
-    card.querySelector('.alert-detail-value').innerText = "68% - 85%";
+    card.querySelector('#alert-title-text').innerText = `Bottleneck Predicted in ${state.bottleneckETA} Minutes`;
+    card.querySelector('#alert-msg-text').innerHTML = `<strong>Station 7</strong> has a <strong id="alert-prob-text">${state.bottleneckProb}% probability</strong> of becoming the primary bottleneck within <span id="alert-eta-text">${state.bottleneckETA} minutes</span>.`;
+    card.querySelector('.alert-detail-value').innerText = `${state.bottleneckProb - 5}% - ${Math.min(99, state.bottleneckProb + 12)}%`;
+    
+    // Update dynamic prediction factors
+    const cycleFactor = document.getElementById('factor-cycle');
+    const probFactor = document.getElementById('factor-prob');
+    if (cycleFactor && probFactor) {
+      const cycleGrowth = Math.max(1, Math.floor((state.bottleneckProb - 40) / 2.5));
+      cycleFactor.innerText = cycleGrowth;
+      probFactor.innerText = state.bottleneckProb + "%";
+    }
   } else {
     card.classList.remove('active');
   }
@@ -371,7 +386,37 @@ function updateWhatIfSimulatorUI() {
   const activeCard = document.getElementById(`scenario-${state.selectedScenario.toLowerCase()}`);
   if (activeCard) activeCard.classList.add('active-option');
 
-  if (state.isStressed) {
+  // Run dynamic simulation model
+  let currentTput = state.throughput;
+  let queueSize = Math.floor(Math.random() * 3);
+  let a_diff = ((currentTput * 0.98) - currentTput) / currentTput * 100;
+  let b_diff = ((currentTput * 1.01) - currentTput) / currentTput * 100;
+  let c_diff = ((currentTput * 1.05) - currentTput) / currentTput * 100;
+  let computedScrap = Math.floor(12000 + (Math.random() * 2000));
+
+  const vaT = document.getElementById('val-a-tput');
+  if (vaT) {
+    vaT.innerText = a_diff.toFixed(1) + "%";
+    document.getElementById('val-a-queue').innerText = `+${queueSize + 5}`;
+    document.getElementById('val-b-tput').innerText = "+" + b_diff.toFixed(1) + "%";
+    document.getElementById('val-c-tput').innerText = "+" + c_diff.toFixed(1) + "%";
+  }
+
+  if (state.activeStep === 0) {
+    document.querySelector('.simulator-actions').style.display = 'none';
+    impactText.innerHTML = `
+      <div style="color:var(--accent-healthy); font-weight:800; font-size:14px; margin-bottom:8px;">✅ SYSTEM NOMINAL</div>
+      No predictive anomalies detected. Counterfactual simulator is standing by in monitoring mode.
+    `;
+    document.querySelectorAll('.scenario-card').forEach(el => {
+      el.style.opacity = '0.5';
+      el.style.pointerEvents = 'none';
+    });
+  } else if (state.isStressed) {
+    document.querySelectorAll('.scenario-card').forEach(el => {
+      el.style.opacity = '1';
+      el.style.pointerEvents = 'auto';
+    });
     // Stress options
     cardA.querySelector('.scenario-name').innerText = "Emergency Stop";
     cardA.querySelector('.scenario-badge').innerText = "Option A";
@@ -382,25 +427,31 @@ function updateWhatIfSimulatorUI() {
     cardB.querySelector('.scenario-impact').innerText = "Reroutes components around S5. Operates at 82% capacity.";
     
     cardC.style.display = "none";
+    document.querySelector('.simulator-actions').style.display = 'flex';
 
     if (state.isStressSolved) {
-      approveBtn.disabled = true;
-      approveBtn.innerText = "Bypass Route Active";
-      document.getElementById('btn-reject').disabled = true;
-      impactText.innerHTML = "Bypass channel active around S5 Powertrain module. Operational capacity stabilized at 82%.";
+      document.querySelector('.simulator-actions').style.display = 'none';
+      impactText.innerHTML = `
+        <div style="color:var(--accent-healthy); font-weight:800; font-size:14px; margin-bottom:8px;">✅ AUTONOMOUS BYPASS ACTIVE</div>
+        Bypass channel routed around S5 Powertrain module.<br><br>
+        Operational capacity stabilized at 82%.<br>
+        Catastrophic line halt prevented.
+      `;
     } else {
-      approveBtn.disabled = false;
-      document.getElementById('btn-reject').disabled = false;
-      if (state.selectedScenario === 'B') {
-        approveBtn.innerText = "Deploy Emergency Plan";
-        impactText.innerHTML = "Recommended action: Option B Bypass — prevents catastrophic block, preserves 82% capacity, limits downstream scrap loss.";
-      } else {
-        approveBtn.innerText = "Execute Line Shut Down";
-        impactText.innerHTML = "Emergency option: Manual Shut Down — halts all manufacturing lines, resulting in <strong>~$42,000/hr</strong> in direct losses.";
-      }
+      document.querySelector('.simulator-actions').style.display = 'none';
+      impactText.innerHTML = `
+        <div style="color:var(--accent-critical); font-weight:800; font-size:14px; margin-bottom:8px;">⚠️ CRITICAL ANOMALY: AUTONOMOUS PROTOCOL ENGAGED</div>
+        Recommended action: Option B Bypass — prevents catastrophic block, preserves 82% capacity.<br><br>
+        <strong>Executing autonomously in ${state.autonomousCountdown}s...</strong>
+      `;
     }
   } else {
     // Normal/Anomaly options
+    document.querySelectorAll('.scenario-card').forEach(el => {
+      el.style.opacity = '1';
+      el.style.pointerEvents = 'auto';
+    });
+    
     cardA.querySelector('.scenario-name').innerText = "Increase Speed";
     cardA.querySelector('.scenario-badge').innerText = "Option A";
     cardA.querySelector('.scenario-impact').innerText = "High risk of scrap buildup. Not recommended.";
@@ -419,15 +470,38 @@ function updateWhatIfSimulatorUI() {
       document.getElementById('btn-reject').disabled = false;
     }
 
-    if (state.selectedScenario === 'A') {
-      impactText.innerHTML = `Option A — high cycle speed risks generating <strong>$12,000 in scrap</strong> and increases defect propagation to 84%.`;
-      approveBtn.innerText = "Apply Scenario A";
-    } else if (state.selectedScenario === 'B') {
-      impactText.innerHTML = `Option B — buffering Station 5 prevents defect but slows line throughput, causing <strong>$4,500/hr</strong> capacity loss.`;
-      approveBtn.innerText = "Apply Scenario B";
-    } else if (state.selectedScenario === 'C') {
-      impactText.innerHTML = `Recommended action: Option C — reroutes workload via Station 8, <strong>neutralizes $18,000 in scrap risk</strong>, maintains full throughput.`;
-      approveBtn.innerText = "Approve Intervention";
+    if (state.interventionStatus === 'approved') {
+      document.querySelector('.simulator-actions').style.display = 'none';
+      impactText.innerHTML = `
+        <div style="color:var(--accent-healthy); font-weight:800; font-size:14px; margin-bottom:8px;">✅ INTERVENTION APPROVED & EXECUTED</div>
+        <strong>Reroute workload via Station 8</strong><br><br>
+        Expected: +5.0% throughput<br>
+        Observed: +4.7% throughput<br>
+        Scrap risk: Reduced by $18,000<br><br>
+        Prediction validated<br><br>
+        <em>Learning update: Similar scenarios will now receive higher confidence for this intervention.</em>
+      `;
+    } else if (state.interventionStatus === 'rejected') {
+      document.querySelector('.simulator-actions').style.display = 'none';
+      impactText.innerHTML = `
+        <div style="color:var(--accent-critical); font-weight:800; font-size:14px; margin-bottom:8px;">❌ RECOMMENDATION REJECTED</div>
+        <strong>Operator declined: Reroute Workload</strong><br><br>
+        Reason: Maintenance restriction at Station 8<br><br>
+        Feedback recorded for future recommendations.<br><br>
+        <em>Next-best option: Slow Station 5</em>
+      `;
+    } else {
+      document.querySelector('.simulator-actions').style.display = 'flex';
+      if (state.selectedScenario === 'A') {
+        impactText.innerHTML = `Option A — high cycle speed risks generating <strong>$${computedScrap} in scrap</strong> and increases defect propagation to 84%.`;
+        approveBtn.innerText = "Apply Scenario A";
+      } else if (state.selectedScenario === 'B') {
+        impactText.innerHTML = `Option B — buffering Station 5 prevents defect but slows line throughput, causing <strong>$4,500/hr</strong> capacity loss.`;
+        approveBtn.innerText = "Apply Scenario B";
+      } else if (state.selectedScenario === 'C') {
+        impactText.innerHTML = `Recommended action: Option C — reroutes workload via Station 8, <strong>neutralizes $18,000 in scrap risk</strong>, maintains full throughput (+${c_diff.toFixed(1)}%).`;
+        approveBtn.innerText = "Approve Intervention";
+      }
     }
   }
 }
@@ -458,7 +532,29 @@ function updateCausalChainUI() {
 
   document.querySelectorAll('.vehicle-icon-card').forEach(el => el.className = "vehicle-icon-card");
 
-  if (state.overallHealth > 95) {
+  if (state.isStressed) {
+    node1.className = "causal-node critical";
+    node2.className = "causal-node critical";
+    node3.className = "causal-node critical";
+    node4.className = "causal-node critical";
+    arrow1.className = "causal-arrow glowing";
+    arrow2.className = "causal-arrow glowing";
+    arrow3.className = "causal-arrow glowing";
+
+    node1.innerHTML = `<span class="causal-node-title">Station 5</span><span class="causal-node-value" style="font-weight:bold; color:var(--accent-critical);">MOTOR FAULT</span>`;
+    node2.innerHTML = `<span class="causal-node-title">Station 6</span><span class="causal-node-value">Starvation</span>`;
+    node3.innerHTML = `<span class="causal-node-title">Station 7</span><span class="causal-node-value">Gridlock</span>`;
+    node4.innerHTML = `<span class="causal-node-title">Entire Line</span><span class="causal-node-value">CATASTROPHIC HALT</span>`;
+
+    document.getElementById('prop-risk').innerText = state.isStressSolved ? "Mitigated (Bypass)" : "100% (Imminent)";
+    document.getElementById('prop-risk').className = state.isStressSolved ? "prop-stat-val highlight healthy" : "prop-stat-val highlight";
+    document.getElementById('prop-cause').innerText = "S5 Motor Failure";
+    document.getElementById('prop-reduction').innerText = state.isStressSolved ? "Bypass Active" : "Bypass S5 immediately";
+    
+    riskLabel.innerText = state.isStressSolved ? "LINE STABILIZED" : "ALL VEHICLES AT RISK";
+    riskLabel.style.color = state.isStressSolved ? "var(--accent-healthy)" : "var(--accent-critical)";
+    document.querySelectorAll('.vehicle-icon-card').forEach(el => el.className = state.isStressSolved ? "vehicle-icon-card healthy-car" : "vehicle-icon-card at-risk");
+  } else if (state.overallHealth > 95) {
     document.getElementById('prop-risk').innerText = "Low Risk (<1%)";
     document.getElementById('prop-risk').className = "prop-stat-val";
     document.getElementById('prop-cause').innerText = "None detected";
@@ -509,13 +605,13 @@ function updateSensorlessInferenceUI() {
     badge.className = "proxy-node sensorless-center";
     badge.innerText = state.selectedScenario === 'C' && state.activeStep === 0 ? "Nominal (Rerouted)" : "S8 Inferred Status";
     badge.style.borderColor = "var(--accent-healthy)";
-    confidence.innerText = "Station 8 Confidence: 91%";
+    confidence.innerText = `Confidence: ${state.s8Confidence}%`;
     confidence.style.color = "var(--accent-healthy)";
   } else if (state.activeStep === 1 || state.activeStep === 2 || state.isStressed) {
     badge.className = "proxy-node sensorless-center warning";
     badge.innerText = "S8 Degrading Cycle";
     badge.style.borderColor = "var(--accent-warning)";
-    confidence.innerText = state.isStressed ? "Confidence: 61% (Bypass Mode)" : "Confidence: 74% (Disturbed)";
+    confidence.innerText = state.isStressed ? `Confidence: ${state.s8Confidence}% (Bypass Mode)` : `Confidence: ${state.s8Confidence}% (Disturbed)`;
     confidence.style.color = "var(--accent-warning)";
   }
 }
@@ -578,9 +674,65 @@ function updateAuditLogUI() {
   container.scrollTop = container.scrollHeight;
 }
 
+// --- AI Models & Telemetry Sync ---
+function predictBottleneck() {
+  const s7Hist = state.telemetryHistory.S7;
+  if (!s7Hist || s7Hist.length < 5) return;
+  
+  // Calculate trend (slope) of last 5 elements
+  let sumX = 0, sumY = 0, sumXY = 0, sumXX = 0;
+  const n = s7Hist.length;
+  for (let i = 0; i < n; i++) {
+    sumX += i;
+    sumY += s7Hist[i];
+    sumXY += i * s7Hist[i];
+    sumXX += i * i;
+  }
+  // For the demo, ensure a rock-solid presentation state for activeSteps 1 and 2
+  if (state.activeStep === 1) {
+    state.bottleneckETA = 18;
+    state.bottleneckProb = 68;
+    return;
+  } else if (state.activeStep === 2) {
+    state.bottleneckETA = 18;
+    state.bottleneckProb = 71;
+    return;
+  }
+  
+  let slope = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
+  
+  // If slope is positive, predict failure crossing 55s threshold
+  if (slope > 0.1) {
+    const currentVal = s7Hist[n - 1];
+    const timeToFailure = Math.max(1, Math.round((55 - currentVal) / slope));
+    state.bottleneckETA = timeToFailure > 60 ? 18 : timeToFailure; // cap at 18 mins
+    state.bottleneckProb = Math.min(99, Math.round(60 + (slope * 15)));
+  } else {
+    state.bottleneckETA = 0;
+    state.bottleneckProb = 0;
+  }
+}
+
+function inferSensorlessState(s7, s9) {
+  // Infer S8 from upstream/downstream + historical noise
+  const inferredBase = (s7 * 0.45) + (s9 * 0.45) + (stations.S8.baseCycle * 0.1);
+  const jitter = (Math.random() * 0.8) - 0.4;
+  state.s8InferredCycle = parseFloat((inferredBase + jitter).toFixed(1));
+  
+  // Confidence degrades if S7 or S9 are volatile/stressed
+  let conf = 94; // Baseline
+  if (s7 > 48 || s9 > 50) conf -= 15;
+  if (state.isStressed) conf = 61;
+  state.s8Confidence = conf;
+}
+
 // --- Cycle Times Jitter ---
 function jitterStationCycles() {
+  let currentS7 = stations.S7.baseCycle;
+  let currentS9 = stations.S9.baseCycle;
+
   Object.keys(stations).forEach(key => {
+    if (key === 'S8') return; // Handled by inference
     const st = stations[key];
     const elVal = document.getElementById(`cycle-${key}`);
     if (!elVal) return;
@@ -594,27 +746,44 @@ function jitterStationCycles() {
         return;
       } else if (key === 'S6' || key === 'S7') {
         base += 15.4;
-      } else if (key === 'S8') {
-        base -= 4.2;
       }
     } else if (state.activeStep === 1) {
       if (key === 'S3') base = 54.2;
       if (key === 'S6') base = 49.8;
-      if (key === 'S8') base = 41.5;
     } else if (state.activeStep === 2) {
       if (key === 'S3') base = 52.8;
       if (key === 'S5') base = 48.9;
       if (key === 'S6') base = 49.2;
       if (key === 'S7') base = 51.5;
-      if (key === 'S8') base = 43.1;
     }
 
     let jitter = (Math.random() * 0.8) - 0.4;
-    let computedVal = (base + jitter).toFixed(1);
+    let computedVal = parseFloat((base + jitter).toFixed(1));
+    
+    if (key === 'S7') currentS7 = computedVal;
+    if (key === 'S9') currentS9 = computedVal;
 
-    elVal.innerText = computedVal + "s";
+    // Track history for ML models
+    if (state.telemetryHistory[key]) {
+      state.telemetryHistory[key].push(computedVal);
+      if (state.telemetryHistory[key].length > 15) state.telemetryHistory[key].shift();
+    }
+
+    elVal.innerText = computedVal.toFixed(1) + "s";
     elVal.style.color = "var(--text-primary)";
   });
+
+  // Run Inference & Prediction Models
+  inferSensorlessState(currentS7, currentS9);
+  predictBottleneck();
+  updatePredictiveAlertUI();
+  
+  // Update S8 UI specifically
+  const s8El = document.getElementById('cycle-S8');
+  if (s8El) {
+    s8El.innerText = state.s8InferredCycle.toFixed(1) + "s";
+    s8El.style.color = "var(--accent-info)"; // Distinct color for inferred
+  }
 }
 
 // --- Interactive Controller actions ---
@@ -666,7 +835,6 @@ function approveRecommendation() {
 
   if (state.isStressed) {
     // Stress bypass approval
-    state.isStressed = false;
     state.isStressSolved = true;
     state.overallHealth = 92.4;
     state.throughput = 34.6;
@@ -678,13 +846,20 @@ function approveRecommendation() {
   }
 
   // Anomaly recommendation approval
+  state.interventionStatus = 'approved';
   state.overallHealth = 99.1;
   state.throughput = 42.4;
   state.trustScore = Math.min(state.trustScore + 4, 100);
-  state.auditLogs.push(`[${nowStr}] Operator approved Option ${state.selectedScenario}. Cycle buffers restored.`);
   
-  // Clear chatbot history logs for a clean new sequence
-  showToast(`Intervention ${state.selectedScenario} Applied Successfully!`, "healthy");
+  if (state.selectedScenario === 'C') {
+    state.auditLogs.push(`[${nowStr}] Action: Reroute workload via Option C`);
+    state.auditLogs.push(`[${nowStr}] Observed outcome: bottleneck avoided ✅`);
+    state.auditLogs.push(`[${nowStr}] Twin learning: prediction validated, model weights updated`);
+  } else {
+    state.auditLogs.push(`[${nowStr}] Operator approved Option ${state.selectedScenario}. Cycle buffers restored.`);
+  }
+  
+  showToast(`Intervention ${state.selectedScenario} Applied! Twin Learning Updated.`, "healthy");
   
   // Update timeline state to resolved
   saveState();
@@ -697,6 +872,7 @@ function rejectRecommendation() {
   state.auditLogs.push(`[${nowStr}] Operator rejected Option ${state.selectedScenario}. Running manual line speed override.`);
   state.trustScore = Math.max(state.trustScore - 2, 80);
   
+  state.interventionStatus = 'rejected';
   showToast("AI recommendation overridden by operator.", "warning");
   saveState();
 }
@@ -760,7 +936,9 @@ function triggerStressTest() {
   state.isStressSolved = false;
   state.isPlaying = false;
   state.activeStep = -1;
+  state.interventionStatus = null;
   state.selectedScenario = 'B'; // Default recommend Option B bypass
+  state.autonomousCountdown = 5;
 
   state.overallHealth = 44.5;
   state.throughput = 18.2;
@@ -769,6 +947,21 @@ function triggerStressTest() {
   state.auditLogs.push(`[${nowStr}] Emergency: Critical motor fault at Station 5 (Powertrain). Cascading blocks predicted.`);
 
   saveState();
+
+  // Autonomous countdown loop
+  const interval = setInterval(() => {
+    if (!state.isStressed || state.isStressSolved) {
+      clearInterval(interval);
+      return;
+    }
+    state.autonomousCountdown--;
+    if (state.autonomousCountdown <= 0) {
+      clearInterval(interval);
+      approveRecommendation(); // Auto-execute
+    } else {
+      saveState(); // Update UI with new countdown number
+    }
+  }, 1000);
 }
 
 // btn-replay is now handled in DOMContentLoaded above

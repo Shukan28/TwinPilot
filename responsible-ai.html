@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TwinPilot — Trust & Responsible AI Center</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+  <!-- Shared Header Navigation -->
+  <header class="site-header">
+    <a href="index.html" class="logo-container">
+      <div class="logo-icon">
+        <i data-lucide="cpu" style="width:16px;height:16px;color:#ffffff;"></i>
+      </div>
+      <span class="logo-text">TwinPilot<span class="logo-dot">.</span></span>
+    </a>
+    
+    <nav>
+      <ul class="nav-links">
+        <li class="nav-item"><a href="index.html"><i data-lucide="home" style="width:14px;height:14px;"></i> Concept</a></li>
+        <li class="nav-item"><a href="dashboard.html"><i data-lucide="layout" style="width:14px;height:14px;"></i> Cockpit</a></li>
+        <li class="nav-item"><a href="analytics.html"><i data-lucide="activity" style="width:14px;height:14px;"></i> Diagnostics</a></li>
+        <li class="nav-item active"><a href="responsible-ai.html"><i data-lucide="shield-check" style="width:14px;height:14px;"></i> Trust Center</a></li>
+      </ul>
+    </nav>
+    
+    <div class="header-telemetry">
+      <div class="header-status-badge">
+        <span class="live-dot"></span> Live Twin
+      </div>
+      <div class="telemetry-item">
+        <span class="telemetry-label">Sim Time</span>
+        <span class="telemetry-value" id="sim-clock">10:02:00 AM</span>
+      </div>
+      <div class="telemetry-item">
+        <span class="telemetry-label">Overall Health</span>
+        <span class="telemetry-value" id="factory-overall-health" style="color:var(--accent-healthy);">98.4%</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Page Content Container -->
+  <main class="page-container">
+    
+    <!-- Page Header -->
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: -4px;">
+      <div>
+        <h2 style="font-size:22px; font-weight:700; color:var(--text-primary); margin-bottom:4px;">Trust & Responsible AI Center</h2>
+        <p style="font-size:13px; color:var(--text-secondary);">Transparent AI calibration scores, human-in-the-loop audit logs, and override traceability.</p>
+      </div>
+      <a href="dashboard.html" style="display:flex; align-items:center; gap:6px; font-size:12px; font-weight:700; color:var(--accent-healthy); text-decoration:none; padding:8px 14px; background:var(--accent-healthy-bg); border:1px solid rgba(5,150,105,0.2); border-radius:8px;">
+        <i data-lucide="layout" style="width:13px;height:13px;"></i>
+        Back to Cockpit
+      </a>
+    </div>
+    
+    <div class="grid-dashboard two-col-equal">
+      
+      <!-- Left Column: Trust Score Dashboard -->
+      <div class="dashboard-column">
+        <section class="glass-card" style="height: 100%; display:flex; flex-direction:column; justify-content:space-between; gap:20px;">
+          <div>
+            <div class="card-title-bar">
+              <h3 class="card-title">
+                <i data-lucide="shield-check" style="width:16px;height:16px;"></i>
+                Trust Score & Calibration
+              </h3>
+            </div>
+            
+            <div style="display:flex; flex-direction:column; align-items:center; gap:20px; padding:20px 0;">
+              <!-- Radial Gauge -->
+              <div class="trust-gauge" style="width:120px; height:120px;">
+                <svg class="trust-svg">
+                  <circle cx="60" cy="60" r="54" class="trust-circle-bg" style="stroke-width:8;" />
+                  <circle cx="60" cy="60" r="54" class="trust-circle-fill" id="trust-fill-circle" style="stroke-width:8; stroke-dasharray: 339; stroke-dashoffset: 339;" />
+                </svg>
+                <div class="trust-score-txt" id="trust-score-pct" style="font-size:24px;">94%</div>
+              </div>
+              
+              <div class="trust-label" style="font-size:12px;">Dynamic AI Calibration Trust</div>
+            </div>
+
+            <div style="font-size:13px; line-height:1.6; color:var(--text-secondary); display:flex; flex-direction:column; gap:10px;">
+              <p>
+                <strong>Calibrating Trust:</strong> The Trust Score tracks how well the digital twin's predictive counterfactuals align with manual overrides and actual line telemetry outcomes.
+              </p>
+              <ul style="padding-left:20px; display:flex; flex-direction:column; gap:6px;">
+                <li><strong>Dynamic Up-tick:</strong> Approving recommendations (Option C / Bypass) that successfully prevent bottlenecks increments trust score.</li>
+                <li><strong>Manual Rejections:</strong> Rejections are logged and analyze historical boundary variances to update the AI torque thresholds.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="comparison-card new" style="padding:12px;">
+            <div style="font-size:10px; font-weight:800; text-transform:uppercase; color:var(--accent-healthy);">Responsible Design Principle</div>
+            <div style="font-size:12px; margin-top:4px; line-height:1.4; color:var(--text-secondary);">
+              "TwinPilot recommends. It never decides alone." We prevent runaway automation loops by enforcing operator approval overrides.
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Right Column: Full Audit Overrides Log -->
+      <div class="dashboard-column">
+        <section class="glass-card" style="height: 100%;">
+          <div class="card-title-bar">
+            <h3 class="card-title">
+              <i data-lucide="history" style="width:16px;height:16px;"></i>
+              Operator Override Audit Log
+            </h3>
+            <span class="header-subtitle" style="font-size:11px; color:var(--text-secondary);">Human-in-the-Loop trace</span>
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:16px;">
+            <p style="font-size:13px; color:var(--text-secondary); line-height:1.5;">
+              Every recommendation approval, manual override, and bypass trigger is signed and cryptographically logged to establish traceability.
+            </p>
+
+            <div class="override-log-container" id="override-log" style="max-height: 320px; min-height: 250px; background:#f8fafc; padding:12px;">
+              <span class="override-log-title">Historical Log Records</span>
+              <div class="override-log-entry" id="log-0">
+                [10:02 AM] System: Running nominal AI forecasting loops.
+              </div>
+              <div class="override-log-entry rejected" id="log-1">
+                [Yesterday 14:35] Operator (ID-4890) rejected Option A speed increases. Logged: Prioritizing worker safety drill.
+              </div>
+              <div class="override-log-entry" id="log-2">
+                [Aug 14 09:15] System Autonomous override: Adjusted Station 5 conveyor limits.
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Toast Anchor -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- JS Logic -->
+  <script src="app.js"></script>
+</body>
+</html>

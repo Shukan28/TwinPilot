@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TwinPilot — Self-Experimenting Digital Twin</title>
+  <meta name="description" content="Hackathon prototype representing a self-experimenting digital twin for vehicle assembly lines.">
+  <link rel="stylesheet" href="style.css">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+  <!-- Shared Header Navigation -->
+  <header class="site-header">
+    <a href="index.html" class="logo-container">
+      <div class="logo-icon">
+        <i data-lucide="cpu" style="width:16px;height:16px;color:#ffffff;"></i>
+      </div>
+      <span class="logo-text">TwinPilot<span class="logo-dot">.</span></span>
+    </a>
+    
+    <nav>
+      <ul class="nav-links">
+        <li class="nav-item active"><a href="index.html"><i data-lucide="home" style="width:14px;height:14px;"></i> Concept</a></li>
+        <li class="nav-item"><a href="dashboard.html"><i data-lucide="layout" style="width:14px;height:14px;"></i> Cockpit</a></li>
+        <li class="nav-item"><a href="analytics.html"><i data-lucide="activity" style="width:14px;height:14px;"></i> Diagnostics</a></li>
+        <li class="nav-item"><a href="responsible-ai.html"><i data-lucide="shield-check" style="width:14px;height:14px;"></i> Trust Center</a></li>
+      </ul>
+    </nav>
+    
+    <div class="header-telemetry">
+      <div class="header-status-badge">
+        <span class="live-dot"></span> Live Twin
+      </div>
+      <div class="telemetry-item">
+        <span class="telemetry-label">Overall Health</span>
+        <span class="telemetry-value" id="factory-overall-health" style="color:var(--accent-healthy);">98.4%</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Page Content Container -->
+  <main class="page-container">
+    
+    <!-- Hero Block -->
+    <section class="hero-section">
+      <h1 class="hero-title">Self-Experimenting Digital Twin</h1>
+      <div class="hero-tagline-container">
+        <span class="hero-tagline-text visible" id="tagline-0">See the invisible.</span>
+        <span class="hero-tagline-text" id="tagline-1">Predict the problem.</span>
+        <span class="hero-tagline-text" id="tagline-2">Simulate the future.</span>
+        <span class="hero-tagline-text" id="tagline-3">Act before failure.</span>
+      </div>
+      <p class="hero-desc">
+        TwinPilot introduces a paradigm shift in manufacturing analytics. Most digital twins tell you <strong>what is</strong> happening. TwinPilot tests <strong>what will</strong> happen before the factory makes a decision.
+      </p>
+      <a href="dashboard.html" class="hero-cta-btn">
+        Enter Command Cockpit
+        <i data-lucide="arrow-right" style="width:16px;height:16px;"></i>
+      </a>
+
+      <!-- Key metrics strip -->
+      <div class="hero-stats-row">
+        <div class="hero-stat-chip">
+          <i data-lucide="trending-down" style="width:12px;height:12px;"></i>
+          $18K Scrap Risk Neutralized
+        </div>
+        <div class="hero-stat-chip">
+          <i data-lucide="clock" style="width:12px;height:12px;"></i>
+          18-min Advance Warning
+        </div>
+        <div class="hero-stat-chip">
+          <i data-lucide="shield-check" style="width:12px;height:12px;"></i>
+          94% Risk Mitigation
+        </div>
+        <div class="hero-stat-chip">
+          <i data-lucide="eye-off" style="width:12px;height:12px;"></i>
+          Sensorless AI Inference
+        </div>
+      </div>
+    </section>
+
+    <!-- Content Grid -->
+    <div class="grid-dashboard two-col-equal">
+      
+      <!-- Column 1: Interactive Loop SVG & Old vs New -->
+      <div class="dashboard-column">
+        <div class="glass-card">
+          <div class="card-title-bar">
+            <h3 class="card-title">
+              <i data-lucide="refresh-cw" style="width:16px;height:16px;"></i>
+              Closed-Loop Digital Twin Process
+            </h3>
+          </div>
+          
+          <div class="loop-diagram-container" style="border:none; padding:0; background:transparent; box-shadow:none;">
+            <svg viewBox="0 0 200 110" class="loop-svg" style="max-width:340px;">
+              <path id="flow-path" d="M 20 20 C 60 10, 140 10, 180 20 C 190 40, 190 70, 180 90 C 140 100, 60 100, 20 90 C 10 70, 10 40, 20 20 Z" class="loop-path-bg" />
+              <path d="M 20 20 C 60 10, 140 10, 180 20 C 190 40, 190 70, 180 90 C 140 100, 60 100, 20 90 C 10 70, 10 40, 20 20 Z" class="loop-path-flow" />
+              
+              <circle id="node-data" cx="20" cy="20" r="6" class="loop-node active" />
+              <circle id="node-twin" cx="100" cy="12" r="6" class="loop-node" />
+              <circle id="node-predict" cx="180" cy="20" r="6" class="loop-node" />
+              <circle id="node-experiment" cx="185" cy="55" r="6" class="loop-node" />
+              <circle id="node-compare" cx="180" cy="90" r="6" class="loop-node" />
+              <circle id="node-recommend" cx="100" cy="98" r="6" class="loop-node" />
+              <circle id="node-approve" cx="20" cy="90" r="6" class="loop-node" />
+              <circle id="node-learn" cx="15" cy="55" r="6" class="loop-node" />
+              
+              <text x="20" y="32" class="loop-text active" id="lbl-data">Data</text>
+              <text x="100" y="24" class="loop-text" id="lbl-twin">Twin</text>
+              <text x="180" y="32" class="loop-text" id="lbl-predict">Predict</text>
+              <text x="160" y="58" class="loop-text" id="lbl-experiment">Simulate</text>
+              <text x="180" y="82" class="loop-text" id="lbl-compare">Compare</text>
+              <text x="100" y="90" class="loop-text" id="lbl-recommend">Recommend</text>
+              <text x="35" y="82" class="loop-text" id="lbl-approve">Approve</text>
+              <text x="35" y="58" class="loop-text" id="lbl-learn">Learn</text>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Paradigm Cards -->
+        <div class="comparison-container">
+          <div class="comparison-card old">
+            <div class="comparison-label">Legacy System Loop</div>
+            <div class="comparison-flow">Detect → Alert → Human figures it out</div>
+          </div>
+          <div class="comparison-card new">
+            <div class="comparison-label">TwinPilot Closed Loop</div>
+            <div class="comparison-flow">Predict → Simulate → Recommend → Human Approves → Learn</div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Column 2: Hackathon Details / Pitch explanation -->
+      <div class="dashboard-column">
+        <div class="glass-card" style="height:100%; display:flex; flex-direction:column; justify-content:space-between; gap:20px;">
+          <div>
+            <div class="card-title-bar">
+              <h3 class="card-title">
+                <i data-lucide="help-circle" style="width:16px;height:16px;"></i>
+                Accenture Challenge PS #4 Concept
+              </h3>
+            </div>
+            <div style="font-size:14px; line-height:1.6; color:var(--text-secondary); display:flex; flex-direction:column; gap:12px;">
+              <p>
+                <strong>The Challenge:</strong> Responsibly design, deploy, and scale digital twins of manufacturing assemblies that move beyond basic dashboards towards predictive counters, simulated interventions, and explainable AI interfaces.
+              </p>
+              <p>
+                <strong>Our Solution (TwinPilot):</strong> We build an intelligent twin that:
+              </p>
+              <ul style="padding-left:20px; display:flex; flex-direction:column; gap:6px;">
+                <li><strong>Predicts Anomalies:</strong> Flags bottleneck events before they disrupt throughput.</li>
+                <li><strong>Infers Sensorless Zones:</strong> Models state estimation for areas with zero physical sensors (e.g. S8).</li>
+                <li><strong>Simulates Interventions:</strong> Evaluates Option A, B, and C in real-time, outputting dynamic throughput, defect rates, and business losses.</li>
+                <li><strong>Brings Human-in-the-Loop:</strong> Implements a natural language dialog interface and logs override audits.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="comparison-card new" style="padding:12px; margin-top:10px;">
+            <div style="font-size:10px; font-weight:800; text-transform:uppercase; color:var(--accent-healthy);">Hackathon Deliverable Context</div>
+            <div style="font-size:12px; margin-top:4px; line-height:1.4; color:var(--text-secondary);">
+              This prototype acts as a live interactive proof-of-concept for the Accenture Innovation Hackathon Round 1 presentation deck and demo recording.
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- JS Logic -->
+  <script src="app.js"></script>
+</body>
+</html>

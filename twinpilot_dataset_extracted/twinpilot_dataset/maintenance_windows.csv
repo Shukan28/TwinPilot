@@ -1,0 +1,4 @@
+run_id,station_id,window_start_minute,window_end_minute,type,notes
+RUN-004,S05,174,185,scheduled,Planned retrofit/maintenance window.
+RUN-007,S12,92,105,scheduled,Planned retrofit/maintenance window.
+RUN-008,S10,72,92,scheduled,Planned retrofit/maintenance window.

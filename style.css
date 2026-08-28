@@ -860,17 +860,116 @@ h1, h2, h3, h4, .font-display, .stat-value {
   font-family: var(--font-mono);
 }
 
-.predictive-alert-card.nominal-alert {
-  border-color: rgba(5, 150, 105, 0.3);
-  background: linear-gradient(135deg, rgba(5, 150, 105, 0.05) 0%, rgba(255, 255, 255, 0.8) 100%);
+.predictive-alert-card.nominal-alert,
+.predictive-alert-card.stage-0-baseline {
+  border-color: rgba(5, 150, 105, 0.35);
+  background: linear-gradient(135deg, rgba(5, 150, 105, 0.06) 0%, rgba(255, 255, 255, 0.95) 100%);
 }
 
-.predictive-alert-card.nominal-alert .alert-header i {
+.predictive-alert-card.stage-0-baseline .alert-header {
   color: var(--accent-healthy);
 }
 
-.predictive-alert-card.nominal-alert .predict-pulse-glow {
+.predictive-alert-card.stage-0-baseline .alert-header i {
+  color: var(--accent-healthy);
+}
+
+.predictive-alert-card.stage-0-baseline .predict-pulse-glow {
   background: radial-gradient(circle, rgba(5, 150, 105, 0.15) 0%, transparent 70%);
+}
+
+.predictive-alert-card.stage-1-emerging {
+  border-color: rgba(245, 158, 11, 0.45);
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.08) 0%, rgba(255, 255, 255, 0.95) 100%);
+}
+
+.predictive-alert-card.stage-1-emerging .alert-header {
+  color: #d97706;
+}
+
+.predictive-alert-card.stage-1-emerging .alert-header i {
+  color: #d97706;
+}
+
+.predictive-alert-card.stage-1-emerging .predict-pulse-glow {
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.2) 0%, transparent 70%);
+  animation: pulse-glow-amber-light 1.8s infinite alternate;
+}
+
+.predictive-alert-card.stage-2-rising {
+  border-color: rgba(249, 115, 22, 0.55);
+  background: linear-gradient(135deg, rgba(249, 115, 22, 0.10) 0%, rgba(255, 255, 255, 0.95) 100%);
+}
+
+.predictive-alert-card.stage-2-rising .alert-header {
+  color: #ea580c;
+}
+
+.predictive-alert-card.stage-2-rising .alert-header i {
+  color: #ea580c;
+}
+
+.predictive-alert-card.stage-2-rising .predict-pulse-glow {
+  background: radial-gradient(circle, rgba(249, 115, 22, 0.25) 0%, transparent 70%);
+  animation: pulse-glow-amber-light 1.4s infinite alternate;
+}
+
+.predictive-alert-card.stage-3-prediction,
+.predictive-alert-card.critical-alert {
+  border-color: rgba(220, 38, 38, 0.5);
+  background: linear-gradient(135deg, rgba(220, 38, 38, 0.10) 0%, #ffffff 100%);
+}
+
+.predictive-alert-card.stage-3-prediction .alert-header,
+.predictive-alert-card.critical-alert .alert-header {
+  color: var(--accent-critical);
+}
+
+.predictive-alert-card.stage-3-prediction .alert-header i,
+.predictive-alert-card.critical-alert .alert-header i {
+  color: var(--accent-critical);
+}
+
+.predictive-alert-card.stage-3-prediction .predict-pulse-glow,
+.predictive-alert-card.critical-alert .predict-pulse-glow {
+  background: radial-gradient(circle, rgba(220, 38, 38, 0.2) 0%, transparent 70%);
+  animation: pulse-glow-red-light 1.2s infinite alternate;
+}
+
+.predictive-alert-card.stage-4-future {
+  border-color: rgba(185, 28, 28, 0.65);
+  background: linear-gradient(135deg, rgba(185, 28, 28, 0.14) 0%, #ffffff 100%);
+}
+
+.predictive-alert-card.stage-4-future .alert-header {
+  color: #991b1b;
+}
+
+.predictive-alert-card.stage-4-future .alert-header i {
+  color: #991b1b;
+}
+
+.predictive-alert-card.stage-4-future .predict-pulse-glow {
+  background: radial-gradient(circle, rgba(185, 28, 28, 0.25) 0%, transparent 70%);
+  animation: pulse-glow-red-light 1s infinite alternate;
+}
+
+.predictive-alert-card.stage-5-interventions {
+  border-color: rgba(16, 185, 129, 0.5);
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.10) 0%, #ffffff 100%);
+}
+
+.predictive-alert-card.stage-5-interventions .alert-header {
+  color: #059669;
+}
+
+.predictive-alert-card.stage-5-interventions .alert-header i {
+  color: #059669;
+}
+
+.predictive-alert-card.stage-5-interventions .predict-pulse-glow {
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.2) 0%, transparent 70%);
+  animation: pulse-glow-amber-light 2s infinite alternate;
 }
 
 /* PREDICTIVE ALERT CARDS */
@@ -887,9 +986,16 @@ h1, h2, h3, h4, .font-display, .stat-value {
   display: block;
 }
 
-.predictive-alert-card.critical-alert {
-  border-color: rgba(220, 38, 38, 0.3);
-  background: linear-gradient(135deg, var(--accent-critical-bg) 0%, #ffffff 100%);
+.station-node.emerging {
+  border-color: rgba(245, 158, 11, 0.6) !important;
+  background-color: rgba(245, 158, 11, 0.08) !important;
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.2) !important;
+}
+
+.station-node.rising-risk {
+  border-color: rgba(249, 115, 22, 0.7) !important;
+  background-color: rgba(249, 115, 22, 0.10) !important;
+  box-shadow: 0 0 14px rgba(249, 115, 22, 0.25) !important;
 }
 
 .predict-pulse-glow {
@@ -900,11 +1006,6 @@ h1, h2, h3, h4, .font-display, .stat-value {
   height: 120px;
   background: radial-gradient(circle, rgba(217, 119, 6, 0.15) 0%, transparent 70%);
   animation: pulse-glow-amber-light 2s infinite alternate;
-}
-
-.predictive-alert-card.critical-alert .predict-pulse-glow {
-  background: radial-gradient(circle, rgba(220, 38, 38, 0.15) 0%, transparent 70%);
-  animation: pulse-glow-red-light 2s infinite alternate;
 }
 
 @keyframes pulse-glow-amber-light {

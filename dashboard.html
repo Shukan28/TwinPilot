@@ -252,10 +252,20 @@
               </span>
             </div>
             <div style="display:flex; align-items:center; gap:6px;">
-              <button id="btn-play-timeline" onclick="TwinPilotAPI.togglePlayTimeline()" title="Auto-advance through timeline stages" style="background:rgba(99,102,241,0.12); border:1px solid rgba(99,102,241,0.3); color:#818cf8; padding:4px 8px; border-radius:6px; font-size:11px; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:4px;">
-                <i data-lucide="play" style="width:11px;height:11px;"></i>
-                <span id="btn-play-timeline-text">Auto-Tour</span>
+              <button id="btn-toggle-clock" onclick="TwinPilotAPI.toggleClock()" title="Pause or Run live real-time clock" style="background:rgba(16,185,129,0.12); border:1px solid rgba(16,185,129,0.3); color:#059669; padding:4px 8px; border-radius:6px; font-size:11px; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:4px;">
+                <i data-lucide="pause" style="width:11px;height:11px;"></i>
+                <span id="btn-toggle-clock-text">Pause Clock</span>
               </button>
+              <div style="display:flex; align-items:center; gap:4px;">
+                <label for="timeline-speed-select" style="font-size:10px; font-weight:700; color:var(--text-secondary);">Speed:</label>
+                <select id="timeline-speed-select" onchange="TwinPilotAPI.setSpeed(Number(this.value))" style="background:#ffffff; border:1px solid var(--border-color); color:var(--text-primary); border-radius:6px; padding:3px 6px; font-size:11px; font-weight:700; cursor:pointer; outline:none;">
+                  <option value="1" selected>1x (Real-Time)</option>
+                  <option value="5">5x Speed</option>
+                  <option value="10">10x Speed</option>
+                  <option value="30">30x Speed</option>
+                  <option value="60">60x (1s = 1m)</option>
+                </select>
+              </div>
               <button onclick="TwinPilotAPI.reset()" title="Reset to Nominal Baseline" style="background:transparent; border:1px solid var(--border-color); color:var(--text-secondary); padding:4px 8px; border-radius:6px; font-size:11px; cursor:pointer; display:flex; align-items:center; gap:4px;">
                 <i data-lucide="rotate-ccw" style="width:11px;height:11px;"></i>
                 Reset

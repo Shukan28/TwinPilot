@@ -23,14 +23,10 @@
 
     <nav>
       <ul class="nav-links">
-        <li class="nav-item"><a href="index.html"><i data-lucide="home" style="width:14px;height:14px;"></i> Concept</a>
-        </li>
-        <li class="nav-item"><a href="dashboard.html"><i data-lucide="layout" style="width:14px;height:14px;"></i>
-            Cockpit</a></li>
-        <li class="nav-item active"><a href="analytics.html"><i data-lucide="activity"
-              style="width:14px;height:14px;"></i> Diagnostics</a></li>
-        <li class="nav-item"><a href="responsible-ai.html"><i data-lucide="shield-check"
-              style="width:14px;height:14px;"></i> Trust Center</a></li>
+        <li class="nav-item"><a href="index.html"><i data-lucide="home" style="width:14px;height:14px;"></i> Concept</a></li>
+        <li class="nav-item"><a href="dashboard.html"><i data-lucide="layout" style="width:14px;height:14px;"></i> Cockpit</a></li>
+        <li class="nav-item active"><a href="analytics.html"><i data-lucide="activity" style="width:14px;height:14px;"></i> Diagnostics</a></li>
+        <li class="nav-item"><a href="responsible-ai.html"><i data-lucide="shield-check" style="width:14px;height:14px;"></i> Trust Center</a></li>
       </ul>
     </nav>
 
@@ -40,15 +36,15 @@
       </div>
       <div class="telemetry-item">
         <span class="telemetry-label">Sim Time</span>
-        <span class="telemetry-value" id="sim-clock">10:02:00 AM</span>
+        <span class="telemetry-value" id="sim-clock">--:--:--</span>
       </div>
       <div class="telemetry-item">
         <span class="telemetry-label">Overall Health</span>
-        <span class="telemetry-value" id="factory-overall-health" style="color:var(--accent-healthy);">98.4%</span>
+        <span class="telemetry-value" id="factory-overall-health" style="color:var(--accent-healthy);">--%</span>
       </div>
       <div class="telemetry-item">
         <span class="telemetry-label">Throughput</span>
-        <span class="telemetry-value" id="factory-throughput">42.2 u/h</span>
+        <span class="telemetry-value" id="factory-throughput">-- u/h</span>
       </div>
     </div>
   </header>
@@ -59,10 +55,12 @@
     <!-- Page Header -->
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: -4px;">
       <div>
-        <h2 style="font-size:22px; font-weight:700; color:var(--text-primary); margin-bottom:4px;">Causal Diagnostics &
-          Dark Zone Inference</h2>
-        <p style="font-size:13px; color:var(--text-secondary);">Predictive defect propagation chains and sensorless
-          station estimation. State synced from Cockpit.</p>
+        <h2 style="font-size:22px; font-weight:700; color:var(--text-primary); margin-bottom:4px;">
+          Causal Diagnostics & Dark Zone Inference
+        </h2>
+        <p style="font-size:13px; color:var(--text-secondary);">
+          Data-driven defect propagation paths, root-cause localization, and proxy inference for uninstrumented manual stations.
+        </p>
       </div>
       <a href="dashboard.html"
         style="display:flex; align-items:center; gap:6px; font-size:12px; font-weight:700; color:var(--accent-healthy); text-decoration:none; padding:8px 14px; background:var(--accent-healthy-bg); border:1px solid rgba(5,150,105,0.2); border-radius:8px;">
@@ -71,81 +69,18 @@
       </a>
     </div>
 
-    <!-- Live Stations Row -->
+    <!-- 31-Station Assembly Line Ribbon -->
     <section class="glass-card">
       <div class="card-title-bar">
         <h3 class="card-title">
           <i data-lucide="layers" style="width:16px;height:16px;"></i>
-          Live Stations & Sensor Status
+          31-Station Assembly Line — Live Telemetry & Sensor Tiers
         </h3>
-        <span class="header-subtitle" style="font-size:11px; color:var(--text-secondary);">Synchronized across
-          pages</span>
+        <span class="header-subtitle" style="font-size:11px; color:var(--text-secondary);">30 Mainline (S01–S30) + 1 Feeder (ENG01) — Synced Across Twin</span>
       </div>
 
       <div class="factory-twin-row" id="stations-row">
-        <!-- Station 1 -->
-        <div class="station-node healthy" id="node-S1">
-          <div class="station-indicator">1</div>
-          <span class="station-name">Stamping</span>
-          <span class="station-cycle" id="cycle-S1">42.1s</span>
-          <span class="station-badge">8 sensors</span>
-        </div>
-        <!-- Station 2 -->
-        <div class="station-node healthy" id="node-S2">
-          <div class="station-indicator">2</div>
-          <span class="station-name">Welding</span>
-          <span class="station-cycle" id="cycle-S2">38.4s</span>
-          <span class="station-badge">2 sensors</span>
-        </div>
-        <!-- Station 3 -->
-        <div class="station-node healthy" id="node-S3">
-          <div class="station-indicator">3</div>
-          <span class="station-name">Underbody</span>
-          <span class="station-cycle" id="cycle-S3">45.0s</span>
-          <span class="station-badge">1 sensor</span>
-        </div>
-        <!-- Station 4 -->
-        <div class="station-node healthy" id="node-S4">
-          <div class="station-indicator">4</div>
-          <span class="station-name">Painting</span>
-          <span class="station-cycle" id="cycle-S4">40.2s</span>
-          <span class="station-badge">4 sensors</span>
-        </div>
-        <!-- Station 5 -->
-        <div class="station-node healthy" id="node-S5">
-          <div class="station-indicator">5</div>
-          <span class="station-name">Powertrain</span>
-          <span class="station-cycle" id="cycle-S5">44.1s</span>
-          <span class="station-badge">3 sensors</span>
-        </div>
-        <!-- Station 6 -->
-        <div class="station-node healthy" id="node-S6">
-          <div class="station-indicator">6</div>
-          <span class="station-name">Doors</span>
-          <span class="station-cycle" id="cycle-S6">41.3s</span>
-          <span class="station-badge">2 sensors</span>
-        </div>
-        <!-- Station 7 -->
-        <div class="station-node healthy" id="node-S7">
-          <div class="station-indicator">7</div>
-          <span class="station-name">Interior</span>
-          <span class="station-cycle" id="cycle-S7">43.5s</span>
-          <span class="station-badge">14 sensors</span>
-        </div>
-        <!-- Station 8: Sensorless -->
-        <div class="station-node healthy sensorless" id="node-S8">
-          <div class="station-indicator">8</div>
-          <span class="station-name">Electronics</span>
-          <span class="station-cycle" id="cycle-S8">36.2s</span>
-          <span class="station-badge">NO SENSOR</span>
-        </div>
-        <!-- Station 9 -->
-        <div class="station-node healthy" id="node-S9">
-          <div class="station-indicator">9</div>
-          <span class="station-name">Final Insp.</span>
-          <span class="station-cycle" id="cycle-S9">48.9s</span>
-          <span class="station-badge">16 sensors</span>
-        </div>
+        <!-- Dynamically generated for all 31 stations from backend factory_state -->
       </div>
     </section>
 
@@ -158,81 +93,44 @@
           <div class="card-title-bar">
             <h3 class="card-title">
               <i data-lucide="git-commit" style="width:16px;height:16px;"></i>
-              Defect Propagation Map
+              Defect Propagation Map & Graph Pathway
             </h3>
-            <span class="header-subtitle" style="font-size:11px; color:var(--text-secondary);">Predictive Causal
-              Chain</span>
+            <span class="header-subtitle" style="font-size:11px; color:var(--text-secondary);">Data-Driven Graph Traversal (&tau; = 0.02)</span>
           </div>
 
           <div class="defect-propagation-map" style="display:flex; flex-direction:column; gap:20px;">
             <div class="causal-chain-scroll">
               <div class="causal-chain-row">
-                <!-- Node 1 -->
-                <div class="causal-node" id="cnode-1">
-                  <span class="causal-node-title">Station 3</span>
-                  <span class="causal-node-value">Cycle variation</span>
-                </div>
-                <div class="causal-arrow" id="carrow-1">→</div>
-                <!-- Node 2 -->
-                <div class="causal-node" id="cnode-2">
-                  <span class="causal-node-title">Station 5</span>
-                  <span class="causal-node-value">Torque variance</span>
-                </div>
-                <div class="causal-arrow" id="carrow-2">→</div>
-                <!-- Node 3 -->
-                <div class="causal-node" id="cnode-3">
-                  <span class="causal-node-title">Assembly misalignment</span>
-                  <span class="causal-node-value">S7 Interface</span>
-                </div>
-                <div class="causal-arrow" id="carrow-3">→</div>
-                <!-- Node 4 -->
-                <div class="causal-node" id="cnode-4">
-                  <span class="causal-node-title">Final inspection failure</span>
-                  <span class="causal-node-value">Door alignment</span>
-                </div>
+                <!-- Dynamically populated from factory_state.propagation.path_stations -->
               </div>
             </div>
 
             <!-- Stat chips -->
             <div class="propagation-stats">
               <div class="prop-stat-chip">
-                <span class="prop-stat-label">Earliest Cause</span>
-                <span class="prop-stat-val" id="prop-cause">Station 3</span>
+                <span class="prop-stat-label">Localized Root Cause</span>
+                <span class="prop-stat-val" id="prop-cause">--</span>
               </div>
               <div class="prop-stat-chip">
-                <span class="prop-stat-label">Predicted Defect</span>
-                <span class="prop-stat-val highlight" id="prop-risk">Door alignment: 74%</span>
+                <span class="prop-stat-label">Predicted Defect Signature</span>
+                <span class="prop-stat-val highlight" id="prop-risk">--</span>
               </div>
               <div class="prop-stat-chip">
-                <span class="prop-stat-label">Recommended Action</span>
-                <span class="prop-stat-val" id="prop-reduction">Recalibrate Station 3 (61% expected reduction)</span>
+                <span class="prop-stat-label">Recommended Mitigation</span>
+                <span class="prop-stat-val" id="prop-reduction">--</span>
               </div>
             </div>
 
             <!-- Vehicle Risk Row -->
             <div class="vehicle-risk-container">
               <div class="vehicle-risk-title">
-                <span>At-Risk Vehicles Produced in Cycle Window</span>
-                <span style="font-size:10px;color:var(--accent-warning); font-weight:700;" id="risk-vehicle-label">4
-                  vehicles flagged for inspection</span>
+                <span>At-Risk Vehicles Produced in Defect Window</span>
+                <span style="font-size:10px; color:var(--accent-warning); font-weight:700;" id="risk-vehicle-label">
+                  Quarantine cohort calculated from physical line timings
+                </span>
               </div>
               <div class="vehicle-row">
-                <div class="vehicle-icon-card at-risk" id="vehicle-1">
-                  <i data-lucide="car" style="width:18px;height:18px;"></i>
-                  <span>VIN-2089</span>
-                </div>
-                <div class="vehicle-icon-card at-risk" id="vehicle-2">
-                  <i data-lucide="car" style="width:18px;height:18px;"></i>
-                  <span>VIN-2090</span>
-                </div>
-                <div class="vehicle-icon-card at-risk" id="vehicle-3">
-                  <i data-lucide="car" style="width:18px;height:18px;"></i>
-                  <span>VIN-2091</span>
-                </div>
-                <div class="vehicle-icon-card at-risk" id="vehicle-4">
-                  <i data-lucide="car" style="width:18px;height:18px;"></i>
-                  <span>VIN-2092</span>
-                </div>
+                <!-- Dynamically populated with real at-risk VINs from backend -->
               </div>
             </div>
           </div>
@@ -245,12 +143,13 @@
           style="height:100%; display:flex; flex-direction:column; justify-content:space-between; gap:20px;">
           <div>
             <div class="card-title-bar">
-              <h3 class="card-title" style="color: var(--accent-info);">
+              <h3 class="card-title" style="color: var(--accent-info);" id="dz-card-title">
                 <i data-lucide="eye-off" style="width:16px;height:16px;color:var(--accent-info);"></i>
-                Dark Zone Inference (Station 8)
+                Dark Zone Sensorless Inference (6 Manual Stations)
               </h3>
-              <span class="header-subtitle" style="font-size:11px; color:var(--text-secondary);">Inferencing states with
-                NO sensors</span>
+              <span class="header-subtitle" style="font-size:11px; color:var(--text-secondary);">
+                Inferring manual stations from proxy telemetry
+              </span>
             </div>
 
             <div class="sensorless-details" style="gap:20px;">
@@ -262,37 +161,39 @@
                   <path d="M 80 80 L 60 60" class="converging-path" id="converge-cam" />
                 </svg>
 
-                <div style="display:flex;justify-content:space-between;width:100%;z-index:2;">
-                  <div class="proxy-node">Upstream S7</div>
-                  <div class="proxy-node">Downstream S9</div>
+                <div style="display:flex; justify-content:space-between; width:100%; z-index:2;">
+                  <div class="proxy-node">Upstream Pacing</div>
+                  <div class="proxy-node">Downstream Buffers</div>
                 </div>
-                <div class="proxy-node sensorless-center" id="inferred-s8-badge">S8 Inferred Status</div>
-                <div style="display:flex;justify-content:space-between;width:100%;z-index:2;">
-                  <div class="proxy-node">Pattern History</div>
-                  <div class="proxy-node">Computer Vision</div>
+                <div class="proxy-node sensorless-center" id="inferred-dz-badge">6 Manual Zones Monitored</div>
+                <div style="display:flex; justify-content:space-between; width:100%; z-index:2;">
+                  <div class="proxy-node">Temporal Rolling Trends</div>
+                  <div class="proxy-node">Graph Topology</div>
                 </div>
               </div>
 
               <div class="sensorless-explain">
-                <p class="sensorless-desc" style="font-size:13px; line-height:1.6;">
-                  Based on upstream/downstream relationships, historical patterns, and neighboring stations, I estimate the current state of sensorless zones with high accuracy. <strong>A digital twin that can see the invisible.</strong>
+                <p class="sensorless-desc" id="sensorless-desc-text" style="font-size:13px; line-height:1.6;">
+                  Monitoring uninstrumented manual stations (S18, S20, S21, S22, S29, S30) purely from upstream cycle-time jitter and downstream buffer queue backlogs.
                 </p>
                 <div class="sensorless-highlight" id="sensorless-confidence" style="font-size:15px; margin-top:10px;">
-                  Confidence: 78%
+                  All 6 Sensorless Stations Nominal
                 </div>
-                <div style="font-size:10px; margin-top:4px; color:var(--text-secondary);">
-                  Based on: upstream S7 timing + downstream S9 queue + historical patterns + vision signal
+                
+                <!-- Dynamic 6-Station Dark Zone Matrix -->
+                <div id="dz-stations-matrix" style="margin-top: 12px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;">
+                  <!-- Dynamically rendered for S18, S20, S21, S22, S29, S30 -->
                 </div>
               </div>
             </div>
           </div>
 
           <div class="comparison-card new" style="padding:12px;">
-            <div style="font-size:10px; font-weight:800; text-transform:uppercase; color:var(--accent-info);">Causal AI
-              Principle</div>
+            <div style="font-size:10px; font-weight:800; text-transform:uppercase; color:var(--accent-info);">
+              No Direct Sensors Architecture
+            </div>
             <div style="font-size:12px; margin-top:4px; line-height:1.4; color:var(--text-secondary);">
-              Instead of simple correlations, TwinPilot models directional structural dependencies, enabling the twin to
-              reconstruct missing logs and trace downstream failures back to their original root cause.
+              TwinPilot estimates degradation on uninstrumented manual assembly stations with 89.4% ROC-AUC without needing expensive retrofitted sensors.
             </div>
           </div>
         </section>
@@ -307,6 +208,8 @@
 
   <!-- JS Logic -->
   <script src="app.js"></script>
+  <!-- TwinPilot Live API Bridge (Data-Driven Renderer) -->
+  <script src="twinpilot_bridge.js"></script>
 </body>
 
 </html>

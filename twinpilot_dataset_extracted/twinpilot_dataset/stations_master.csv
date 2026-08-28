@@ -1,0 +1,32 @@
+station_id,station_name,phase,sequence_order,sensor_tier,sensors_available,baseline_cycle_time_sec,baseline_throughput_uph,upstream_station_id
+S01,Underbody Framing,Body Construction,1,rich,"cycle_time,torque,vibration",44,81.8,
+S02,Floor Pan Weld,Body Construction,2,rich,"cycle_time,torque,vibration",41,87.8,S01
+S03,Side Panel Weld,Body Construction,3,rich,"cycle_time,torque,vibration",46,78.3,S02
+S04,Roof Fitting,Body Construction,4,rich,"cycle_time,torque,vibration",39,92.3,S03
+S05,Body Framing QC,Body Construction,5,partial,"cycle_time,vibration",35,102.9,S04
+S06,Door Aperture Weld,Body Construction,6,rich,"cycle_time,torque,vibration",43,83.7,S05
+S07,Underbody Reinforcement,Body Construction,7,rich,"cycle_time,torque,vibration",45,80.0,S06
+S08,Wheel Arch Forming,Body Construction,8,partial,"cycle_time,torque",38,94.7,S07
+S09,Body Panel Alignment,Body Construction,9,rich,"cycle_time,torque,vibration",42,85.7,S08
+S10,Weld Finish & Grinding,Body Construction,10,rich,"cycle_time,vibration,temperature",40,90.0,S09
+S11,Pre-Treatment Wash,Paint,11,partial,"cycle_time,temperature",50,72.0,S10
+S12,E-Coat Dip,Paint,12,rich,"cycle_time,temperature,vibration",55,65.5,S11
+S13,Sealer Application,Paint,13,partial,"cycle_time,temperature",37,97.3,S12
+S14,Primer Spray,Paint,14,rich,"cycle_time,temperature,vibration",41,87.8,S13
+S15,Base Coat Spray,Paint,15,rich,"cycle_time,temperature,vibration",43,83.7,S14
+S16,Clear Coat & Bake,Paint,16,rich,"cycle_time,temperature,vibration",58,62.1,S15
+S17,Interior Trim Start,Final Assembly,17,partial,"cycle_time,vibration",39,92.3,S16
+S18,Wiring Harness Install,Final Assembly,18,manual,,47,76.6,S17
+S19,Dashboard Fitting,Final Assembly,19,partial,"cycle_time,torque",44,81.8,S18
+S20,Seat Installation,Final Assembly,20,manual,,42,85.7,S19
+S21,Headliner Fitting,Final Assembly,21,manual,,36,100.0,S20
+S22,Door Trim & Glass,Final Assembly,22,manual,,45,80.0,S21
+ENG01,Engine & Transmission Sub-Assembly,Final Assembly,22,rich,"cycle_time,torque,vibration,temperature",52,69.2,
+S23,Powertrain Marriage,Final Assembly,23,rich,"cycle_time,torque,vibration",49,73.5,"S22,ENG01"
+S24,Chassis Marriage,Final Assembly,24,rich,"cycle_time,torque,vibration",48,75.0,S23
+S25,Suspension Fitting,Final Assembly,25,rich,"cycle_time,torque",44,81.8,S24
+S26,Wheel & Tire Mount,Final Assembly,26,rich,"cycle_time,torque",40,90.0,S25
+S27,Fluid Fill,Final Assembly,27,rich,"cycle_time,temperature",38,94.7,S26
+S28,Electrical Systems Check,Final Assembly,28,partial,"cycle_time,temperature",46,78.3,S27
+S29,Final Inspection,Final Assembly,29,manual,,50,72.0,S28
+S30,Road Test & Ship,Final Assembly,30,manual,,60,60.0,S29

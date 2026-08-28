@@ -1,0 +1,35 @@
+event_id,run_id,event_type,origin_station_id,start_minute,detectable_minute,peak_minute,resolved_minute,propagation_path,root_cause,severity,defect_signal_type
+RUN001-EVT01,RUN-001,defect_propagation,S21,37,49,54,74,"S21,S22,S23,S24,S25",Simulated defect propagation originating at S21. Signal pattern: vibration_spike.,low,vibration_spike
+RUN001-EVT02,RUN-001,bottleneck,S04,80,100,119,143,"S04,S05,S06,S07,S08",Simulated bottleneck originating at S04.,low,
+RUN002-EVT01,RUN-002,defect_propagation,S17,165,170,175,209,"S17,S18,S19",Simulated defect propagation originating at S17. Signal pattern: temperature_shift.,high,temperature_shift
+RUN002-EVT02,RUN-002,machine_failure,S03,132,133,134,146,"S03,S04,S05",Simulated machine failure originating at S03.,medium,
+RUN003-EVT01,RUN-003,defect_propagation,S08,53,61,64,108,"S08,S09,S10,S11,S12,S13,S14",Simulated defect propagation originating at S08. Signal pattern: cycle_time_drift.,medium,cycle_time_drift
+RUN005-EVT01,RUN-005,defect_propagation,S14,77,84,85,125,"S14,S15,S16,S17,S18,S19,S20,S21",Simulated defect propagation originating at S14. Signal pattern: component_quality.,critical,component_quality
+RUN006-EVT01,RUN-006,defect_propagation,S19,104,109,112,139,"S19,S20,S21,S22,S23,S24",Simulated defect propagation originating at S19. Signal pattern: cycle_time_drift.,high,cycle_time_drift
+RUN007-EVT01,RUN-007,defect_propagation,S18,173,184,187,209,"S18,S19,S20,S21,S22",Simulated defect propagation originating at S18. Signal pattern: temperature_shift.,high,temperature_shift
+RUN008-EVT01,RUN-008,defect_propagation,S15,77,83,84,130,"S15,S16,S17,S18",Simulated defect propagation originating at S15. Signal pattern: component_quality.,high,component_quality
+RUN009-EVT01,RUN-009,defect_propagation,S08,167,170,171,202,"S08,S09,S10,S11,S12,S13,S14",Simulated defect propagation originating at S08. Signal pattern: component_quality.,medium,component_quality
+RUN010-EVT01,RUN-010,defect_propagation,S01,152,165,170,217,"S01,S02,S03,S04,S05,S06,S07,S08",Simulated defect propagation originating at S01. Signal pattern: component_quality.,medium,component_quality
+RUN011-EVT01,RUN-011,defect_propagation,S13,118,122,125,150,"S13,S14,S15,S16",Simulated defect propagation originating at S13. Signal pattern: torque_drift.,medium,torque_drift
+RUN013-EVT01,RUN-013,defect_propagation,S26,139,146,150,194,"S26,S27,S28,S29,S30",Simulated defect propagation originating at S26. Signal pattern: vibration_spike.,high,vibration_spike
+RUN013-EVT02,RUN-013,sensorless_drift,S22,66,84,88,112,"S22,S23,S24",Simulated sensorless drift originating at S22.,medium,
+RUN014-EVT01,RUN-014,defect_propagation,S07,55,70,74,107,"S07,S08,S09,S10,S11,S12,S13,S14",Simulated defect propagation originating at S07. Signal pattern: vibration_spike.,critical,vibration_spike
+RUN014-EVT02,RUN-014,defect_propagation,S18,109,113,116,154,"S18,S19,S20,S21,S22",Simulated defect propagation originating at S18. Signal pattern: component_quality.,medium,component_quality
+RUN015-EVT01,RUN-015,defect_propagation,S11,49,56,63,85,"S11,S12,S13,S14,S15,S16,S17,S18",Simulated defect propagation originating at S11. Signal pattern: torque_drift.,high,torque_drift
+RUN016-EVT01,RUN-016,defect_propagation,S01,123,129,132,168,"S01,S02,S03,S04",Simulated defect propagation originating at S01. Signal pattern: temperature_shift.,medium,temperature_shift
+RUN017-EVT01,RUN-017,defect_propagation,S14,29,36,42,81,"S14,S15,S16,S17",Simulated defect propagation originating at S14. Signal pattern: vibration_spike.,medium,vibration_spike
+RUN017-EVT02,RUN-017,machine_failure,S08,105,106,109,120,"S08,S09,S10,S11",Simulated machine failure originating at S08.,high,
+RUN017-EVT03,RUN-017,bottleneck,S21,49,58,72,95,"S21,S22,S23,S24,S25",Simulated bottleneck originating at S21.,low,
+RUN017-EVT04,RUN-017,bottleneck,S02,66,81,106,135,"S02,S03,S04",Simulated bottleneck originating at S02.,medium,
+RUN018-EVT01,RUN-018,defect_propagation,S21,154,164,171,212,"S21,S22,S23,S24,S25,S26,S27",Simulated defect propagation originating at S21. Signal pattern: cycle_time_drift.,critical,cycle_time_drift
+RUN018-EVT02,RUN-018,defect_propagation,S17,133,141,150,175,"S17,S18,S19,S20,S21,S22,S23",Simulated defect propagation originating at S17. Signal pattern: component_quality.,high,component_quality
+RUN020-EVT01,RUN-020,defect_propagation,S22,144,154,159,184,"S22,S23,S24,S25,S26",Simulated defect propagation originating at S22. Signal pattern: temperature_shift.,low,temperature_shift
+RUN020-EVT02,RUN-020,sensorless_drift,S22,80,90,98,122,"S22,S23,S24,S25",Simulated sensorless drift originating at S22.,medium,
+RUN021-EVT01,RUN-021,defect_propagation,S05,44,48,49,77,"S05,S06,S07,S08,S09,S10,S11",Simulated defect propagation originating at S05. Signal pattern: component_quality.,critical,component_quality
+RUN021-EVT02,RUN-021,defect_propagation,S16,188,194,198,227,"S16,S17,S18",Simulated defect propagation originating at S16. Signal pattern: torque_drift.,high,torque_drift
+RUN022-EVT01,RUN-022,defect_propagation,S16,156,166,169,205,"S16,S17,S18,S19,S20,S21",Simulated defect propagation originating at S16. Signal pattern: temperature_shift.,critical,temperature_shift
+RUN023-EVT01,RUN-023,defect_propagation,S18,29,39,47,89,"S18,S19,S20",Simulated defect propagation originating at S18. Signal pattern: component_quality.,critical,component_quality
+RUN024-EVT01,RUN-024,defect_propagation,S03,139,143,148,198,"S03,S04,S05,S06,S07",Simulated defect propagation originating at S03. Signal pattern: cycle_time_drift.,medium,cycle_time_drift
+RUN025-EVT01,RUN-025,defect_propagation,S14,162,166,170,212,"S14,S15,S16,S17",Simulated defect propagation originating at S14. Signal pattern: cycle_time_drift.,medium,cycle_time_drift
+RUN025-EVT02,RUN-025,machine_failure,S16,92,93,96,114,"S16,S17,S18",Simulated machine failure originating at S16.,low,
+RUN025-EVT03,RUN-025,bottleneck,ENG01,24,33,49,74,"ENG01,S23,S24,S25,S26",Simulated bottleneck originating at ENG01.,low,

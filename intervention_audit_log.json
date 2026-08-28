@@ -1,0 +1,2213 @@
+[
+  {
+    "event_id": "RUN024-EVT01",
+    "run_id": "RUN-024",
+    "minute_index": 143,
+    "observation_window_min": 20,
+    "before_state": {
+      "station_id": "S03",
+      "cycle_time_sec": 57.49,
+      "queue_length": 10.0,
+      "defect_prob": 0.355,
+      "bottleneck_prob": 0.0,
+      "root_cause_station": "S09",
+      "propagation_path": [
+        "S03",
+        "S04",
+        "S05",
+        "S06",
+        "S07"
+      ],
+      "at_risk_vins": 44
+    },
+    "twinpilot_prediction": {
+      "recommended_option": "Option C",
+      "option_name": "Workload Rebalance / Reroute",
+      "tput_pct": 7.5,
+      "queue_change": -4.0,
+      "defect_risk_change": -8.0,
+      "financial_impact": 1684.0,
+      "confidence_pct": 68.4
+    },
+    "human_decision": {
+      "operator_action": "approve",
+      "accepted_recommendation": true,
+      "timestamp": "2026-08-26T17:32:58.679218+00:00"
+    },
+    "observed_outcome": {
+      "pre_ct": 57.49,
+      "post_ct": 64.25,
+      "pre_queue": 10.0,
+      "post_queue": 11.0,
+      "pre_minute": 143,
+      "post_minute": 163,
+      "observed_tput_pct": -10.52,
+      "observed_queue_change": 1.0,
+      "observed_defect_risk_change": null
+    },
+    "accuracy": {
+      "tput_accuracy_pct": 0.0,
+      "queue_accuracy_pct": 0.0,
+      "defect_accuracy_pct": null,
+      "overall_accuracy_pct": 0.0,
+      "is_directionally_correct": false,
+      "is_successful": false,
+      "feedback": "Recommendation not validated \u2014 outcome diverged from prediction."
+    }
+  },
+  {
+    "event_id": "RUN025-EVT02",
+    "run_id": "RUN-025",
+    "minute_index": 93,
+    "observation_window_min": 20,
+    "before_state": {
+      "station_id": "S16",
+      "cycle_time_sec": 66.45,
+      "queue_length": 6.0,
+      "defect_prob": 0.045,
+      "bottleneck_prob": 0.0,
+      "root_cause_station": "S17",
+      "propagation_path": [
+        "S16",
+        "S17",
+        "S18",
+        "S19",
+        "S20",
+        "S21",
+        "S22",
+        "S23"
+      ],
+      "at_risk_vins": 16
+    },
+    "twinpilot_prediction": {
+      "recommended_option": "Option A",
+      "option_name": "Speed Override / Move Operator",
+      "tput_pct": 19.0,
+      "queue_change": -3.9,
+      "defect_risk_change": 6.0,
+      "financial_impact": 1515.0,
+      "confidence_pct": 58.7
+    },
+    "human_decision": {
+      "operator_action": "approve",
+      "accepted_recommendation": true,
+      "timestamp": "2026-08-26T17:32:58.773719+00:00"
+    },
+    "observed_outcome": {
+      "pre_ct": 66.45,
+      "post_ct": 60.64,
+      "pre_queue": 6.0,
+      "post_queue": 0.0,
+      "pre_minute": 93,
+      "post_minute": 113,
+      "observed_tput_pct": 9.58,
+      "observed_queue_change": -6.0,
+      "observed_defect_risk_change": -2.0
+    },
+    "accuracy": {
+      "tput_accuracy_pct": 50.4,
+      "queue_accuracy_pct": 65.0,
+      "defect_accuracy_pct": 0.0,
+      "overall_accuracy_pct": 38.5,
+      "is_directionally_correct": true,
+      "is_successful": true,
+      "feedback": "Recommendation validated \u2014 prediction and outcome aligned."
+    }
+  },
+  {
+    "event_id": "RUN024-EVT01",
+    "run_id": "RUN-024",
+    "minute_index": 143,
+    "observation_window_min": 20,
+    "before_state": {
+      "station_id": "S03",
+      "cycle_time_sec": 57.49,
+      "queue_length": 10.0,
+      "defect_prob": 0.355,
+      "bottleneck_prob": 0.0,
+      "root_cause_station": "S09",
+      "propagation_path": [
+        "S03",
+        "S04",
+        "S05",
+        "S06",
+        "S07"
+      ],
+      "at_risk_vins": 44
+    },
+    "twinpilot_prediction": {
+      "recommended_option": "Option C",
+      "option_name": "Workload Rebalance / Reroute",
+      "tput_pct": 7.5,
+      "queue_change": -4.0,
+      "defect_risk_change": -8.0,
+      "financial_impact": 1684.0,
+      "confidence_pct": 68.4
+    },
+    "human_decision": {
+      "operator_action": "approve",
+      "accepted_recommendation": true,
+      "timestamp": "2026-08-26T17:46:24.688568+00:00"
+    },
+    "observed_outcome": {
+      "pre_ct": 57.49,
+      "post_ct": 64.25,
+      "pre_queue": 10.0,
+      "post_queue": 11.0,
+      "pre_minute": 143,
+      "post_minute": 163,
+      "observed_tput_pct": -10.52,
+      "observed_queue_change": 1.0,
+      "observed_defect_risk_change": null
+    },
+    "accuracy": {
+      "tput_accuracy_pct": 0.0,
+      "queue_accuracy_pct": 0.0,
+      "defect_accuracy_pct": null,
+      "overall_accuracy_pct": 0.0,
+      "is_directionally_correct": false,
+      "is_successful": false,
+      "feedback": "Recommendation not validated \u2014 outcome diverged from prediction."
+    }
+  },
+  {
+    "event_id": "RUN024-EVT01",
+    "run_id": "RUN-024",
+    "minute_index": 143,
+    "observation_window_min": 20,
+    "before_state": {
+      "station_id": "S03",
+      "cycle_time_sec": 57.49,
+      "queue_length": 10.0,
+      "defect_prob": 0.355,
+      "bottleneck_prob": 0.0,
+      "root_cause_station": "S09",
+      "propagation_path": [
+        "S03",
+        "S04",
+        "S05",
+        "S06",
+        "S07"
+      ],
+      "at_risk_vins": 44
+    },
+    "twinpilot_prediction": {
+      "recommended_option": "Option C",
+      "option_name": "Workload Rebalance / Reroute",
+      "tput_pct": 7.5,
+      "queue_change": -4.0,
+      "defect_risk_change": -8.0,
+      "financial_impact": 1684.0,
+      "confidence_pct": 68.4
+    },
+    "human_decision": {
+      "operator_action": "approve",
+      "accepted_recommendation": true,
+      "timestamp": "2026-08-26T17:59:16.160482+00:00"
+    },
+    "observed_outcome": {
+      "pre_ct": 57.49,
+      "post_ct": 64.25,
+      "pre_queue": 10.0,
+      "post_queue": 11.0,
+      "pre_minute": 143,
+      "post_minute": 163,
+      "observed_tput_pct": -10.52,
+      "observed_queue_change": 1.0,
+      "observed_defect_risk_change": null
+    },
+    "accuracy": {
+      "tput_accuracy_pct": 0.0,
+      "queue_accuracy_pct": 0.0,
+      "defect_accuracy_pct": null,
+      "overall_accuracy_pct": 0.0,
+      "is_directionally_correct": false,
+      "is_successful": false,
+      "feedback": "Recommendation not validated \u2014 outcome diverged from prediction."
+    }
+  },
+  {
+    "event_id": "RUN024-EVT01",
+    "run_id": "RUN-024",
+    "minute_index": 143,
+    "observation_window_min": 20,
+    "before_state": {
+      "station_id": "S03",
+      "cycle_time_sec": 57.49,
+      "queue_length": 10.0,
+      "defect_prob": 0.355,
+      "bottleneck_prob": 0.0,
+      "root_cause_station": "S09",
+      "propagation_path": [
+        "S03",
+        "S04",
+        "S05",
+        "S06",
+        "S07"
+      ],
+      "at_risk_vins": 44
+    },
+    "twinpilot_prediction": {
+      "recommended_option": "Option C",
+      "option_name": "Workload Rebalance / Reroute",
+      "tput_pct": 7.5,
+      "queue_change": -4.0,
+      "defect_risk_change": -8.0,
+      "financial_impact": 1684.0,
+      "confidence_pct": 68.4
+    },
+    "human_decision": {
+      "operator_action": "approve",
+      "accepted_recommendation": true,
+      "timestamp": "2026-08-26T18:02:32.878254+00:00"
+    },
+    "observed_outcome": {
+      "pre_ct": 57.49,
+      "post_ct": 64.25,
+      "pre_queue": 10.0,
+      "post_queue": 11.0,
+      "pre_minute": 143,
+      "post_minute": 163,
+      "observed_tput_pct": -10.52,
+      "observed_queue_change": 1.0,
+      "observed_defect_risk_change": null
+    },
+    "accuracy": {
+      "tput_accuracy_pct": 0.0,
+      "queue_accuracy_pct": 0.0,
+      "defect_accuracy_pct": null,
+      "overall_accuracy_pct": 0.0,
+      "is_directionally_correct": false,
+      "is_successful": false,
+      "feedback": "Recommendation not validated \u2014 outcome diverged from prediction."
+    }
+  },
+  {
+    "event_id": "RUN024-EVT01",
+    "run_id": "RUN-024",
+    "minute_index": 143,
+    "observation_window_min": 20,
+    "before_state": {
+      "station_id": "S03",
+      "cycle_time_sec": 57.49,
+      "queue_length": 10.0,
+      "defect_prob": 0.355,
+      "bottleneck_prob": 0.0,
+      "root_cause_station": "S09",
+      "propagation_path": [
+        "S03",
+        "S04",
+        "S05",
+        "S06",
+        "S07"
+      ],
+      "at_risk_vins": 44
+    },
+    "twinpilot_prediction": {
+      "recommended_option": "Option C",
+      "option_name": "Workload Rebalance / Reroute",
+      "tput_pct": 7.5,
+      "queue_change": -4.0,
+      "defect_risk_change": -8.0,
+      "financial_impact": 1684.0,
+      "confidence_pct": 68.4
+    },
+    "human_decision": {
+      "operator_action": "approve",
+      "accepted_recommendation": true,
+      "timestamp": "2026-08-26T18:04:25.044173+00:00"
+    },
+    "observed_outcome": {
+      "pre_ct": 57.49,
+      "post_ct": 64.25,
+      "pre_queue": 10.0,
+      "post_queue": 11.0,
+      "pre_minute": 143,
+      "post_minute": 163,
+      "observed_tput_pct": -10.52,
+      "observed_queue_change": 1.0,
+      "observed_defect_risk_change": null
+    },
+    "accuracy": {
+      "tput_accuracy_pct": 0.0,
+      "queue_accuracy_pct": 0.0,
+      "defect_accuracy_pct": null,
+      "overall_accuracy_pct": 0.0,
+      "is_directionally_correct": false,
+      "is_successful": false,
+      "feedback": "Recommendation not validated \u2014 outcome diverged from prediction."
+    }
+  },
+  {
+    "event_id": "RUN024-EVT01",
+    "run_id": "RUN-024",
+    "minute_index": 143,
+    "observation_window_min": 20,
+    "before_state": {
+      "station_id": "S03",
+      "cycle_time_sec": 57.49,
+      "queue_length": 10.0,
+      "defect_prob": 0.355,
+      "bottleneck_prob": 0.0,
+      "root_cause_station": "S09",
+      "propagation_path": [
+        "S03",
+        "S04",
+        "S05",
+        "S06",
+        "S07"
+      ],
+      "at_risk_vins": 44
+    },
+    "twinpilot_prediction": {
+      "recommended_option": "Option C",
+      "option_name": "Workload Rebalance / Reroute",
+      "tput_pct": 7.5,
+      "queue_change": -4.0,
+      "defect_risk_change": -8.0,
+      "financial_impact": 1684.0,
+      "confidence_pct": 68.4
+    },
+    "human_decision": {
+      "operator_action": "approve",
+      "accepted_recommendation": true,
+      "timestamp": "2026-08-26T18:08:04.004994+00:00"
+    },
+    "observed_outcome": {
+      "pre_ct": 57.49,
+      "post_ct": 64.25,
+      "pre_queue": 10.0,
+      "post_queue": 11.0,
+      "pre_minute": 143,
+      "post_minute": 163,
+      "observed_tput_pct": -10.52,
+      "observed_queue_change": 1.0,
+      "observed_defect_risk_change": null
+    },
+    "accuracy": {
+      "tput_accuracy_pct": 0.0,
+      "queue_accuracy_pct": 0.0,
+      "defect_accuracy_pct": null,
+      "overall_accuracy_pct": 0.0,
+      "is_directionally_correct": false,
+      "is_successful": false,
+      "feedback": "Recommendation not validated \u2014 outcome diverged from prediction."
+    }
+  },
+  {
+    "event_id": "RUN024-EVT01",
+    "run_id": "RUN-024",
+    "minute_index": 143,
+    "observation_window_min": 20,
+    "before_state": {
+      "station_id": "S03",
+      "cycle_time_sec": 57.49,
+      "queue_length": 10.0,
+      "defect_prob": 0.355,
+      "bottleneck_prob": 0.0,
+      "root_cause_station": "S09",
+      "propagation_path": [
+        "S03",
+        "S04",
+        "S05",
+        "S06",
+        "S07"
+      ],
+      "at_risk_vins": 44
+    },
+    "twinpilot_prediction": {
+      "recommended_option": "Option C",
+      "option_name": "Workload Rebalance / Reroute",
+      "tput_pct": 7.5,
+      "queue_change": -4.0,
+      "defect_risk_change": -8.0,
+      "financial_impact": 1684.0,
+      "confidence_pct": 68.4
+    },
+    "human_decision": {
+      "operator_action": "approve",
+      "accepted_recommendation": true,
+      "timestamp": "2026-08-27T07:00:14.813787+00:00"
+    },
+    "observed_outcome": {
+      "pre_ct": 57.49,
+      "post_ct": 64.25,
+      "pre_queue": 10.0,
+      "post_queue": 11.0,
+      "pre_minute": 143,
+      "post_minute": 163,
+      "observed_tput_pct": -10.52,
+      "observed_queue_change": 1.0,
+      "observed_defect_risk_change": null
+    },
+    "accuracy": {
+      "tput_accuracy_pct": 0.0,
+      "queue_accuracy_pct": 0.0,
+      "defect_accuracy_pct": null,
+      "overall_accuracy_pct": 0.0,
+      "is_directionally_correct": false,
+      "is_successful": false,
+      "feedback": "Recommendation not validated \u2014 outcome diverged from prediction."
+    }
+  },
+  {
+    "event_id": "RUN024-EVT01",
+    "run_id": "RUN-024",
+    "minute_index": 143,
+    "observation_window_min": 20,
+    "before_state": {
+      "station_id": "S03",
+      "cycle_time_sec": 57.49,
+      "queue_length": 10.0,
+      "defect_prob": 0.355,
+      "bottleneck_prob": 0.0,
+      "root_cause_station": "S09",
+      "propagation_path": [
+        "S03",
+        "S04",
+        "S05",
+        "S06",
+        "S07"
+      ],
+      "at_risk_vins": 44
+    },
+    "twinpilot_prediction": {
+      "recommended_option": "Option C",
+      "option_name": "Workload Rebalance / Reroute",
+      "tput_pct": 7.5,
+      "queue_change": -4.0,
+      "defect_risk_change": -8.0,
+      "financial_impact": 1684.0,
+      "confidence_pct": 68.4
+    },
+    "human_decision": {
+      "operator_action": "approve",
+      "accepted_recommendation": true,
+      "timestamp": "2026-08-27T07:09:53.669702+00:00"
+    },
+    "observed_outcome": {
+      "pre_ct": 57.49,
+      "post_ct": 64.25,
+      "pre_queue": 10.0,
+      "post_queue": 11.0,
+      "pre_minute": 143,
+      "post_minute": 163,
+      "observed_tput_pct": -10.52,
+      "observed_queue_change": 1.0,
+      "observed_defect_risk_change": null
+    },
+    "accuracy": {
+      "tput_accuracy_pct": 0.0,
+      "queue_accuracy_pct": 0.0,
+      "defect_accuracy_pct": null,
+      "overall_accuracy_pct": 0.0,
+      "is_directionally_correct": false,
+      "is_successful": false,
+      "feedback": "Recommendation not validated \u2014 outcome diverged from prediction."
+    }
+  },
+  {
+    "event_id": "RUN024-EVT01",
+    "run_id": "RUN-024",
+    "minute_index": 143,
+    "observation_window_min": 20,
+    "before_state": {
+      "station_id": "S03",
+      "cycle_time_sec": 57.49,
+      "queue_length": 10.0,
+      "defect_prob": 0.355,
+      "bottleneck_prob": 0.0,
+      "root_cause_station": "S09",
+      "propagation_path": [
+        "S03",
+        "S04",
+        "S05",
+        "S06",
+        "S07"
+      ],
+      "at_risk_vins": 44
+    },
+    "twinpilot_prediction": {
+      "recommended_option": "Option C",
+      "option_name": "Workload Rebalance / Reroute",
+      "tput_pct": 7.5,
+      "queue_change": -4.0,
+      "defect_risk_change": -8.0,
+      "financial_impact": 1684.0,
+      "confidence_pct": 68.4
+    },
+    "human_decision": {
+      "operator_action": "approve",
+      "accepted_recommendation": true,
+      "timestamp": "2026-08-27T07:10:51.594466+00:00"
+    },
+    "observed_outcome": {
+      "pre_ct": 57.49,
+      "post_ct": 64.25,
+      "pre_queue": 10.0,
+      "post_queue": 11.0,
+      "pre_minute": 143,
+      "post_minute": 163,
+      "observed_tput_pct": -10.52,
+      "observed_queue_change": 1.0,
+      "observed_defect_risk_change": null
+    },
+    "accuracy": {
+      "tput_accuracy_pct": 0.0,
+      "queue_accuracy_pct": 0.0,
+      "defect_accuracy_pct": null,
+      "overall_accuracy_pct": 0.0,
+      "is_directionally_correct": false,
+      "is_successful": false,
+      "feedback": "Recommendation not validated \u2014 outcome diverged from prediction."
+    }
+  },
+  {
+    "event_id": "RUN024-EVT01",
+    "run_id": "RUN-024",
+    "minute_index": 143,
+    "observation_window_min": 20,
+    "before_state": {
+      "station_id": "S03",
+      "cycle_time_sec": 57.49,
+      "queue_length": 10.0,
+      "defect_prob": 0.355,
+      "bottleneck_prob": 0.0,
+      "root_cause_station": "S09",
+      "propagation_path": [
+        "S03",
+        "S04",
+        "S05",
+        "S06",
+        "S07"
+      ],
+      "at_risk_vins": 44
+    },
+    "twinpilot_prediction": {
+      "recommended_option": "Option C",
+      "option_name": "Workload Rebalance / Reroute",
+      "tput_pct": 7.5,
+      "queue_change": -4.0,
+      "defect_risk_change": -8.0,
+      "financial_impact": 1684.0,
+      "confidence_pct": 68.4
+    },
+    "human_decision": {
+      "operator_action": "reject",
+      "accepted_recommendation": false,
+      "timestamp": "2026-08-27T07:11:04.339559+00:00"
+    },
+    "observed_outcome": {
+      "pre_ct": 57.49,
+      "post_ct": 64.25,
+      "pre_queue": 10.0,
+      "post_queue": 11.0,
+      "pre_minute": 143,
+      "post_minute": 163,
+      "observed_tput_pct": -10.52,
+      "observed_queue_change": 1.0,
+      "observed_defect_risk_change": null
+    },
+    "accuracy": {
+      "tput_accuracy_pct": 0.0,
+      "queue_accuracy_pct": 0.0,
+      "defect_accuracy_pct": null,
+      "overall_accuracy_pct": 0.0,
+      "is_directionally_correct": false,
+      "is_successful": false,
+      "feedback": "Recommendation not validated \u2014 outcome diverged from prediction."
+    }
+  },
+  {
+    "event_id": "RUN024-EVT01",
+    "run_id": "RUN-024",
+    "minute_index": 143,
+    "observation_window_min": 20,
+    "before_state": {
+      "station_id": "S03",
+      "cycle_time_sec": 57.49,
+      "queue_length": 10.0,
+      "defect_prob": 0.355,
+      "bottleneck_prob": 0.0,
+      "root_cause_station": "S09",
+      "propagation_path": [
+        "S03",
+        "S04",
+        "S05",
+        "S06",
+        "S07"
+      ],
+      "at_risk_vins": 44
+    },
+    "twinpilot_prediction": {
+      "recommended_option": "Option C",
+      "option_name": "Workload Rebalance / Reroute",
+      "tput_pct": 7.5,
+      "queue_change": -4.0,
+      "defect_risk_change": -8.0,
+      "financial_impact": 1684.0,
+      "confidence_pct": 68.4
+    },
+    "human_decision": {
+      "operator_action": "approve",
+      "accepted_recommendation": true,
+      "timestamp": "2026-08-27T08:09:25.430327+00:00"
+    },
+    "observed_outcome": {
+      "pre_ct": 57.49,
+      "post_ct": 64.25,
+      "pre_queue": 10.0,
+      "post_queue": 11.0,
+      "pre_minute": 143,
+      "post_minute": 163,
+      "observed_tput_pct": -10.52,
+      "observed_queue_change": 1.0,
+      "observed_defect_risk_change": null
+    },
+    "accuracy": {
+      "tput_accuracy_pct": 0.0,
+      "queue_accuracy_pct": 0.0,
+      "defect_accuracy_pct": null,
+      "overall_accuracy_pct": 0.0,
+      "is_directionally_correct": false,
+      "is_successful": false,
+      "feedback": "Recommendation not validated \u2014 outcome diverged from prediction."
+    }
+  },
+  {
+    "event_id": "RUN024-EVT01",
+    "run_id": "RUN-024",
+    "minute_index": 143,
+    "observation_window_min": 20,
+    "before_state": {
+      "station_id": "S03",
+      "cycle_time_sec": 57.49,
+      "queue_length": 10.0,
+      "defect_prob": 0.355,
+      "bottleneck_prob": 0.0,
+      "root_cause_station": "S09",
+      "propagation_path": [
+        "S03",
+        "S04",
+        "S05",
+        "S06",
+        "S07"
+      ],
+      "at_risk_vins": 44
+    },
+    "twinpilot_prediction": {
+      "recommended_option": "Option C",
+      "option_name": "Workload Rebalance / Reroute",
+      "tput_pct": 7.5,
+      "queue_change": -4.0,
+      "defect_risk_change": -8.0,
+      "financial_impact": 1684.0,
+      "confidence_pct": 68.4
+    },
+    "human_decision": {
+      "operator_action": "approve",
+      "accepted_recommendation": true,
+      "timestamp": "2026-08-27T08:09:37.367073+00:00"
+    },
+    "observed_outcome": {
+      "pre_ct": 57.49,
+      "post_ct": 64.25,
+      "pre_queue": 10.0,
+      "post_queue": 11.0,
+      "pre_minute": 143,
+      "post_minute": 163,
+      "observed_tput_pct": -10.52,
+      "observed_queue_change": 1.0,
+      "observed_defect_risk_change": null
+    },
+    "accuracy": {
+      "tput_accuracy_pct": 0.0,
+      "queue_accuracy_pct": 0.0,
+      "defect_accuracy_pct": null,
+      "overall_accuracy_pct": 0.0,
+      "is_directionally_correct": false,
+      "is_successful": false,
+      "feedback": "Recommendation not validated \u2014 outcome diverged from prediction."
+    }
+  },
+  {
+    "event_id": "RUN024-EVT01",
+    "run_id": "RUN-024",
+    "minute_index": 143,
+    "observation_window_min": 20,
+    "before_state": {
+      "station_id": "S03",
+      "cycle_time_sec": 57.49,
+      "queue_length": 10.0,
+      "defect_prob": 0.355,
+      "bottleneck_prob": 0.0,
+      "root_cause_station": "S09",
+      "propagation_path": [
+        "S03",
+        "S04",
+        "S05",
+        "S06",
+        "S07"
+      ],
+      "at_risk_vins": 44
+    },
+    "twinpilot_prediction": {
+      "recommended_option": "Option C",
+      "option_name": "Workload Rebalance / Reroute",
+      "tput_pct": 7.5,
+      "queue_change": -4.0,
+      "defect_risk_change": -8.0,
+      "financial_impact": 1684.0,
+      "confidence_pct": 68.4
+    },
+    "human_decision": {
+      "operator_action": "approve",
+      "accepted_recommendation": true,
+      "timestamp": "2026-08-27T08:09:58.350869+00:00"
+    },
+    "observed_outcome": {
+      "pre_ct": 57.49,
+      "post_ct": 64.25,
+      "pre_queue": 10.0,
+      "post_queue": 11.0,
+      "pre_minute": 143,
+      "post_minute": 163,
+      "observed_tput_pct": -10.52,
+      "observed_queue_change": 1.0,
+      "observed_defect_risk_change": null
+    },
+    "accuracy": {
+      "tput_accuracy_pct": 0.0,
+      "queue_accuracy_pct": 0.0,
+      "defect_accuracy_pct": null,
+      "overall_accuracy_pct": 0.0,
+      "is_directionally_correct": false,
+      "is_successful": false,
+      "feedback": "Recommendation not validated \u2014 outcome diverged from prediction."
+    }
+  },
+  {
+    "event_id": "RUN025-EVT02",
+    "run_id": "RUN-025",
+    "minute_index": 93,
+    "observation_window_min": 20,
+    "before_state": {
+      "station_id": "S16",
+      "cycle_time_sec": 66.45,
+      "queue_length": 6.0,
+      "defect_prob": 0.045,
+      "bottleneck_prob": 0.0,
+      "root_cause_station": "S17",
+      "propagation_path": [
+        "S16",
+        "S17",
+        "S18",
+        "S19",
+        "S20",
+        "S21",
+        "S22",
+        "S23"
+      ],
+      "at_risk_vins": 16
+    },
+    "twinpilot_prediction": {
+      "recommended_option": "Option A",
+      "option_name": "Speed Override / Move Operator",
+      "tput_pct": 19.0,
+      "queue_change": -3.9,
+      "defect_risk_change": 6.0,
+      "financial_impact": 1515.0,
+      "confidence_pct": 58.7
+    },
+    "human_decision": {
+      "operator_action": "reject",
+      "accepted_recommendation": false,
+      "timestamp": "2026-08-27T08:09:58.472293+00:00"
+    },
+    "observed_outcome": {
+      "pre_ct": 66.45,
+      "post_ct": 60.64,
+      "pre_queue": 6.0,
+      "post_queue": 0.0,
+      "pre_minute": 93,
+      "post_minute": 113,
+      "observed_tput_pct": 9.58,
+      "observed_queue_change": -6.0,
+      "observed_defect_risk_change": -2.0
+    },
+    "accuracy": {
+      "tput_accuracy_pct": 50.4,
+      "queue_accuracy_pct": 65.0,
+      "defect_accuracy_pct": 0.0,
+      "overall_accuracy_pct": 38.5,
+      "is_directionally_correct": true,
+      "is_successful": true,
+      "feedback": "Recommendation validated \u2014 prediction and outcome aligned."
+    }
+  },
+  {
+    "event_id": "RUN024-EVT01",
+    "run_id": "RUN-024",
+    "minute_index": 143,
+    "observation_window_min": 20,
+    "before_state": {
+      "station_id": "S03",
+      "cycle_time_sec": 57.49,
+      "queue_length": 10.0,
+      "defect_prob": 0.355,
+      "bottleneck_prob": 0.0,
+      "root_cause_station": "S09",
+      "propagation_path": [
+        "S03",
+        "S04",
+        "S05",
+        "S06",
+        "S07"
+      ],
+      "at_risk_vins": 44
+    },
+    "twinpilot_prediction": {
+      "recommended_option": "Option C",
+      "option_name": "Workload Rebalance / Reroute",
+      "tput_pct": 7.5,
+      "queue_change": -4.0,
+      "defect_risk_change": -8.0,
+      "financial_impact": 1684.0,
+      "confidence_pct": 68.4
+    },
+    "human_decision": {
+      "operator_action": "approve",
+      "accepted_recommendation": true,
+      "timestamp": "2026-08-27T13:44:00.805244+00:00"
+    },
+    "observed_outcome": {
+      "pre_ct": 57.49,
+      "post_ct": 64.25,
+      "pre_queue": 10.0,
+      "post_queue": 11.0,
+      "pre_minute": 143,
+      "post_minute": 163,
+      "observed_tput_pct": -10.52,
+      "observed_queue_change": 1.0,
+      "observed_defect_risk_change": null
+    },
+    "accuracy": {
+      "tput_accuracy_pct": 0.0,
+      "queue_accuracy_pct": 0.0,
+      "defect_accuracy_pct": null,
+      "overall_accuracy_pct": 0.0,
+      "is_directionally_correct": false,
+      "is_successful": false,
+      "feedback": "Recommendation not validated \u2014 outcome diverged from prediction."
+    }
+  },
+  {
+    "event_id": "RUN024-EVT01",
+    "run_id": "RUN-024",
+    "minute_index": 143,
+    "observation_window_min": 20,
+    "before_state": {
+      "station_id": "S03",
+      "cycle_time_sec": 57.49,
+      "queue_length": 10.0,
+      "defect_prob": 0.355,
+      "bottleneck_prob": 0.0,
+      "root_cause_station": "S09",
+      "propagation_path": [
+        "S03",
+        "S04",
+        "S05",
+        "S06",
+        "S07"
+      ],
+      "at_risk_vins": 44
+    },
+    "twinpilot_prediction": {
+      "recommended_option": "Option C",
+      "option_name": "Workload Rebalance / Reroute",
+      "tput_pct": 7.5,
+      "queue_change": -4.0,
+      "defect_risk_change": -8.0,
+      "financial_impact": 1684.0,
+      "confidence_pct": 68.4
+    },
+    "human_decision": {
+      "operator_action": "approve",
+      "accepted_recommendation": true,
+      "timestamp": "2026-08-27T13:57:32.061550+00:00"
+    },
+    "observed_outcome": {
+      "pre_ct": 57.49,
+      "post_ct": 64.25,
+      "pre_queue": 10.0,
+      "post_queue": 11.0,
+      "pre_minute": 143,
+      "post_minute": 163,
+      "observed_tput_pct": -10.52,
+      "observed_queue_change": 1.0,
+      "observed_defect_risk_change": null
+    },
+    "accuracy": {
+      "tput_accuracy_pct": 0.0,
+      "queue_accuracy_pct": 0.0,
+      "defect_accuracy_pct": null,
+      "overall_accuracy_pct": 0.0,
+      "is_directionally_correct": false,
+      "is_successful": false,
+      "feedback": "Recommendation not validated \u2014 outcome diverged from prediction."
+    }
+  },
+  {
+    "event_id": "RUN024-EVT01",
+    "run_id": "RUN-024",
+    "minute_index": 143,
+    "observation_window_min": 20,
+    "before_state": {
+      "station_id": "S03",
+      "cycle_time_sec": 57.49,
+      "queue_length": 10.0,
+      "defect_prob": 0.355,
+      "bottleneck_prob": 0.0,
+      "root_cause_station": "S09",
+      "propagation_path": [
+        "S03",
+        "S04",
+        "S05",
+        "S06",
+        "S07"
+      ],
+      "at_risk_vins": 44
+    },
+    "twinpilot_prediction": {
+      "recommended_option": "Option C",
+      "option_name": "Workload Rebalance / Reroute",
+      "tput_pct": 7.5,
+      "queue_change": -4.0,
+      "defect_risk_change": -8.0,
+      "financial_impact": 1684.0,
+      "confidence_pct": 68.4
+    },
+    "human_decision": {
+      "operator_action": "approve",
+      "accepted_recommendation": true,
+      "timestamp": "2026-08-27T13:58:30.766472+00:00"
+    },
+    "observed_outcome": {
+      "pre_ct": 57.49,
+      "post_ct": 64.25,
+      "pre_queue": 10.0,
+      "post_queue": 11.0,
+      "pre_minute": 143,
+      "post_minute": 163,
+      "observed_tput_pct": -10.52,
+      "observed_queue_change": 1.0,
+      "observed_defect_risk_change": null
+    },
+    "accuracy": {
+      "tput_accuracy_pct": 0.0,
+      "queue_accuracy_pct": 0.0,
+      "defect_accuracy_pct": null,
+      "overall_accuracy_pct": 0.0,
+      "is_directionally_correct": false,
+      "is_successful": false,
+      "feedback": "Recommendation not validated \u2014 outcome diverged from prediction."
+    }
+  },
+  {
+    "event_id": "RUN025-EVT02",
+    "run_id": "RUN-025",
+    "minute_index": 93,
+    "observation_window_min": 20,
+    "before_state": {
+      "station_id": "S16",
+      "cycle_time_sec": 66.45,
+      "queue_length": 6.0,
+      "defect_prob": 0.045,
+      "bottleneck_prob": 0.0,
+      "root_cause_station": "S17",
+      "propagation_path": [
+        "S16",
+        "S17",
+        "S18",
+        "S19",
+        "S20",
+        "S21",
+        "S22",
+        "S23"
+      ],
+      "at_risk_vins": 16
+    },
+    "twinpilot_prediction": {
+      "recommended_option": "Option A",
+      "option_name": "Speed Override / Move Operator",
+      "tput_pct": 19.0,
+      "queue_change": -3.9,
+      "defect_risk_change": 6.0,
+      "financial_impact": 1515.0,
+      "confidence_pct": 58.7
+    },
+    "human_decision": {
+      "operator_action": "reject",
+      "accepted_recommendation": false,
+      "timestamp": "2026-08-27T13:58:30.900473+00:00"
+    },
+    "observed_outcome": {
+      "pre_ct": 66.45,
+      "post_ct": 60.64,
+      "pre_queue": 6.0,
+      "post_queue": 0.0,
+      "pre_minute": 93,
+      "post_minute": 113,
+      "observed_tput_pct": 9.58,
+      "observed_queue_change": -6.0,
+      "observed_defect_risk_change": -2.0
+    },
+    "accuracy": {
+      "tput_accuracy_pct": 50.4,
+      "queue_accuracy_pct": 65.0,
+      "defect_accuracy_pct": 0.0,
+      "overall_accuracy_pct": 38.5,
+      "is_directionally_correct": true,
+      "is_successful": true,
+      "feedback": "Recommendation validated \u2014 prediction and outcome aligned."
+    }
+  },
+  {
+    "event_id": "RUN024-EVT01",
+    "run_id": "RUN-024",
+    "minute_index": 143,
+    "observation_window_min": 20,
+    "before_state": {
+      "station_id": "S03",
+      "cycle_time_sec": 57.49,
+      "queue_length": 10.0,
+      "defect_prob": 0.355,
+      "bottleneck_prob": 0.0,
+      "root_cause_station": "S09",
+      "propagation_path": [
+        "S03",
+        "S04",
+        "S05",
+        "S06",
+        "S07"
+      ],
+      "at_risk_vins": 44
+    },
+    "twinpilot_prediction": {
+      "recommended_option": "Option C",
+      "option_name": "Workload Rebalance / Reroute",
+      "tput_pct": 7.5,
+      "queue_change": -4.0,
+      "defect_risk_change": -8.0,
+      "financial_impact": 1684.0,
+      "confidence_pct": 68.4
+    },
+    "human_decision": {
+      "operator_action": "approve",
+      "accepted_recommendation": true,
+      "timestamp": "2026-08-27T14:02:48.682451+00:00"
+    },
+    "observed_outcome": {
+      "pre_ct": 57.49,
+      "post_ct": 64.25,
+      "pre_queue": 10.0,
+      "post_queue": 11.0,
+      "pre_minute": 143,
+      "post_minute": 163,
+      "observed_tput_pct": -10.52,
+      "observed_queue_change": 1.0,
+      "observed_defect_risk_change": null
+    },
+    "accuracy": {
+      "tput_accuracy_pct": 0.0,
+      "queue_accuracy_pct": 0.0,
+      "defect_accuracy_pct": null,
+      "overall_accuracy_pct": 0.0,
+      "is_directionally_correct": false,
+      "is_successful": false,
+      "feedback": "Recommendation not validated \u2014 outcome diverged from prediction."
+    }
+  },
+  {
+    "event_id": "RUN024-EVT01",
+    "run_id": "RUN-024",
+    "minute_index": 143,
+    "observation_window_min": 20,
+    "before_state": {
+      "station_id": "S03",
+      "cycle_time_sec": 57.49,
+      "queue_length": 10.0,
+      "defect_prob": 0.355,
+      "bottleneck_prob": 0.0,
+      "root_cause_station": "S09",
+      "propagation_path": [
+        "S03",
+        "S04",
+        "S05",
+        "S06",
+        "S07"
+      ],
+      "at_risk_vins": 44
+    },
+    "twinpilot_prediction": {
+      "recommended_option": "Option C",
+      "option_name": "Workload Rebalance / Reroute",
+      "tput_pct": 7.5,
+      "queue_change": -4.0,
+      "defect_risk_change": -8.0,
+      "financial_impact": 1684.0,
+      "confidence_pct": 68.4
+    },
+    "human_decision": {
+      "operator_action": "approve",
+      "accepted_recommendation": true,
+      "timestamp": "2026-08-27T14:03:38.304840+00:00"
+    },
+    "observed_outcome": {
+      "pre_ct": 57.49,
+      "post_ct": 64.25,
+      "pre_queue": 10.0,
+      "post_queue": 11.0,
+      "pre_minute": 143,
+      "post_minute": 163,
+      "observed_tput_pct": -10.52,
+      "observed_queue_change": 1.0,
+      "observed_defect_risk_change": null
+    },
+    "accuracy": {
+      "tput_accuracy_pct": 0.0,
+      "queue_accuracy_pct": 0.0,
+      "defect_accuracy_pct": null,
+      "overall_accuracy_pct": 0.0,
+      "is_directionally_correct": false,
+      "is_successful": false,
+      "feedback": "Recommendation not validated \u2014 outcome diverged from prediction."
+    }
+  },
+  {
+    "event_id": "RUN024-EVT01",
+    "run_id": "RUN-024",
+    "minute_index": 143,
+    "observation_window_min": 20,
+    "before_state": {
+      "station_id": "S03",
+      "cycle_time_sec": 57.49,
+      "queue_length": 10.0,
+      "defect_prob": 0.355,
+      "bottleneck_prob": 0.0,
+      "root_cause_station": "S09",
+      "propagation_path": [
+        "S03",
+        "S04",
+        "S05",
+        "S06",
+        "S07"
+      ],
+      "at_risk_vins": 44
+    },
+    "twinpilot_prediction": {
+      "recommended_option": "Option C",
+      "option_name": "Workload Rebalance / Reroute",
+      "tput_pct": 7.5,
+      "queue_change": -4.0,
+      "defect_risk_change": -8.0,
+      "financial_impact": 1684.0,
+      "confidence_pct": 68.4
+    },
+    "human_decision": {
+      "operator_action": "reject",
+      "accepted_recommendation": false,
+      "timestamp": "2026-08-27T14:04:28.774851+00:00"
+    },
+    "observed_outcome": {
+      "pre_ct": 57.49,
+      "post_ct": 64.25,
+      "pre_queue": 10.0,
+      "post_queue": 11.0,
+      "pre_minute": 143,
+      "post_minute": 163,
+      "observed_tput_pct": -10.52,
+      "observed_queue_change": 1.0,
+      "observed_defect_risk_change": null
+    },
+    "accuracy": {
+      "tput_accuracy_pct": 0.0,
+      "queue_accuracy_pct": 0.0,
+      "defect_accuracy_pct": null,
+      "overall_accuracy_pct": 0.0,
+      "is_directionally_correct": false,
+      "is_successful": false,
+      "feedback": "Recommendation not validated \u2014 outcome diverged from prediction."
+    }
+  },
+  {
+    "event_id": "RUN024-EVT01",
+    "run_id": "RUN-024",
+    "minute_index": 143,
+    "observation_window_min": 20,
+    "before_state": {
+      "station_id": "S03",
+      "cycle_time_sec": 57.49,
+      "queue_length": 10.0,
+      "defect_prob": 0.355,
+      "bottleneck_prob": 0.0,
+      "root_cause_station": "S09",
+      "propagation_path": [
+        "S03",
+        "S04",
+        "S05",
+        "S06",
+        "S07"
+      ],
+      "at_risk_vins": 44
+    },
+    "twinpilot_prediction": {
+      "recommended_option": "Option C",
+      "option_name": "Workload Rebalance / Reroute",
+      "tput_pct": 7.5,
+      "queue_change": -4.0,
+      "defect_risk_change": -8.0,
+      "financial_impact": 1684.0,
+      "confidence_pct": 68.4
+    },
+    "human_decision": {
+      "operator_action": "approve",
+      "accepted_recommendation": true,
+      "timestamp": "2026-08-27T14:13:07.310463+00:00"
+    },
+    "observed_outcome": {
+      "pre_ct": 57.49,
+      "post_ct": 64.25,
+      "pre_queue": 10.0,
+      "post_queue": 11.0,
+      "pre_minute": 143,
+      "post_minute": 163,
+      "observed_tput_pct": -10.52,
+      "observed_queue_change": 1.0,
+      "observed_defect_risk_change": null
+    },
+    "accuracy": {
+      "tput_accuracy_pct": 0.0,
+      "queue_accuracy_pct": 0.0,
+      "defect_accuracy_pct": null,
+      "overall_accuracy_pct": 0.0,
+      "is_directionally_correct": false,
+      "is_successful": false,
+      "feedback": "Recommendation not validated \u2014 outcome diverged from prediction."
+    }
+  },
+  {
+    "event_id": "RUN024-EVT01",
+    "run_id": "RUN-024",
+    "minute_index": 143,
+    "observation_window_min": 20,
+    "before_state": {
+      "station_id": "S03",
+      "cycle_time_sec": 57.49,
+      "queue_length": 10.0,
+      "defect_prob": 0.355,
+      "bottleneck_prob": 0.0,
+      "root_cause_station": "S09",
+      "propagation_path": [
+        "S03",
+        "S04",
+        "S05",
+        "S06",
+        "S07"
+      ],
+      "at_risk_vins": 44
+    },
+    "twinpilot_prediction": {
+      "recommended_option": "Option C",
+      "option_name": "Workload Rebalance / Reroute",
+      "tput_pct": 7.5,
+      "queue_change": -4.0,
+      "defect_risk_change": -8.0,
+      "financial_impact": 1684.0,
+      "confidence_pct": 68.4
+    },
+    "human_decision": {
+      "operator_action": "reject",
+      "accepted_recommendation": false,
+      "timestamp": "2026-08-27T14:13:15.536593+00:00"
+    },
+    "observed_outcome": {
+      "pre_ct": 57.49,
+      "post_ct": 64.25,
+      "pre_queue": 10.0,
+      "post_queue": 11.0,
+      "pre_minute": 143,
+      "post_minute": 163,
+      "observed_tput_pct": -10.52,
+      "observed_queue_change": 1.0,
+      "observed_defect_risk_change": null
+    },
+    "accuracy": {
+      "tput_accuracy_pct": 0.0,
+      "queue_accuracy_pct": 0.0,
+      "defect_accuracy_pct": null,
+      "overall_accuracy_pct": 0.0,
+      "is_directionally_correct": false,
+      "is_successful": false,
+      "feedback": "Recommendation not validated \u2014 outcome diverged from prediction."
+    }
+  },
+  {
+    "event_id": "RUN024-EVT01",
+    "run_id": "RUN-024",
+    "minute_index": 143,
+    "observation_window_min": 20,
+    "before_state": {
+      "station_id": "S03",
+      "cycle_time_sec": 57.49,
+      "queue_length": 10.0,
+      "defect_prob": 0.355,
+      "bottleneck_prob": 0.0,
+      "root_cause_station": "S09",
+      "propagation_path": [
+        "S03",
+        "S04",
+        "S05",
+        "S06",
+        "S07"
+      ],
+      "at_risk_vins": 44
+    },
+    "twinpilot_prediction": {
+      "recommended_option": "Option C",
+      "option_name": "Workload Rebalance / Reroute",
+      "tput_pct": 7.5,
+      "queue_change": -4.0,
+      "defect_risk_change": -8.0,
+      "financial_impact": 1684.0,
+      "confidence_pct": 68.4
+    },
+    "human_decision": {
+      "operator_action": "approve",
+      "accepted_recommendation": true,
+      "timestamp": "2026-08-27T14:13:21.027696+00:00"
+    },
+    "observed_outcome": {
+      "pre_ct": 57.49,
+      "post_ct": 64.25,
+      "pre_queue": 10.0,
+      "post_queue": 11.0,
+      "pre_minute": 143,
+      "post_minute": 163,
+      "observed_tput_pct": -10.52,
+      "observed_queue_change": 1.0,
+      "observed_defect_risk_change": null
+    },
+    "accuracy": {
+      "tput_accuracy_pct": 0.0,
+      "queue_accuracy_pct": 0.0,
+      "defect_accuracy_pct": null,
+      "overall_accuracy_pct": 0.0,
+      "is_directionally_correct": false,
+      "is_successful": false,
+      "feedback": "Recommendation not validated \u2014 outcome diverged from prediction."
+    }
+  },
+  {
+    "event_id": "RUN024-EVT01",
+    "run_id": "RUN-024",
+    "minute_index": 143,
+    "observation_window_min": 20,
+    "before_state": {
+      "station_id": "S03",
+      "cycle_time_sec": 57.49,
+      "queue_length": 10.0,
+      "defect_prob": 0.355,
+      "bottleneck_prob": 0.0,
+      "root_cause_station": "S09",
+      "propagation_path": [
+        "S03",
+        "S04",
+        "S05",
+        "S06",
+        "S07"
+      ],
+      "at_risk_vins": 44
+    },
+    "twinpilot_prediction": {
+      "recommended_option": "Option C",
+      "option_name": "Workload Rebalance / Reroute",
+      "tput_pct": 7.5,
+      "queue_change": -4.0,
+      "defect_risk_change": -8.0,
+      "financial_impact": 1684.0,
+      "confidence_pct": 68.4
+    },
+    "human_decision": {
+      "operator_action": "reject",
+      "accepted_recommendation": false,
+      "timestamp": "2026-08-27T14:13:24.868537+00:00"
+    },
+    "observed_outcome": {
+      "pre_ct": 57.49,
+      "post_ct": 64.25,
+      "pre_queue": 10.0,
+      "post_queue": 11.0,
+      "pre_minute": 143,
+      "post_minute": 163,
+      "observed_tput_pct": -10.52,
+      "observed_queue_change": 1.0,
+      "observed_defect_risk_change": null
+    },
+    "accuracy": {
+      "tput_accuracy_pct": 0.0,
+      "queue_accuracy_pct": 0.0,
+      "defect_accuracy_pct": null,
+      "overall_accuracy_pct": 0.0,
+      "is_directionally_correct": false,
+      "is_successful": false,
+      "feedback": "Recommendation not validated \u2014 outcome diverged from prediction."
+    }
+  },
+  {
+    "event_id": "RUN024-EVT01",
+    "run_id": "RUN-024",
+    "minute_index": 143,
+    "observation_window_min": 20,
+    "before_state": {
+      "station_id": "S03",
+      "cycle_time_sec": 57.49,
+      "queue_length": 10.0,
+      "defect_prob": 0.355,
+      "bottleneck_prob": 0.0,
+      "root_cause_station": "S09",
+      "propagation_path": [
+        "S03",
+        "S04",
+        "S05",
+        "S06",
+        "S07"
+      ],
+      "at_risk_vins": 44
+    },
+    "twinpilot_prediction": {
+      "recommended_option": "Option C",
+      "option_name": "Workload Rebalance / Reroute",
+      "tput_pct": 7.5,
+      "queue_change": -4.0,
+      "defect_risk_change": -8.0,
+      "financial_impact": 1684.0,
+      "confidence_pct": 68.4
+    },
+    "human_decision": {
+      "operator_action": "approve",
+      "accepted_recommendation": true,
+      "timestamp": "2026-08-27T14:23:25.514945+00:00"
+    },
+    "observed_outcome": {
+      "pre_ct": 57.49,
+      "post_ct": 64.25,
+      "pre_queue": 10.0,
+      "post_queue": 11.0,
+      "pre_minute": 143,
+      "post_minute": 163,
+      "observed_tput_pct": -10.52,
+      "observed_queue_change": 1.0,
+      "observed_defect_risk_change": null
+    },
+    "accuracy": {
+      "tput_accuracy_pct": 0.0,
+      "queue_accuracy_pct": 0.0,
+      "defect_accuracy_pct": null,
+      "overall_accuracy_pct": 0.0,
+      "is_directionally_correct": false,
+      "is_successful": false,
+      "feedback": "Recommendation not validated \u2014 outcome diverged from prediction."
+    }
+  },
+  {
+    "event_id": "RUN025-EVT02",
+    "run_id": "RUN-025",
+    "minute_index": 93,
+    "observation_window_min": 20,
+    "before_state": {
+      "station_id": "S16",
+      "cycle_time_sec": 66.45,
+      "queue_length": 6.0,
+      "defect_prob": 0.045,
+      "bottleneck_prob": 0.0,
+      "root_cause_station": "S17",
+      "propagation_path": [
+        "S16",
+        "S17",
+        "S18",
+        "S19",
+        "S20",
+        "S21",
+        "S22",
+        "S23"
+      ],
+      "at_risk_vins": 16
+    },
+    "twinpilot_prediction": {
+      "recommended_option": "Option A",
+      "option_name": "Speed Override / Move Operator",
+      "tput_pct": 19.0,
+      "queue_change": -3.9,
+      "defect_risk_change": 6.0,
+      "financial_impact": 1515.0,
+      "confidence_pct": 58.7
+    },
+    "human_decision": {
+      "operator_action": "reject",
+      "accepted_recommendation": false,
+      "timestamp": "2026-08-27T14:23:25.775632+00:00"
+    },
+    "observed_outcome": {
+      "pre_ct": 66.45,
+      "post_ct": 60.64,
+      "pre_queue": 6.0,
+      "post_queue": 0.0,
+      "pre_minute": 93,
+      "post_minute": 113,
+      "observed_tput_pct": 9.58,
+      "observed_queue_change": -6.0,
+      "observed_defect_risk_change": -2.0
+    },
+    "accuracy": {
+      "tput_accuracy_pct": 50.4,
+      "queue_accuracy_pct": 65.0,
+      "defect_accuracy_pct": 0.0,
+      "overall_accuracy_pct": 38.5,
+      "is_directionally_correct": true,
+      "is_successful": true,
+      "feedback": "Recommendation validated \u2014 prediction and outcome aligned."
+    }
+  },
+  {
+    "event_id": "RUN025-EVT02",
+    "run_id": "RUN-025",
+    "minute_index": 93,
+    "observation_window_min": 20,
+    "before_state": {
+      "station_id": "S16",
+      "cycle_time_sec": 66.45,
+      "queue_length": 6.0,
+      "defect_prob": 0.045,
+      "bottleneck_prob": 0.0,
+      "root_cause_station": "S17",
+      "propagation_path": [
+        "S16",
+        "S17",
+        "S18",
+        "S19",
+        "S20",
+        "S21",
+        "S22",
+        "S23"
+      ],
+      "at_risk_vins": 16
+    },
+    "twinpilot_prediction": {
+      "recommended_option": "Option A",
+      "option_name": "Speed Override / Move Operator",
+      "tput_pct": 19.0,
+      "queue_change": -3.9,
+      "defect_risk_change": 6.0,
+      "financial_impact": 1515.0,
+      "confidence_pct": 58.7
+    },
+    "human_decision": {
+      "operator_action": "approve",
+      "accepted_recommendation": true,
+      "timestamp": "2026-08-27T15:32:09.494886+00:00"
+    },
+    "observed_outcome": {
+      "pre_ct": 66.45,
+      "post_ct": 60.64,
+      "pre_queue": 6.0,
+      "post_queue": 0.0,
+      "pre_minute": 93,
+      "post_minute": 113,
+      "observed_tput_pct": 9.58,
+      "observed_queue_change": -6.0,
+      "observed_defect_risk_change": -2.0
+    },
+    "accuracy": {
+      "tput_accuracy_pct": 50.4,
+      "queue_accuracy_pct": 65.0,
+      "defect_accuracy_pct": 0.0,
+      "overall_accuracy_pct": 38.5,
+      "is_directionally_correct": true,
+      "is_successful": true,
+      "feedback": "Recommendation validated \u2014 prediction and outcome aligned."
+    }
+  },
+  {
+    "event_id": "RUN025-EVT02",
+    "run_id": "RUN-025",
+    "minute_index": 93,
+    "observation_window_min": 20,
+    "before_state": {
+      "station_id": "S16",
+      "cycle_time_sec": 66.45,
+      "queue_length": 6.0,
+      "defect_prob": 0.045,
+      "bottleneck_prob": 0.0,
+      "root_cause_station": "S17",
+      "propagation_path": [
+        "S16",
+        "S17",
+        "S18",
+        "S19",
+        "S20",
+        "S21",
+        "S22",
+        "S23"
+      ],
+      "at_risk_vins": 16
+    },
+    "twinpilot_prediction": {
+      "recommended_option": "Option A",
+      "option_name": "Speed Override / Move Operator",
+      "tput_pct": 19.0,
+      "queue_change": -3.9,
+      "defect_risk_change": 6.0,
+      "financial_impact": 1515.0,
+      "confidence_pct": 58.7
+    },
+    "human_decision": {
+      "operator_action": "reject",
+      "accepted_recommendation": false,
+      "timestamp": "2026-08-27T15:32:17.905916+00:00"
+    },
+    "observed_outcome": {
+      "pre_ct": 66.45,
+      "post_ct": 60.64,
+      "pre_queue": 6.0,
+      "post_queue": 0.0,
+      "pre_minute": 93,
+      "post_minute": 113,
+      "observed_tput_pct": 9.58,
+      "observed_queue_change": -6.0,
+      "observed_defect_risk_change": -2.0
+    },
+    "accuracy": {
+      "tput_accuracy_pct": 50.4,
+      "queue_accuracy_pct": 65.0,
+      "defect_accuracy_pct": 0.0,
+      "overall_accuracy_pct": 38.5,
+      "is_directionally_correct": true,
+      "is_successful": true,
+      "feedback": "Recommendation validated \u2014 prediction and outcome aligned."
+    }
+  },
+  {
+    "event_id": "RUN024-EVT01",
+    "run_id": "RUN-024",
+    "minute_index": 143,
+    "observation_window_min": 20,
+    "before_state": {
+      "station_id": "S03",
+      "cycle_time_sec": 57.49,
+      "queue_length": 10.0,
+      "defect_prob": 0.355,
+      "bottleneck_prob": 0.0,
+      "root_cause_station": "S09",
+      "propagation_path": [
+        "S03",
+        "S04",
+        "S05",
+        "S06",
+        "S07"
+      ],
+      "at_risk_vins": 44
+    },
+    "twinpilot_prediction": {
+      "recommended_option": "Option C",
+      "option_name": "Workload Rebalance / Reroute",
+      "tput_pct": 7.5,
+      "queue_change": -4.0,
+      "defect_risk_change": -8.0,
+      "financial_impact": 1684.0,
+      "confidence_pct": 68.4
+    },
+    "human_decision": {
+      "operator_action": "approve",
+      "accepted_recommendation": true,
+      "timestamp": "2026-08-27T16:55:10.925676+00:00"
+    },
+    "observed_outcome": {
+      "pre_ct": 57.49,
+      "post_ct": 64.25,
+      "pre_queue": 10.0,
+      "post_queue": 11.0,
+      "pre_minute": 143,
+      "post_minute": 163,
+      "observed_tput_pct": -10.52,
+      "observed_queue_change": 1.0,
+      "observed_defect_risk_change": null
+    },
+    "accuracy": {
+      "tput_accuracy_pct": 0.0,
+      "queue_accuracy_pct": 0.0,
+      "defect_accuracy_pct": null,
+      "overall_accuracy_pct": 0.0,
+      "is_directionally_correct": false,
+      "is_successful": false,
+      "feedback": "Recommendation not validated \u2014 outcome diverged from prediction."
+    }
+  },
+  {
+    "event_id": "RUN025-EVT02",
+    "run_id": "RUN-025",
+    "minute_index": 93,
+    "observation_window_min": 20,
+    "before_state": {
+      "station_id": "S16",
+      "cycle_time_sec": 66.45,
+      "queue_length": 6.0,
+      "defect_prob": 0.045,
+      "bottleneck_prob": 0.0,
+      "root_cause_station": "S17",
+      "propagation_path": [
+        "S16",
+        "S17",
+        "S18",
+        "S19",
+        "S20",
+        "S21",
+        "S22",
+        "S23"
+      ],
+      "at_risk_vins": 16
+    },
+    "twinpilot_prediction": {
+      "recommended_option": "Option A",
+      "option_name": "Speed Override / Move Operator",
+      "tput_pct": 19.0,
+      "queue_change": -3.9,
+      "defect_risk_change": 6.0,
+      "financial_impact": 1515.0,
+      "confidence_pct": 58.7
+    },
+    "human_decision": {
+      "operator_action": "reject",
+      "accepted_recommendation": false,
+      "timestamp": "2026-08-27T16:55:11.149838+00:00"
+    },
+    "observed_outcome": {
+      "pre_ct": 66.45,
+      "post_ct": 60.64,
+      "pre_queue": 6.0,
+      "post_queue": 0.0,
+      "pre_minute": 93,
+      "post_minute": 113,
+      "observed_tput_pct": 9.58,
+      "observed_queue_change": -6.0,
+      "observed_defect_risk_change": -2.0
+    },
+    "accuracy": {
+      "tput_accuracy_pct": 50.4,
+      "queue_accuracy_pct": 65.0,
+      "defect_accuracy_pct": 0.0,
+      "overall_accuracy_pct": 38.5,
+      "is_directionally_correct": true,
+      "is_successful": true,
+      "feedback": "Recommendation validated \u2014 prediction and outcome aligned."
+    }
+  },
+  {
+    "event_id": "RUN024-EVT01",
+    "run_id": "RUN-024",
+    "minute_index": 143,
+    "observation_window_min": 20,
+    "before_state": {
+      "station_id": "S03",
+      "cycle_time_sec": 57.49,
+      "queue_length": 10.0,
+      "defect_prob": 0.355,
+      "bottleneck_prob": 0.0,
+      "root_cause_station": "S09",
+      "propagation_path": [
+        "S03",
+        "S04",
+        "S05",
+        "S06",
+        "S07"
+      ],
+      "at_risk_vins": 44
+    },
+    "twinpilot_prediction": {
+      "recommended_option": "Option C",
+      "option_name": "Workload Rebalance / Reroute",
+      "tput_pct": 7.5,
+      "queue_change": -4.0,
+      "defect_risk_change": -8.0,
+      "financial_impact": 1684.0,
+      "confidence_pct": 68.4
+    },
+    "human_decision": {
+      "operator_action": "approve",
+      "accepted_recommendation": true,
+      "timestamp": "2026-08-27T17:08:52.673508+00:00"
+    },
+    "observed_outcome": {
+      "pre_ct": 57.49,
+      "post_ct": 64.25,
+      "pre_queue": 10.0,
+      "post_queue": 11.0,
+      "pre_minute": 143,
+      "post_minute": 163,
+      "observed_tput_pct": -10.52,
+      "observed_queue_change": 1.0,
+      "observed_defect_risk_change": null
+    },
+    "accuracy": {
+      "tput_accuracy_pct": 0.0,
+      "queue_accuracy_pct": 0.0,
+      "defect_accuracy_pct": null,
+      "overall_accuracy_pct": 0.0,
+      "is_directionally_correct": false,
+      "is_successful": false,
+      "feedback": "Recommendation not validated \u2014 outcome diverged from prediction."
+    }
+  },
+  {
+    "event_id": "RUN025-EVT02",
+    "run_id": "RUN-025",
+    "minute_index": 93,
+    "observation_window_min": 20,
+    "before_state": {
+      "station_id": "S16",
+      "cycle_time_sec": 66.45,
+      "queue_length": 6.0,
+      "defect_prob": 0.045,
+      "bottleneck_prob": 0.0,
+      "root_cause_station": "S17",
+      "propagation_path": [
+        "S16",
+        "S17",
+        "S18",
+        "S19",
+        "S20",
+        "S21",
+        "S22",
+        "S23"
+      ],
+      "at_risk_vins": 16
+    },
+    "twinpilot_prediction": {
+      "recommended_option": "Option A",
+      "option_name": "Speed Override / Move Operator",
+      "tput_pct": 19.0,
+      "queue_change": -3.9,
+      "defect_risk_change": 6.0,
+      "financial_impact": 1515.0,
+      "confidence_pct": 58.7
+    },
+    "human_decision": {
+      "operator_action": "reject",
+      "accepted_recommendation": false,
+      "timestamp": "2026-08-27T17:08:52.921205+00:00"
+    },
+    "observed_outcome": {
+      "pre_ct": 66.45,
+      "post_ct": 60.64,
+      "pre_queue": 6.0,
+      "post_queue": 0.0,
+      "pre_minute": 93,
+      "post_minute": 113,
+      "observed_tput_pct": 9.58,
+      "observed_queue_change": -6.0,
+      "observed_defect_risk_change": -2.0
+    },
+    "accuracy": {
+      "tput_accuracy_pct": 50.4,
+      "queue_accuracy_pct": 65.0,
+      "defect_accuracy_pct": 0.0,
+      "overall_accuracy_pct": 38.5,
+      "is_directionally_correct": true,
+      "is_successful": true,
+      "feedback": "Recommendation validated \u2014 prediction and outcome aligned."
+    }
+  },
+  {
+    "event_id": "RUN024-EVT01",
+    "run_id": "RUN-024",
+    "minute_index": 143,
+    "observation_window_min": 20,
+    "before_state": {
+      "station_id": "S03",
+      "cycle_time_sec": 57.49,
+      "queue_length": 10.0,
+      "defect_prob": 0.355,
+      "bottleneck_prob": 0.0,
+      "root_cause_station": "S09",
+      "propagation_path": [
+        "S03",
+        "S04",
+        "S05",
+        "S06",
+        "S07"
+      ],
+      "at_risk_vins": 44
+    },
+    "twinpilot_prediction": {
+      "recommended_option": "Option C",
+      "option_name": "Workload Rebalance / Reroute",
+      "tput_pct": 7.5,
+      "queue_change": -4.0,
+      "defect_risk_change": -8.0,
+      "financial_impact": 1684.0,
+      "confidence_pct": 68.4
+    },
+    "human_decision": {
+      "operator_action": "approve",
+      "accepted_recommendation": true,
+      "timestamp": "2026-08-27T17:15:14.941085+00:00"
+    },
+    "observed_outcome": {
+      "pre_ct": 57.49,
+      "post_ct": 64.25,
+      "pre_queue": 10.0,
+      "post_queue": 11.0,
+      "pre_minute": 143,
+      "post_minute": 163,
+      "observed_tput_pct": -10.52,
+      "observed_queue_change": 1.0,
+      "observed_defect_risk_change": null
+    },
+    "accuracy": {
+      "tput_accuracy_pct": 0.0,
+      "queue_accuracy_pct": 0.0,
+      "defect_accuracy_pct": null,
+      "overall_accuracy_pct": 0.0,
+      "is_directionally_correct": false,
+      "is_successful": false,
+      "feedback": "Recommendation not validated \u2014 outcome diverged from prediction."
+    }
+  },
+  {
+    "event_id": "RUN024-EVT01",
+    "run_id": "RUN-024",
+    "minute_index": 143,
+    "observation_window_min": 20,
+    "before_state": {
+      "station_id": "S03",
+      "cycle_time_sec": 57.49,
+      "queue_length": 10.0,
+      "defect_prob": 0.355,
+      "bottleneck_prob": 0.0,
+      "root_cause_station": "S09",
+      "propagation_path": [
+        "S03",
+        "S04",
+        "S05",
+        "S06",
+        "S07"
+      ],
+      "at_risk_vins": 44
+    },
+    "twinpilot_prediction": {
+      "recommended_option": "Option C",
+      "option_name": "Workload Rebalance / Reroute",
+      "tput_pct": 7.5,
+      "queue_change": -4.0,
+      "defect_risk_change": -8.0,
+      "financial_impact": 1684.0,
+      "confidence_pct": 68.4
+    },
+    "human_decision": {
+      "operator_action": "approve",
+      "accepted_recommendation": true,
+      "timestamp": "2026-08-27T17:33:04.287930+00:00"
+    },
+    "observed_outcome": {
+      "pre_ct": 57.49,
+      "post_ct": 64.25,
+      "pre_queue": 10.0,
+      "post_queue": 11.0,
+      "pre_minute": 143,
+      "post_minute": 163,
+      "observed_tput_pct": -10.52,
+      "observed_queue_change": 1.0,
+      "observed_defect_risk_change": null
+    },
+    "accuracy": {
+      "tput_accuracy_pct": 0.0,
+      "queue_accuracy_pct": 0.0,
+      "defect_accuracy_pct": null,
+      "overall_accuracy_pct": 0.0,
+      "is_directionally_correct": false,
+      "is_successful": false,
+      "feedback": "Recommendation not validated \u2014 outcome diverged from prediction."
+    }
+  },
+  {
+    "event_id": "RUN024-EVT01",
+    "run_id": "RUN-024",
+    "minute_index": 143,
+    "observation_window_min": 20,
+    "before_state": {
+      "station_id": "S03",
+      "cycle_time_sec": 57.49,
+      "queue_length": 10.0,
+      "defect_prob": 0.355,
+      "bottleneck_prob": 0.0,
+      "root_cause_station": "S09",
+      "propagation_path": [
+        "S03",
+        "S04",
+        "S05",
+        "S06",
+        "S07"
+      ],
+      "at_risk_vins": 44
+    },
+    "twinpilot_prediction": {
+      "recommended_option": "Option C",
+      "option_name": "Workload Rebalance / Reroute",
+      "tput_pct": 7.5,
+      "queue_change": -4.0,
+      "defect_risk_change": -8.0,
+      "financial_impact": 1684.0,
+      "confidence_pct": 68.4
+    },
+    "human_decision": {
+      "operator_action": "approve",
+      "accepted_recommendation": true,
+      "timestamp": "2026-08-27T17:51:19.379573+00:00"
+    },
+    "observed_outcome": {
+      "pre_ct": 57.49,
+      "post_ct": 64.25,
+      "pre_queue": 10.0,
+      "post_queue": 11.0,
+      "pre_minute": 143,
+      "post_minute": 163,
+      "observed_tput_pct": -10.52,
+      "observed_queue_change": 1.0,
+      "observed_defect_risk_change": null
+    },
+    "accuracy": {
+      "tput_accuracy_pct": 0.0,
+      "queue_accuracy_pct": 0.0,
+      "defect_accuracy_pct": null,
+      "overall_accuracy_pct": 0.0,
+      "is_directionally_correct": false,
+      "is_successful": false,
+      "feedback": "Recommendation not validated \u2014 outcome diverged from prediction."
+    }
+  },
+  {
+    "event_id": "RUN025-EVT02",
+    "run_id": "RUN-025",
+    "minute_index": 93,
+    "observation_window_min": 20,
+    "before_state": {
+      "station_id": "S16",
+      "cycle_time_sec": 66.45,
+      "queue_length": 6.0,
+      "defect_prob": 0.045,
+      "bottleneck_prob": 0.0,
+      "root_cause_station": "S17",
+      "propagation_path": [
+        "S16",
+        "S17",
+        "S18",
+        "S19",
+        "S20",
+        "S21",
+        "S22",
+        "S23"
+      ],
+      "at_risk_vins": 16
+    },
+    "twinpilot_prediction": {
+      "recommended_option": "Option A",
+      "option_name": "Speed Override / Move Operator",
+      "tput_pct": 19.0,
+      "queue_change": -3.9,
+      "defect_risk_change": 6.0,
+      "financial_impact": 1515.0,
+      "confidence_pct": 58.7
+    },
+    "human_decision": {
+      "operator_action": "reject",
+      "accepted_recommendation": false,
+      "timestamp": "2026-08-27T17:51:19.480949+00:00"
+    },
+    "observed_outcome": {
+      "pre_ct": 66.45,
+      "post_ct": 60.64,
+      "pre_queue": 6.0,
+      "post_queue": 0.0,
+      "pre_minute": 93,
+      "post_minute": 113,
+      "observed_tput_pct": 9.58,
+      "observed_queue_change": -6.0,
+      "observed_defect_risk_change": -2.0
+    },
+    "accuracy": {
+      "tput_accuracy_pct": 50.4,
+      "queue_accuracy_pct": 65.0,
+      "defect_accuracy_pct": 0.0,
+      "overall_accuracy_pct": 38.5,
+      "is_directionally_correct": true,
+      "is_successful": true,
+      "feedback": "Recommendation validated \u2014 prediction and outcome aligned."
+    }
+  },
+  {
+    "event_id": "RUN024-EVT01",
+    "run_id": "RUN-024",
+    "minute_index": 143,
+    "observation_window_min": 20,
+    "before_state": {
+      "station_id": "S03",
+      "cycle_time_sec": 57.49,
+      "queue_length": 10.0,
+      "defect_prob": 0.355,
+      "bottleneck_prob": 0.0,
+      "root_cause_station": "S09",
+      "propagation_path": [
+        "S03",
+        "S04",
+        "S05",
+        "S06",
+        "S07"
+      ],
+      "at_risk_vins": 44
+    },
+    "twinpilot_prediction": {
+      "recommended_option": "Option C",
+      "option_name": "Workload Rebalance / Reroute",
+      "tput_pct": 7.5,
+      "queue_change": -4.0,
+      "defect_risk_change": -8.0,
+      "financial_impact": 1684.0,
+      "confidence_pct": 68.4
+    },
+    "human_decision": {
+      "operator_action": "approve",
+      "accepted_recommendation": true,
+      "timestamp": "2026-08-27T17:58:23.864580+00:00"
+    },
+    "observed_outcome": {
+      "pre_ct": 57.49,
+      "post_ct": 64.25,
+      "pre_queue": 10.0,
+      "post_queue": 11.0,
+      "pre_minute": 143,
+      "post_minute": 163,
+      "observed_tput_pct": -10.52,
+      "observed_queue_change": 1.0,
+      "observed_defect_risk_change": null
+    },
+    "accuracy": {
+      "tput_accuracy_pct": 0.0,
+      "queue_accuracy_pct": 0.0,
+      "defect_accuracy_pct": null,
+      "overall_accuracy_pct": 0.0,
+      "is_directionally_correct": false,
+      "is_successful": false,
+      "feedback": "Recommendation not validated \u2014 outcome diverged from prediction."
+    }
+  }
+]

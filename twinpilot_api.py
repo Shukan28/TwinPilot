@@ -359,9 +359,33 @@ def build_factory_state(run_id="RUN-024", minute=123, station="S03", event_id="R
     for _, mst in manual_stations.iterrows():
         sid = mst["station_id"]
         sname = mst["station_name"]
-        if run_id == "RUN-025" and sid == "S21" and current_step >= 2:
-            deg_prob = 18.5 if current_step == 2 else (32.0 if current_step in (3, 4) else 4.0)
-            is_deg = current_step in (2, 3, 4)
+        if run_id == "RUN-025" and sid == "S21":
+            if current_step in (2, 3):
+                deg_prob = 18.5 if current_step == 2 else 32.0
+                is_deg = True
+            elif current_step == 4:
+                if app_status == "approved":
+                    deg_prob = 1.5
+                    is_deg = False
+                elif app_status == "rejected":
+                    deg_prob = 38.0
+                    is_deg = True
+                else:
+                    deg_prob = 32.0
+                    is_deg = True
+            elif current_step == 5:
+                if app_status == "approved":
+                    deg_prob = 1.5
+                    is_deg = False
+                elif app_status == "rejected":
+                    deg_prob = 38.0
+                    is_deg = True
+                else:
+                    deg_prob = 32.0
+                    is_deg = True
+            else:
+                deg_prob = 1.5
+                is_deg = False
         else:
             deg_prob = 1.5
             is_deg = False
@@ -612,8 +636,61 @@ def build_factory_state(run_id="RUN-024", minute=123, station="S03", event_id="R
     else:
         rec_rationale = f"System Nominal / Emerging Stage — All stations monitoring nominal tolerance. Counterfactual simulator primed for {rec_opt}."
 
-    at_risk_count = int(result["at_risk_vins_count"]) if current_step in (3, 4) else (12 if current_step == 2 else 0)
-    sample_vins = result["sample_vins"] if current_step in (3, 4) else (result["sample_vins"][:2] if current_step == 2 else [])
+    base_at_risk_count = int(result["at_risk_vins_count"]) if result.get("at_risk_vins_count") else (44 if run_id == "RUN-024" else 16)
+    at_risk_count = base_at_risk_count if current_step in (3, 4, 5) else (12 if current_step == 2 else 0)
+    raw_sample = result["sample_vins"] if result["sample_vins"] else ["VIN-2030243", "VIN-2030244", "VIN-2030245", "VIN-2030246", "VIN-2030247"]
+    sample_vins = raw_sample[:5] if current_step in (3, 4) else (raw_sample[:3] if current_step == 2 else [])
+
+    # Physical Line Exposure & Vehicle Quarantine Cohort
+    vins_cohort = []
+    if current_step in (3, 4):
+        for s_vin in sample_vins:
+            vins_cohort.append({
+                "vin": s_vin,
+                "status": "at-risk",
+                "risk_pct": active_d_prob,
+                "traversed_station": target_sid,
+                "exposure_reason": f"Traversed Station {target_sid} during active defect window. Quarantined for physical inspection prior to release.",
+                "quality_gate": f"Buffer prior to Station {active_path[-1] if active_path else target_sid}"
+            })
+        quarantine_label = f"{at_risk_count} vehicles quarantined at Buffer line prior to Station {active_path[-1] if active_path else target_sid}"
+    elif current_step == 2:
+        for s_vin in sample_vins:
+            vins_cohort.append({
+                "vin": s_vin,
+                "status": "warning",
+                "risk_pct": 16.5 if run_id == "RUN-024" else 18.0,
+                "traversed_station": target_sid,
+                "exposure_reason": f"Precursor variance detected at Station {target_sid}. Flagged for buffer pacing check.",
+                "quality_gate": f"Buffer prior to Station {target_sid}"
+            })
+        quarantine_label = f"Precursor monitoring — {at_risk_count} candidate vehicles tracked through Station {target_sid}"
+    elif current_step == 5:
+        if app_status == "approved":
+            for s_vin in raw_sample[:5]:
+                vins_cohort.append({
+                    "vin": s_vin,
+                    "status": "cleared",
+                    "risk_pct": 0.0,
+                    "traversed_station": target_sid,
+                    "exposure_reason": "Quality gate inspection complete: All quarantined vehicles inspected and cleared for final vehicle release.",
+                    "quality_gate": "Inspected & Cleared"
+                })
+            quarantine_label = f"All {at_risk_count} quarantined vehicles inspected & cleared for final release"
+        else:
+            for s_vin in raw_sample[:5]:
+                vins_cohort.append({
+                    "vin": s_vin,
+                    "status": "at-risk",
+                    "risk_pct": 28.5 if app_status == "rejected" else 48.0,
+                    "traversed_station": target_sid,
+                    "exposure_reason": "Held in secondary buffer quarantine under manual supervisor delay.",
+                    "quality_gate": "Secondary Inspection"
+                })
+            quarantine_label = f"Manual override drag: {at_risk_count + 8} vehicles quarantined for secondary inspection"
+    else:  # Baseline Nominal (current_step == 0 or 1)
+        quarantine_label = "Quarantine cohort calculated from physical line timings"
+        sample_vins = []
 
     factory_state = {
         "current_run_id": run_id,
@@ -660,11 +737,14 @@ def build_factory_state(run_id="RUN-024", minute=123, station="S03", event_id="R
             "path_scores": path_scores if current_step >= 2 else {},
             "earliest_cause": f"Likely Root-Cause Candidate: Station {rc_id} ({rc_name})" if current_step >= 2 else "Nominal Line Pacing",
             "predicted_defect": f"Tool Defect & Structural Strain ({active_d_prob}% Risk)" if current_step in (2, 3, 4) else "Nominal (Zero Detected Defect)",
-            "recommended_action": f"{rec_opt} — {opts[rec_opt]['name']} ({opts[rec_opt]['tput_pct']:+.1f}% Tput, {opts[rec_opt]['defect_risk_change']:+.1f}% Defect)" if current_step >= 2 else "Standby Monitoring"
+            "recommended_action": f"{rec_opt} — {opts[rec_opt]['name']} ({opts[rec_opt]['tput_pct']:+.1f}% Tput, {opts[rec_opt]['defect_risk_change']:+.1f}% Defect)" if current_step >= 2 else "Standby Monitoring",
+            "quarantined_vins": vins_cohort
         },
         "at_risk_vehicles": {
             "total_count": at_risk_count,
-            "sample_vins": sample_vins,
+            "sample_vins": [v["vin"] for v in vins_cohort],
+            "vins_cohort": vins_cohort,
+            "quarantine_label": quarantine_label,
             "quarantine_location": f"Buffer line prior to Station {active_path[-1] if active_path else target_sid}" if current_step >= 2 else "Line Nominal"
         },
         "interventions": interventions_payload,
@@ -833,6 +913,37 @@ def api_audit_log():
         return jsonify([])
     with open(log_path) as f:
         return jsonify(json.load(f))
+
+
+@app.route("/api/chat", methods=["POST"])
+def api_chat():
+    from chatbot_engine import resolve_chatbot_query, is_out_of_domain
+    body = request.get_json(force=True) if request.data else {}
+    question = body.get("question", "").strip()
+    if not question:
+        return jsonify({"reply": "Please ask a question regarding the factory state, stations, or platform features."})
+
+    run_id = body.get("run_id", "RUN-024")
+    minute = int(body.get("minute", 143))
+    station = body.get("station", "S03")
+    event_id = body.get("event_id", "RUN024-EVT01")
+    step_id = body.get("step_id", None)
+    if step_id is not None:
+        try:
+            step_id = int(step_id)
+        except:
+            step_id = None
+
+    try:
+        factory_state = build_factory_state(run_id, minute, station=station, event_id=event_id, step_id=step_id)
+    except Exception as err:
+        factory_state = None
+
+    reply = resolve_chatbot_query(question, factory_state)
+    return jsonify({
+        "reply": reply,
+        "is_out_of_domain": is_out_of_domain(question)
+    })
 
 
 if __name__ == "__main__":

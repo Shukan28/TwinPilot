@@ -119,36 +119,71 @@ function appendChatMessage(sender, text) {
   box.scrollTop = box.scrollHeight;
 }
 
-function generateTwinAnswer(q) {
-  const state = window.latestFactoryState;
-  let reply = "I am monitoring all 31 manufacturing stations across Body Construction, Paint, and Final Assembly.";
-
-  if (state) {
-    const target = state.target_station;
-    const rec = state.recommendation;
-    const rc = state.root_cause;
-    const qLower = q.toLowerCase();
-
-    if (qLower.includes('why') || qLower.includes('deviat') || qLower.includes('slowing')) {
-      reply = `Station <strong>${target.station_id} (${target.station_name})</strong> cycle time rose to <strong>${target.cycle_time_sec}s</strong> (baseline ${target.baseline_cycle_time_sec}s) with a backlog of <strong>${target.queue_length} vehicles</strong>. Defect probability: <strong>${target.defect_prob_pct}%</strong>.`;
-    } else if (qLower.includes('root cause') || qLower.includes('origin')) {
-      reply = `3-Factor root cause scoring localized the earliest origin to <strong>Station ${rc.station_id} (${rc.station_name})</strong> based on signal magnitude, earliest onset timing, and upstream dependency reachability.`;
-    } else if (qLower.includes('option') || qLower.includes('recommend') || qLower.includes('help') || qLower.includes('stabiliz')) {
-      reply = `<strong>${rec.option_key} (${rec.option_name})</strong> is recommended with <strong>${rec.confidence_pct}% confidence</strong>. ${rec.rationale}`;
-    } else if (qLower.includes('dark zone') || qLower.includes('sensorless') || qLower.includes('manual')) {
-      const deg = state.dark_zones.find(d => d.is_degrading);
-      if (deg) {
-        reply = `Dark Zone proxy inference detected degradation at uninstrumented station <strong>${deg.station_id} (${deg.station_name})</strong> with <strong>${deg.degradation_prob_pct}% probability</strong>.`;
-      } else {
-        reply = `All 6 uninstrumented manual stations (S18, S20, S21, S22, S29, S30) are operating nominally with zero detected degradation.`;
-      }
-    } else {
-      reply = `Currently active on shift <strong>${state.run_id}</strong> at minute <strong>${state.minute}</strong>. Line throughput: <strong>${state.overall_metrics.line_throughput_uph} u/h</strong>. Quarantined VINs: <strong>${state.at_risk_vehicles.total_count}</strong>.`;
-    }
+async function generateTwinAnswer(q) {
+  const box = document.getElementById('chat-history-box');
+  let thinkingMsg = null;
+  if (box) {
+    thinkingMsg = document.createElement('div');
+    thinkingMsg.className = 'chat-message bot';
+    thinkingMsg.style.cssText = 'align-self: flex-start; background: rgba(0,0,0,0.05); border: 1px dashed var(--border-color); padding: 8px 12px; border-radius: 10px 10px 10px 0; margin-bottom: 8px; max-width: 85%; font-size: 12px; color: var(--text-secondary); font-style: italic;';
+    thinkingMsg.innerHTML = '<span style="display:inline-block; animation: pulse 1.2s infinite;">⚡</span> Analyzing factory telemetry & causal model...';
+    box.appendChild(thinkingMsg);
+    box.scrollTop = box.scrollHeight;
   }
 
-  appendChatMessage('bot', reply);
-  playSound('beep');
+  const state = window.latestFactoryState;
+  const cfg = window.activeCfg || {};
+
+  try {
+    const payload = {
+      question: q,
+      run_id: cfg.run_id || (state ? state.current_run_id : "RUN-024"),
+      minute: cfg.minute || (state ? state.current_minute_index : 143),
+      station: cfg.station || (state && state.target_station ? state.target_station.station_id : "S03"),
+      event_id: cfg.event_id || "RUN024-EVT01",
+      step_id: typeof selectedTimelineStepIdx !== "undefined" ? selectedTimelineStepIdx : (state ? state.current_step_id : 3)
+    };
+
+    const res = await fetch("/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    if (thinkingMsg && thinkingMsg.parentNode) {
+      thinkingMsg.parentNode.removeChild(thinkingMsg);
+    }
+
+    if (res.ok) {
+      const data = await res.json();
+      appendChatMessage('bot', data.reply || "No response received from TwinPilot AI.");
+      playSound('beep');
+    } else {
+      throw new Error(`API error ${res.status}`);
+    }
+  } catch (err) {
+    if (thinkingMsg && thinkingMsg.parentNode) {
+      thinkingMsg.parentNode.removeChild(thinkingMsg);
+    }
+    // Fallback response if offline
+    appendChatMessage('bot', fallbackLocalAnswer(q, state));
+    playSound('beep');
+  }
+}
+
+function fallbackLocalAnswer(q, state) {
+  const qLower = q.toLowerCase();
+  if (qLower.includes("how many station") || qLower.includes("total station")) {
+    return "The TwinPilot platform monitors a total of <strong>31 production stations</strong> (30 mainline S01-S30 + 1 dedicated feeder ENG01) across Body Construction, Paint, and Final Assembly.";
+  }
+  if (qLower.includes("feature") || qLower.includes("what can we do")) {
+    return "TwinPilot provides real-time digital twin streaming, early anomaly precursor forecasting, 3-factor root cause localization, defect propagation traversal, Dark Zone sensorless inference, vehicle quarantine tracking, counterfactual what-if simulation (Options A/B/C), and reinforcement learning governance.";
+  }
+  if (state && state.target_station) {
+    const target = state.target_station;
+    return `Station <strong>${target.station_id} (${target.station_name})</strong> cycle time: <strong>${target.cycle_time_sec}s</strong>. Queue: <strong>${target.queue_length}</strong> vehicles. Defect risk: <strong>${target.defect_prob_pct}%</strong>.`;
+  }
+  return "TwinPilot AI is actively monitoring 31 stations across Body, Paint, and Final Assembly.";
 }
 
 // --- DOM Initializer ---

@@ -71,6 +71,83 @@ const TwinPilotAPI = (() => {
   let decisionRecord = null;
   let selectedTimelineStepIdx = 0; // Starts on Step 1: 1. Baseline!
 
+  // ── Cross-Page Navigation State Persistence ────────────────────────────────
+  const SESSION_STORAGE_KEY = "twinpilot_live_session";
+  let lastSavedSimSec = 0;
+
+  function saveSession() {
+    try {
+      const storage = (typeof window !== "undefined" && window.sessionStorage) ? window.sessionStorage : (typeof sessionStorage !== "undefined" ? sessionStorage : null);
+      if (!storage) return;
+      const data = {
+        event_id: clock.event_id,
+        runId: clock.runId,
+        station: clock.station,
+        minute: clock.minute,
+        currentSimSeconds: currentSimSeconds,
+        wallTimestamp: Date.now(),
+        selectedTimelineStepIdx: selectedTimelineStepIdx,
+        simSpeed: simSpeed,
+        isClockRunning: isClockRunning,
+        decisionState: decisionState,
+        selectedOptionKey: selectedOptionKey,
+        decisionRecord: decisionRecord
+      };
+      storage.setItem(SESSION_STORAGE_KEY, JSON.stringify(data));
+    } catch (e) {
+      console.warn("[TwinPilot Bridge] saveSession error:", e);
+    }
+  }
+
+  function restoreSession() {
+    try {
+      const storage = (typeof window !== "undefined" && window.sessionStorage) ? window.sessionStorage : (typeof sessionStorage !== "undefined" ? sessionStorage : null);
+      if (!storage) return false;
+      const raw = storage.getItem(SESSION_STORAGE_KEY);
+      if (!raw) return false;
+      const data = JSON.parse(raw);
+      if (!data) return false;
+
+      if (data.event_id && SCENARIOS[data.event_id]) {
+        clock.event_id = data.event_id;
+        clock.runId = data.runId || SCENARIOS[data.event_id].run_id;
+        clock.station = data.station || SCENARIOS[data.event_id].station;
+      }
+
+      if (typeof data.simSpeed === "number") simSpeed = data.simSpeed;
+      if (typeof data.isClockRunning === "boolean") isClockRunning = data.isClockRunning;
+      if (data.decisionState) decisionState = data.decisionState;
+      if (data.selectedOptionKey) selectedOptionKey = data.selectedOptionKey;
+      if (data.decisionRecord) decisionRecord = data.decisionRecord;
+      if (typeof data.selectedTimelineStepIdx === "number") selectedTimelineStepIdx = data.selectedTimelineStepIdx;
+
+      let restoredSeconds = (typeof data.currentSimSeconds === "number") ? data.currentSimSeconds : (123 * 60);
+
+      // If clock was running when navigating, advance by real elapsed wall time
+      if (isClockRunning && data.wallTimestamp) {
+        const elapsedSec = Math.max(0, (Date.now() - data.wallTimestamp) / 1000.0);
+        if (elapsedSec < 3600) {
+          restoredSeconds += elapsedSec * simSpeed;
+        }
+      }
+
+      const cfg = SCENARIOS[clock.event_id] || SCENARIOS["RUN024-EVT01"];
+      const maxSec = (cfg.restoredMinute + 12) * 60;
+      currentSimSeconds = Math.min(restoredSeconds, maxSec);
+      clock.minute = Math.floor(currentSimSeconds / 60);
+      lastSavedSimSec = currentSimSeconds;
+
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  if (typeof window !== "undefined") {
+    window.addEventListener("beforeunload", saveSession);
+    window.addEventListener("pagehide", saveSession);
+  }
+
   // ── DOM Helpers ────────────────────────────────────────────────────────────
   function setText(id, val) {
     const el = document.getElementById(id);
@@ -182,6 +259,12 @@ const TwinPilotAPI = (() => {
       const curMin = currentSimSeconds / 60.0;
       clock.minute = Math.floor(curMin);
 
+      // Persist to session storage periodically so page navigation retains exact clock
+      if (Math.abs(currentSimSeconds - lastSavedSimSec) >= 1.0) {
+        lastSavedSimSec = currentSimSeconds;
+        saveSession();
+      }
+
       // Render updated digital clock
       const clockStr = formatSimClockFromSeconds(currentSimSeconds);
       setText("sim-clock", clockStr);
@@ -193,12 +276,14 @@ const TwinPilotAPI = (() => {
 
   function toggleClock() {
     isClockRunning = !isClockRunning;
+    saveSession();
     updateClockControlButtons();
     showToast(isClockRunning ? `Digital Twin Clock running at ${simSpeed}x (${simSpeed === 1 ? 'Real-Time' : simSpeed + 'x Speed'}).` : "Digital Twin Clock paused.", "info");
   }
 
   function setSpeed(multiplier) {
     simSpeed = Number(multiplier) || 1;
+    saveSession();
     const topSel = document.getElementById("tp-top-speed-select");
     const timelineSel = document.getElementById("timeline-speed-select");
     if (topSel) topSel.value = String(simSpeed);
@@ -407,6 +492,7 @@ const TwinPilotAPI = (() => {
     decisionState = "pending";
     decisionRecord = null;
     selectedTimelineStepIdx = 0; // Strictly on 1st step!
+    saveSession();
 
     fetch(`${BASE}/reset_decision`, {
       method: "POST",
@@ -430,6 +516,7 @@ const TwinPilotAPI = (() => {
     decisionState = "pending";
     decisionRecord = null;
     selectedTimelineStepIdx = 0; // Return to 1st step!
+    saveSession();
 
     try {
       await fetch(`${BASE}/reset_decision`, {
@@ -455,6 +542,7 @@ const TwinPilotAPI = (() => {
     currentSimSeconds = targetMin * 60;
     selectedTimelineStepIdx = stepIdx;
     clock.minute = targetMin;
+    saveSession();
 
     fetchAndRenderState();
     showToast(`Clock jumped to Step ${stepIdx + 1} (${formatSimClockFromSeconds(currentSimSeconds)}). Continuing live run...`, "info");
@@ -966,44 +1054,161 @@ const TwinPilotAPI = (() => {
     // 5. Quarantined At-Risk Vehicles Cohort
     const vrow = document.querySelector(".vehicle-row");
     const vlabel = document.getElementById("risk-vehicle-label");
-    if (vrow && state.propagation.quarantined_vins) {
-      const vins = state.propagation.quarantined_vins;
-      if (vlabel) vlabel.textContent = `${vins.length} Vehicles Tracked (Predicted Defect Risk ≥ 15%)`;
+    const atRisk = state.at_risk_vehicles || {};
+    const vins = atRisk.vins_cohort || state.propagation.quarantined_vins || [];
+    const totalCount = atRisk.total_count || 0;
+    const isAnomalyActive = (selectedTimelineStepIdx >= 2) && (state.is_anomaly_active !== false);
+
+    if (vlabel) {
+      if (atRisk.quarantine_label) {
+        vlabel.textContent = atRisk.quarantine_label;
+      } else if (isAnomalyActive && totalCount > 0) {
+        vlabel.textContent = `${totalCount} vehicles quarantined at ${atRisk.quarantine_location || 'Buffer line prior to Station S07'}`;
+      } else {
+        vlabel.textContent = "Quarantine cohort calculated from physical line timings";
+      }
+    }
+
+    if (vrow) {
       vrow.innerHTML = "";
-      vins.slice(0, 10).forEach(v => {
-        const item = document.createElement("div");
-        item.className = "vehicle-item";
-        item.innerHTML = `
-          <i data-lucide="car" style="width:20px;height:20px;color:${v.risk_pct >= 30 ? "var(--accent-critical)" : "var(--accent-warning)"};"></i>
-          <span class="vehicle-id">${v.vin}</span>
-          <span class="vehicle-risk" style="color:${v.risk_pct >= 30 ? "var(--accent-critical)" : "var(--accent-warning)"};">${v.risk_pct}% risk</span>
+      if (selectedTimelineStepIdx === 0) {
+        // Stage 1: Nominal baseline (Picture 1)
+        vrow.innerHTML = `<div style="color:var(--text-secondary); font-size:12px; padding:4px 0; display:flex; align-items:center; gap:6px;">
+          <i data-lucide="shield-check" style="width:16px;height:16px;color:var(--accent-healthy);"></i>
+          All produced VINs verified defect-free in active window (0 vehicles quarantined).
+        </div>`;
+      } else if (selectedTimelineStepIdx === 5 && decisionState === "approved") {
+        // Stage 6: Nominal Restored after Approval
+        // Quarantined vehicles inspected and cleared before final release!
+        vrow.innerHTML = "";
+        const clearedSample = (atRisk.sample_vins || ["VIN-2030243", "VIN-2030244", "VIN-2030245", "VIN-2030246", "VIN-2030247"]).slice(0, 5);
+        clearedSample.forEach((vinCode, i) => {
+          const card = document.createElement("div");
+          card.className = "vehicle-icon-card healthy-car";
+          card.id = `vehicle-${i + 1}`;
+          card.title = `VIN: ${vinCode} — Physical inspection complete. Quality gate passed for final release.`;
+          card.innerHTML = `
+            <i data-lucide="check-circle" style="width:18px;height:18px;color:var(--accent-healthy);"></i>
+            <span>${vinCode}</span>
+          `;
+          vrow.appendChild(card);
+        });
+        const rem = (totalCount || 44) - clearedSample.length;
+        if (rem > 0) {
+          const moreCard = document.createElement("div");
+          moreCard.className = "vehicle-icon-card";
+          moreCard.style.opacity = "0.85";
+          moreCard.title = `${rem} additional vehicles inspected & cleared`;
+          moreCard.innerHTML = `
+            <i data-lucide="check" style="width:18px;height:18px;color:var(--accent-healthy);"></i>
+            <span>+${rem} cleared</span>
+          `;
+          vrow.appendChild(moreCard);
+        }
+      } else if (vins && vins.length > 0 && isAnomalyActive) {
+        // Picture 2: Anomaly Active / Rising
+        // Render each vehicle with car symbol:
+        // Only vehicles that went through the stations under risk are flagged as at-risk!
+        vins.slice(0, 5).forEach((v, i) => {
+          const vinCode = typeof v === "string" ? v : v.vin;
+          const isAtRisk = (typeof v === "object" && v.status) ? (v.status === "at-risk" || v.status === "warning") : true;
+          const card = document.createElement("div");
+          card.className = `vehicle-icon-card ${isAtRisk ? "at-risk" : "healthy-car"}`;
+          card.id = `vehicle-${i + 1}`;
+          card.title = (typeof v === "object" && v.exposure_reason) ? v.exposure_reason : `VIN: ${vinCode} — Traversed at-risk station. Held for inspection before final release.`;
+          card.innerHTML = `
+            <i data-lucide="car" style="width:18px;height:18px;"></i>
+            <span>${vinCode}</span>
+          `;
+          vrow.appendChild(card);
+        });
+
+        // More card (e.g. +39 more) with horizontal more dots (Picture 2)
+        const remainingCount = totalCount - 5;
+        if (remainingCount > 0) {
+          const moreCard = document.createElement("div");
+          moreCard.className = "vehicle-icon-card";
+          moreCard.style.opacity = "0.75";
+          moreCard.title = `${remainingCount} additional vehicles queued at buffer quality gate`;
+          moreCard.innerHTML = `
+            <i data-lucide="more-horizontal" style="width:18px;height:18px;"></i>
+            <span>+${remainingCount} more</span>
+          `;
+          vrow.appendChild(moreCard);
+        }
+      } else {
+        vrow.innerHTML = `<div style="color:var(--text-secondary); font-size:12px; padding:4px 0;">All produced VINs verified defect-free in active window.</div>`;
+      }
+    }
+
+    // 6. Dynamic Dark Zone Matrix (6 Manual Stations)
+    const dzList = state.dark_zones || [];
+    const degradingDz = dzList.find(d => d.is_degrading);
+    const dzHeader = document.getElementById("dz-card-title");
+    const dzCenterBadge = document.getElementById("inferred-dz-badge");
+    const dzConf = document.getElementById("sensorless-confidence");
+    const dzDesc = document.getElementById("sensorless-desc-text");
+    const dzMatrix = document.getElementById("dz-stations-matrix");
+
+    if (degradingDz) {
+      if (dzHeader) {
+        dzHeader.innerHTML = `<i data-lucide="eye-off" style="width:16px;height:16px;color:var(--accent-critical);"></i> Dark Zone Anomaly: Station ${degradingDz.station_id} (${degradingDz.station_name})`;
+      }
+      if (dzCenterBadge) {
+        dzCenterBadge.textContent = `${degradingDz.station_id} Degrading (${degradingDz.degradation_prob_pct}%)`;
+        dzCenterBadge.style.background = "var(--accent-critical-bg)";
+        dzCenterBadge.style.borderColor = "var(--accent-critical)";
+        dzCenterBadge.style.color = "var(--accent-critical)";
+      }
+      if (dzConf) {
+        dzConf.textContent = `Inferred Degradation Probability: ${degradingDz.degradation_prob_pct}%`;
+        dzConf.style.color = "var(--accent-critical)";
+      }
+      if (dzDesc) {
+        dzDesc.innerHTML = `Station <strong>${degradingDz.station_id} (${degradingDz.station_name})</strong> is a manual assembly station with NO sensors. Reconstructed from upstream cycle trends & downstream buffer queues: <strong>Degradation detected with ${degradingDz.degradation_prob_pct}% probability.</strong>`;
+      }
+    } else {
+      if (dzHeader) {
+        dzHeader.innerHTML = `<i data-lucide="eye-off" style="width:16px;height:16px;color:var(--accent-info);"></i> Dark Zone Sensorless Inference (6 Manual Stations)`;
+      }
+      if (dzCenterBadge) {
+        dzCenterBadge.textContent = "6 Manual Stations Monitored";
+        dzCenterBadge.style.background = "var(--accent-healthy-bg)";
+        dzCenterBadge.style.borderColor = "var(--accent-healthy)";
+        dzCenterBadge.style.color = "var(--accent-healthy)";
+      }
+      if (dzConf) {
+        dzConf.textContent = "All 6 Sensorless Stations Operating Nominally";
+        dzConf.style.color = "var(--accent-healthy)";
+      }
+      if (dzDesc) {
+        dzDesc.innerHTML = `Monitoring manual assembly stations <strong>S18, S20, S21, S22, S29, S30</strong> via proxy telemetry. Zero degradation detected across manual zones.`;
+      }
+    }
+
+    if (dzMatrix) {
+      dzMatrix.innerHTML = "";
+      dzList.forEach(m => {
+        const isDeg = m.is_degrading;
+        const box = document.createElement("div");
+        box.style.cssText = `
+          background: ${isDeg ? "var(--accent-critical-bg)" : "rgba(0,0,0,0.03)"};
+          border: 1px solid ${isDeg ? "var(--accent-critical)" : "var(--border-color)"};
+          border-radius: 6px; padding: 6px 8px; font-size: 11px;
         `;
-        vrow.appendChild(item);
+        box.innerHTML = `
+          <div style="display:flex; justify-content:space-between; font-weight:700;">
+            <span>${m.station_id}</span>
+            <span style="color:${isDeg ? "var(--accent-critical)" : "var(--accent-healthy)"};">${isDeg ? "DEGRADING" : "NOMINAL"}</span>
+          </div>
+          <div style="font-size:9.5px; color:var(--text-muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${m.station_name}</div>
+          <div style="font-size:10px; margin-top:2px; font-weight:600; color:${isDeg ? "var(--accent-critical)" : "var(--text-secondary)"};">Risk: ${m.degradation_prob_pct}%</div>
+        `;
+        dzMatrix.appendChild(box);
       });
     }
 
-    // 6. 3-Factor Root Cause Deep-Dive
-    const rc = state.root_cause;
-    if (rc) {
-      setText("diag-feature-text", `${rc.candidate_id || target.station_id} — ${rc.primary_sensor}`);
-      setText("diag-drift-text", rc.anomaly_summary);
-      setText("diag-model-text", rc.model_name);
-
-      const f1 = document.getElementById("diag-f1-val");
-      const f1Bar = document.getElementById("diag-f1-bar");
-      if (f1) f1.textContent = rc.factor_breakdown ? rc.factor_breakdown[0].val : "1.54 mm/s (+120%)";
-      if (f1Bar) f1Bar.style.width = rc.factor_breakdown ? `${rc.factor_breakdown[0].weight * 100}%` : "55%";
-
-      const f2 = document.getElementById("diag-f2-val");
-      const f2Bar = document.getElementById("diag-f2-bar");
-      if (f2) f2.textContent = rc.factor_breakdown ? rc.factor_breakdown[1].val : "+4.2s (Cumulative)";
-      if (f2Bar) f2Bar.style.width = rc.factor_breakdown ? `${rc.factor_breakdown[1].weight * 100}%` : "30%";
-
-      const f3 = document.getElementById("diag-f3-val");
-      const f3Bar = document.getElementById("diag-f3-bar");
-      if (f3) f3.textContent = rc.factor_breakdown ? rc.factor_breakdown[2].val : "10 units (+400%)";
-      if (f3Bar) f3Bar.style.width = rc.factor_breakdown ? `${rc.factor_breakdown[2].weight * 100}%` : "15%";
-    }
+    if (typeof lucide !== "undefined") lucide.createIcons();
   }
 
   // ── Approval Decision Handlers ─────────────────────────────────────────────
@@ -1033,6 +1238,7 @@ const TwinPilotAPI = (() => {
       const auditRecord = await resp.json();
       decisionState = "approved";
       decisionRecord = auditRecord;
+      saveSession();
 
       await fetchAndRenderState();
       loadRecentAuditLogs();
@@ -1072,6 +1278,7 @@ const TwinPilotAPI = (() => {
       const auditRecord = await resp.json();
       decisionState = "rejected";
       decisionRecord = auditRecord;
+      saveSession();
 
       await fetchAndRenderState();
       loadRecentAuditLogs();
@@ -1155,6 +1362,7 @@ const TwinPilotAPI = (() => {
 
   // ── Init on page load ──────────────────────────────────────────────────────
   function init() {
+    restoreSession();
     injectSimulationBar();
     initMasterClockEngine();
     updateClockControlButtons();

@@ -234,13 +234,18 @@ h1, h2, h3, h4, .font-display, .stat-value {
 }
 
 .grid-dashboard.two-col-equal {
-  grid-template-columns: 1.2fr 1fr;
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  gap: 20px;
+  align-items: start;
 }
 
 .dashboard-column {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  min-width: 0;
+  max-width: 100%;
 }
 
 /* CARDS STYLING */
@@ -1092,25 +1097,29 @@ h1, h2, h3, h4, .font-display, .stat-value {
 /* CAUSAL CHAIN DIAGRAM */
 .causal-chain-scroll {
   overflow-x: auto;
-  padding: 10px 0;
+  max-width: 100%;
+  width: 100%;
+  padding: 8px 0;
+  scrollbar-width: thin;
 }
 
 .causal-chain-row {
   display: flex;
   align-items: center;
-  gap: 12px;
-  min-width: 500px;
+  gap: 10px;
+  min-width: max-content;
+  width: max-content;
 }
 
 .causal-node {
   background: #ffffff;
   border: 1px solid var(--border-color);
   border-radius: 8px;
-  padding: 10px 14px;
+  padding: 8px 12px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  min-width: 130px;
+  gap: 3px;
+  min-width: 110px;
   position: relative;
   box-shadow: var(--shadow-sm);
   transition: all var(--transition-normal);
@@ -1158,20 +1167,23 @@ h1, h2, h3, h4, .font-display, .stat-value {
 
 .propagation-stats {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
   margin-top: 14px;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .prop-stat-chip {
   background: #ffffff;
   border: 1px solid var(--border-color);
   border-radius: 8px;
-  padding: 12px;
+  padding: 10px 12px;
   display: flex;
   flex-direction: column;
   gap: 4px;
   box-shadow: var(--shadow-sm);
+  min-width: 0;
 }
 
 .prop-stat-label {
@@ -1179,12 +1191,17 @@ h1, h2, h3, h4, .font-display, .stat-value {
   color: var(--text-muted);
   text-transform: uppercase;
   font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .prop-stat-val {
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 700;
   color: var(--text-primary);
+  line-height: 1.35;
+  word-break: break-word;
 }
 
 .prop-stat-val.highlight {
@@ -1200,6 +1217,8 @@ h1, h2, h3, h4, .font-display, .stat-value {
   border-radius: 10px;
   padding: 14px;
   margin-top: 14px;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .vehicle-risk-title {
@@ -1213,11 +1232,15 @@ h1, h2, h3, h4, .font-display, .stat-value {
 
 .vehicle-row {
   display: flex;
-  gap: 10px;
+  gap: 8px;
+  overflow-x: auto;
+  max-width: 100%;
+  scrollbar-width: thin;
 }
 
 .vehicle-icon-card {
-  flex: 1;
+  flex: 1 1 0;
+  min-width: 80px;
   background: #ffffff;
   border: 1px solid var(--border-color);
   border-radius: 8px;

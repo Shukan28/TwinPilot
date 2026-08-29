@@ -140,20 +140,22 @@ def train_reinforcement_learning_agent(num_episodes=3000, dataset_dir=DATASET_DI
             q_delta = -max(1.0, 2.5 * q_norm)
             d_delta = +(d_risk * 15.0 + 5.0 * vib_norm)
             fin_impact = (pct_tput * 140.0) - (d_risk * 600.0 * 20.0)
-            # Operator decision probability
-            approval_prob = 0.90 if (d_risk < 0.15 and q_norm > 0.3) else 0.20
+            # Operator decision probability: High queue + Low defect = Optimal for Option A
+            approval_prob = 0.96 if (d_risk < 0.12 and q_norm >= 0.25) else (0.35 if d_risk < 0.15 else 0.08)
         elif chosen_action == "Option B":
             pct_tput = -(8.0 + 6.0 * d_risk)
             q_delta = +(1.5 + 2.0 * d_risk)
             d_delta = -min(25.0, d_risk * 75.0)
             fin_impact = (abs(d_delta) / 100.0 * 600.0 * 20.0) - (abs(pct_tput) * 160.0)
-            approval_prob = 0.92 if (d_risk >= 0.25 and q_norm < 0.4) else 0.25
+            # High defect + Low queue = Optimal for Option B
+            approval_prob = 0.95 if (d_risk >= 0.25 and q_norm < 0.35) else 0.15
         else: # Option C
             pct_tput = +7.5
             q_delta = -max(1.0, 1.8 * q_norm)
             d_delta = -min(15.0, d_risk * 35.0)
             fin_impact = (pct_tput * 140.0) + (abs(d_delta) / 100.0 * 600.0 * 20.0) - 250.0
-            approval_prob = 0.95 if (d_risk >= 0.15 and q_norm >= 0.3) or (d_risk >= 0.10 and bn_risk >= 0.2) else 0.60
+            # Both queue and defect elevated = Optimal for Option C
+            approval_prob = 0.96 if (d_risk >= 0.15 and q_norm >= 0.25) or (d_risk >= 0.10 and bn_risk >= 0.2) else (0.15 if d_risk < 0.12 else 0.40)
 
         # Simulate Human-in-the-Loop decision
         operator_action = "approve" if (np.random.rand() < approval_prob) else "reject"

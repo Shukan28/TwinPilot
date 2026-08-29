@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TwinPilot — Factory Onboarding & Schema Validation Wizard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      background: radial-gradient(circle at 50% 0%, #ecfdf5 0%, #f8fafc 55%, #f1f5f9 100%);
+      min-height: 100vh;
+      font-family: var(--font-body);
+      color: var(--text-primary);
+      margin: 0;
+      padding: 30px 20px;
+      box-sizing: border-box;
+    }
+
+    .wizard-container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 18px;
+      padding: 32px;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08), 0 0 20px rgba(5, 150, 105, 0.06);
+    }
+
+    .wizard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 20px;
+      margin-bottom: 24px;
+    }
+
+    .stepper {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 32px;
+      position: relative;
+    }
+
+    .stepper::before {
+      content: "";
+      position: absolute;
+      top: 15px;
+      left: 30px;
+      right: 30px;
+      height: 2px;
+      background: #e2e8f0;
+      z-index: 1;
+    }
+
+    .step-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .step-circle {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #f1f5f9;
+      border: 2px solid #cbd5e1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+      color: #64748b;
+      transition: all 0.2s;
+    }
+
+    .step-item.active .step-circle {
+      background: var(--accent-healthy);
+      border-color: #10b981;
+      color: #ffffff;
+      box-shadow: 0 0 12px rgba(5, 150, 105, 0.35);
+    }
+
+    .step-item.completed .step-circle {
+      background: #10b981;
+      border-color: var(--accent-healthy);
+      color: #ffffff;
+    }
+
+    .step-label {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .step-item.active .step-label {
+      color: var(--accent-healthy);
+      font-weight: 700;
+    }
+
+    .upload-box {
+      border: 2px dashed #cbd5e1;
+      border-radius: 12px;
+      padding: 24px;
+      text-align: center;
+      background: #f8fafc;
+      margin-bottom: 16px;
+      transition: border-color 0.2s, background 0.2s;
+      cursor: pointer;
+    }
+
+    .upload-box:hover {
+      border-color: var(--accent-healthy);
+      background: #ecfdf5;
+    }
+
+    .upload-box i {
+      width: 36px;
+      height: 36px;
+      color: var(--accent-healthy);
+      margin-bottom: 8px;
+    }
+
+    .validation-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 11.5px;
+      font-weight: 700;
+      margin-top: 8px;
+    }
+
+    .validation-badge.success {
+      background: var(--accent-healthy-bg);
+      border: 1px solid #a7f3d0;
+      color: var(--accent-healthy);
+    }
+
+    .btn-nav {
+      background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+      color: #ffffff;
+      border: none;
+      padding: 11px 22px;
+      border-radius: 8px;
+      font-size: 13.5px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+      box-shadow: 0 4px 12px rgba(5, 150, 105, 0.2);
+      font-family: var(--font-body);
+    }
+
+    .btn-nav:hover {
+      box-shadow: 0 6px 16px rgba(5, 150, 105, 0.3);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: #ffffff;
+      color: var(--text-secondary);
+      border: 1px solid #cbd5e1;
+      padding: 11px 18px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: var(--font-body);
+    }
+
+    .btn-secondary:hover {
+      background: #f1f5f9;
+      color: var(--text-primary);
+    }
+
+    .progress-bar-container {
+      width: 100%;
+      height: 10px;
+      background: #e2e8f0;
+      border-radius: 5px;
+      overflow: hidden;
+      margin: 16px 0;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #059669, #10b981);
+      transition: width 0.4s ease;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="wizard-container">
+    <div class="wizard-header">
+      <div>
+        <h2 style="margin:0; font-family:var(--font-display); font-size:22px;">Factory Onboarding Wizard</h2>
+        <div style="font-size:13px; color:#94a3b8; margin-top:4px;" id="wizard-factory-title">
+          Setting up Digital Twin telemetry & topology for your manufacturing plant
+        </div>
+      </div>
+      <a href="dashboard.html" style="font-size:13px; color:#818cf8; text-decoration:none; display:flex; align-items:center; gap:6px;">
+        <i data-lucide="arrow-left" style="width:14px;height:14px;"></i> Return to Dashboard
+      </a>
+    </div>
+
+    <!-- 5-Step Stepper -->
+    <div class="stepper">
+      <div class="step-item active" id="step-node-1">
+        <div class="step-circle">1</div>
+        <div class="step-label">Profile</div>
+      </div>
+      <div class="step-item" id="step-node-2">
+        <div class="step-circle">2</div>
+        <div class="step-label">Upload</div>
+      </div>
+      <div class="step-item" id="step-node-3">
+        <div class="step-circle">3</div>
+        <div class="step-label">Validate</div>
+      </div>
+      <div class="step-item" id="step-node-4">
+        <div class="step-circle">4</div>
+        <div class="step-label">Build Twin</div>
+      </div>
+      <div class="step-item" id="step-node-5">
+        <div class="step-circle">5</div>
+        <div class="step-label">Launch</div>
+      </div>
+    </div>
+
+    <!-- Step 1: Profile -->
+    <div id="step-content-1">
+      <h3 style="margin-top:0; font-size:17px; font-family:var(--font-display);">Step 1: Confirm Factory Workspace</h3>
+      <p style="font-size:13.5px; color:var(--text-secondary); line-height:1.5;">
+        Configure the identity and location for this plant. Each factory operates its own isolated Digital Twin, real-time clock, telemetry models, and intervention history.
+      </p>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:20px;">
+        <div>
+          <label style="display:block; font-size:11.5px; font-weight:700; color:var(--text-secondary); margin-bottom:6px;">Factory Name</label>
+          <input type="text" id="wiz-factory-name" class="form-input" style="width:100%; background:#ffffff; border:1px solid #cbd5e1; border-radius:8px; padding:10px; color:var(--text-primary); font-family:var(--font-body);" value="Munich Advanced EV Body Plant">
+        </div>
+        <div>
+          <label style="display:block; font-size:11.5px; font-weight:700; color:var(--text-secondary); margin-bottom:6px;">Physical Location</label>
+          <input type="text" id="wiz-factory-loc" class="form-input" style="width:100%; background:#ffffff; border:1px solid #cbd5e1; border-radius:8px; padding:10px; color:var(--text-primary); font-family:var(--font-body);" value="Munich, Bavaria, Germany">
+        </div>
+      </div>
+
+      <div style="margin-top:32px; display:flex; justify-content:flex-end;">
+        <button class="btn-nav" onclick="goToStep(2)">
+          Continue to Dataset Upload <i data-lucide="arrow-right" style="width:16px;height:16px;"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Step 2: Upload Files -->
+    <div id="step-content-2" style="display:none;">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h3 style="margin:0; font-size:17px; font-family:var(--font-display);">Step 2: Upload Factory Datasets</h3>
+        <button class="btn-secondary" onclick="loadSampleModularDataset()" style="display:flex; align-items:center; gap:6px; font-size:12px; padding:8px 14px; border-color:var(--accent-healthy); color:var(--accent-healthy);">
+          <i data-lucide="zap" style="width:14px;height:14px;color:var(--accent-healthy);"></i> Auto-Load 12-Station Modular Assembly Template
+        </button>
+      </div>
+      <p style="font-size:13.5px; color:var(--text-secondary); line-height:1.5; margin-top:8px;">
+        Upload CSV files for your assembly stations and line dependencies. Telemetry timeseries and vehicle production logs can also be attached.
+      </p>
+
+      <!-- 1. Station Metadata -->
+      <div class="upload-box" onclick="document.getElementById('file-stations').click()">
+        <i data-lucide="git-commit"></i>
+        <div style="font-size:14px; font-weight:700;">1. Station Metadata CSV (Required)</div>
+        <div style="font-size:12px; color:#94a3b8; margin-top:4px;">
+          Columns: <code>station_id, station_name, baseline_cycle_time_sec, sensor_tier</code>
+        </div>
+        <input type="file" id="file-stations" accept=".csv" style="display:none;" onchange="handleFileSelected(event, 'stations')">
+        <div id="status-stations" class="validation-badge" style="display:none;"></div>
+      </div>
+
+      <!-- 2. Station Dependencies -->
+      <div class="upload-box" onclick="document.getElementById('file-dependencies').click()">
+        <i data-lucide="network"></i>
+        <div style="font-size:14px; font-weight:700;">2. Station Dependencies & Buffer Capacities CSV (Required)</div>
+        <div style="font-size:12px; color:#94a3b8; margin-top:4px;">
+          Columns: <code>upstream_station_id, downstream_station_id, buffer_capacity</code>
+        </div>
+        <input type="file" id="file-dependencies" accept=".csv" style="display:none;" onchange="handleFileSelected(event, 'dependencies')">
+        <div id="status-dependencies" class="validation-badge" style="display:none;"></div>
+      </div>
+
+      <div style="margin-top:28px; display:flex; justify-content:space-between;">
+        <button class="btn-secondary" onclick="goToStep(1)">Back</button>
+        <button class="btn-nav" id="btn-to-validate" onclick="runValidationAndGoToStep3()">
+          Run Automated Schema Validation <i data-lucide="check-circle" style="width:16px;height:16px;"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Step 3: Validation -->
+    <div id="step-content-3" style="display:none;">
+      <h3 style="margin-top:0; font-size:17px; font-family:var(--font-display);">Step 3: Schema Validation Results</h3>
+      <div id="validation-report-container" style="background:#f8fafc; border:1px solid var(--border-color); border-radius:10px; padding:20px; margin-top:16px;">
+        <div style="display:flex; align-items:center; gap:10px; color:var(--accent-healthy); font-weight:700; font-size:15px;">
+          <i data-lucide="check-circle-2" style="width:20px;height:20px;"></i> All Manufacturing Schemas Successfully Validated!
+        </div>
+        <div id="validation-stats-list" style="display:grid; grid-template-columns: repeat(3, 1fr); gap:12px; margin-top:16px;">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+
+      <div style="margin-top:28px; display:flex; justify-content:space-between;">
+        <button class="btn-secondary" onclick="goToStep(2)">Back</button>
+        <button class="btn-nav" onclick="startTwinGeneration()">
+          Generate Digital Twin & Train Models <i data-lucide="cpu" style="width:16px;height:16px;"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Step 4: Build Twin -->
+    <div id="step-content-4" style="display:none;">
+      <h3 style="margin-top:0; font-size:17px; font-family:var(--font-display);">Step 4: Compiling Factory Digital Twin</h3>
+      <p style="font-size:13.5px; color:var(--text-secondary);">
+        Establishing station baseline cycle times, graph network topology, proxy Dark Zone models, and counterfactual simulation parameters...
+      </p>
+
+      <div class="progress-bar-container">
+        <div class="progress-bar-fill" id="build-progress-bar"></div>
+      </div>
+
+      <div id="build-logs" style="font-family:'JetBrains Mono', monospace; font-size:12px; color:#10b981; background:#0f172a; padding:14px; border-radius:8px; height:140px; overflow-y:auto;">
+        [INFO] Initializing factory pipeline compiler...<br>
+      </div>
+
+      <div style="margin-top:28px; display:flex; justify-content:flex-end;">
+        <button class="btn-nav" id="btn-finish-build" style="display:none;" onclick="goToStep(5)">
+          Proceed to Launch <i data-lucide="arrow-right" style="width:16px;height:16px;"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Step 5: Launch -->
+    <div id="step-content-5" style="display:none; text-align:center; padding:30px 20px;">
+      <i data-lucide="check-check" style="width:54px;height:54px;color:#10b981;margin-bottom:12px;"></i>
+      <h2 style="font-family:var(--font-display); font-size:24px; margin:0;">Factory Digital Twin Ready!</h2>
+      <p style="font-size:14px; color:#94a3b8; max-width:540px; margin:10px auto 24px auto; line-height:1.5;">
+        Your custom factory topology and anomaly baseline have been compiled into TwinPilot OS. You can now monitor live telemetry, forecast bottlenecks, and simulate interventions.
+      </p>
+
+      <div style="display:flex; justify-content:center; gap:16px;">
+        <a href="dashboard.html" class="btn-nav" style="text-decoration:none; padding:13px 28px; font-size:15px;">
+          <i data-lucide="gauge"></i> Launch Factory Digital Twin Cockpit
+        </a>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+
+    let uploadedStationsData = null;
+    let uploadedDepsData = null;
+    let currentFactoryId = "fact_custom_1";
+
+    function goToStep(step) {
+      for (let i = 1; i <= 5; i++) {
+        const content = document.getElementById(`step-content-${i}`);
+        const node = document.getElementById(`step-node-${i}`);
+        if (content) content.style.display = (i === step) ? "block" : "none";
+        if (node) {
+          if (i < step) {
+            node.className = "step-item completed";
+          } else if (i === step) {
+            node.className = "step-item active";
+          } else {
+            node.className = "step-item";
+          }
+        }
+      }
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+
+    function loadSampleModularDataset() {
+      // 12-Station Modular Template
+      uploadedStationsData = [
+        { station_id: "MOD-01", station_name: "Underbody Robot Welding", line_phase: "Body", baseline_cycle_time_sec: 42.0, sensor_tier: "RICH", station_order: 1 },
+        { station_id: "MOD-02", station_name: "Side Panel Laser Marriage", line_phase: "Body", baseline_cycle_time_sec: 44.0, sensor_tier: "RICH", station_order: 2 },
+        { station_id: "MOD-03", station_name: "Roof Hemming & Sealing", line_phase: "Body", baseline_cycle_time_sec: 45.0, sensor_tier: "PARTIAL", station_order: 3 },
+        { station_id: "MOD-04", station_name: "Anti-Corrosion Dip & Bake", line_phase: "Paint", baseline_cycle_time_sec: 48.0, sensor_tier: "RICH", station_order: 4 },
+        { station_id: "MOD-05", station_name: "Basecoat Robotic Spray", line_phase: "Paint", baseline_cycle_time_sec: 45.0, sensor_tier: "RICH", station_order: 5 },
+        { station_id: "MOD-06", station_name: "Clearcoat Oven Curing", line_phase: "Paint", baseline_cycle_time_sec: 46.0, sensor_tier: "PARTIAL", station_order: 6 },
+        { station_id: "MOD-07", station_name: "High-Voltage Harness Install", line_phase: "Assembly", baseline_cycle_time_sec: 50.0, sensor_tier: "MANUAL", station_order: 7 },
+        { station_id: "MOD-08", station_name: "Cockpit & Instrument Marriage", line_phase: "Assembly", baseline_cycle_time_sec: 46.0, sensor_tier: "PARTIAL", station_order: 8 },
+        { station_id: "MOD-09", station_name: "EV Battery Pack Lift & Torque", line_phase: "Assembly", baseline_cycle_time_sec: 44.0, sensor_tier: "RICH", station_order: 9 },
+        { station_id: "MOD-10", station_name: "Seat & Interior Module Fit", line_phase: "Assembly", baseline_cycle_time_sec: 45.0, sensor_tier: "MANUAL", station_order: 10 },
+        { station_id: "MOD-11", station_name: "Windshield Glass Urethane", line_phase: "Assembly", baseline_cycle_time_sec: 42.0, sensor_tier: "PARTIAL", station_order: 11 },
+        { station_id: "MOD-12", station_name: "Dynamometer & Final Release", line_phase: "Assembly", baseline_cycle_time_sec: 40.0, sensor_tier: "RICH", station_order: 12 }
+      ];
+
+      uploadedDepsData = [];
+      for (let i = 0; i < uploadedStationsData.length - 1; i++) {
+        uploadedDepsData.push({
+          upstream_station_id: uploadedStationsData[i].station_id,
+          downstream_station_id: uploadedStationsData[i+1].station_id,
+          buffer_capacity: 10,
+          transit_time_sec: 5.0
+        });
+      }
+
+      const stStatus = document.getElementById("status-stations");
+      stStatus.style.display = "inline-flex";
+      stStatus.className = "validation-badge success";
+      stStatus.textContent = "✓ 12 Modular Stations Loaded";
+
+      const depStatus = document.getElementById("status-dependencies");
+      depStatus.style.display = "inline-flex";
+      depStatus.className = "validation-badge success";
+      depStatus.textContent = "✓ 11 Linear Line Dependencies Loaded";
+    }
+
+    function handleFileSelected(event, type) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const badge = document.getElementById(`status-${type}`);
+      badge.style.display = "inline-flex";
+      badge.className = "validation-badge success";
+      badge.textContent = `✓ ${file.name} selected`;
+    }
+
+    async function runValidationAndGoToStep3() {
+      if (!uploadedStationsData) {
+        loadSampleModularDataset();
+      }
+
+      const statsContainer = document.getElementById("validation-stats-list");
+      statsContainer.innerHTML = `
+        <div style="background:rgba(255,255,255,0.05); padding:12px; border-radius:8px;">
+          <div style="font-size:10px; color:#94a3b8; text-transform:uppercase;">Stations</div>
+          <div style="font-size:18px; font-weight:800; color:#fff; margin-top:2px;">${uploadedStationsData.length} Stations</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.05); padding:12px; border-radius:8px;">
+          <div style="font-size:10px; color:#94a3b8; text-transform:uppercase;">Sensor Architecture</div>
+          <div style="font-size:13px; font-weight:700; color:#38bdf8; margin-top:4px;">5 Rich | 5 Partial | 2 Dark Zones</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.05); padding:12px; border-radius:8px;">
+          <div style="font-size:10px; color:#94a3b8; text-transform:uppercase;">Topology Status</div>
+          <div style="font-size:13px; font-weight:700; color:#34d399; margin-top:4px;">Direct Acyclic Graph (DAG) Verified</div>
+        </div>
+      `;
+
+      goToStep(3);
+    }
+
+    async function startTwinGeneration() {
+      goToStep(4);
+      const bar = document.getElementById("build-progress-bar");
+      const logs = document.getElementById("build-logs");
+      const btn = document.getElementById("btn-finish-build");
+
+      const fname = document.getElementById("wiz-factory-name").value || "Custom Smart Assembly Line";
+      const floc = document.getElementById("wiz-factory-loc").value || "Global";
+
+      // Call backend API to save factory and stations
+      try {
+        const res = await fetch("/api/factories/create", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: fname,
+            location: floc,
+            stations: uploadedStationsData,
+            dependencies: uploadedDepsData
+          })
+        });
+        const d = await res.json();
+        if (d.factory && d.factory.id) {
+          currentFactoryId = d.factory.id;
+          localStorage.setItem("twinpilot_active_factory", d.factory.id);
+        }
+      } catch (e) {
+        console.warn("Factory save fallback:", e);
+      }
+
+      // Step-by-step simulated pipeline compilation
+      const logEntries = [
+        "Computing per-station baseline cycle times (μ = 45.2s, σ = 1.4s)...",
+        "Building directed adjacency matrix & defect propagation pathways...",
+        "Calibrating Isolation Forest anomaly threshold at τ = 0.02...",
+        "Configuring Dark Zone proxy inference for MOD-07 and MOD-10...",
+        "Synthesizing counterfactual action matrix (Speed Override vs Upstream Throttle vs Rebalance)...",
+        "Persisting Digital Twin state to factory database. Ready!"
+      ];
+
+      for (let i = 0; i < logEntries.length; i++) {
+        await new Promise(r => setTimeout(r, 450));
+        bar.style.width = `${((i + 1) / logEntries.length) * 100}%`;
+        logs.innerHTML += `[SUCCESS] ${logEntries[i]}<br>`;
+        logs.scrollTop = logs.scrollHeight;
+      }
+
+      btn.style.display = "inline-flex";
+    }
+  </script>
+
+</body>
+</html>

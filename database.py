@@ -233,17 +233,20 @@ def seed_default_demo_factory():
             import pandas as pd
             df_dep = pd.read_csv(dep_csv)
             for _, row in df_dep.iterrows():
-                cur.execute("""
-                INSERT INTO factory_dependencies
-                (factory_id, upstream_station_id, downstream_station_id, buffer_capacity, transit_time_sec)
-                VALUES (?, ?, ?, ?, ?)
-                """, (
-                    demo_factory_id,
-                    str(row["upstream_station_id"]),
-                    str(row["downstream_station_id"]),
-                    int(row.get("buffer_capacity", 10)),
-                    float(row.get("transit_time_sec", 5.0))
-                ))
+                u_id = str(row.get("upstream_station_id") or row.get("from_station") or "")
+                d_id = str(row.get("downstream_station_id") or row.get("to_station") or "")
+                if u_id and d_id:
+                    cur.execute("""
+                    INSERT INTO factory_dependencies
+                    (factory_id, upstream_station_id, downstream_station_id, buffer_capacity, transit_time_sec)
+                    VALUES (?, ?, ?, ?, ?)
+                    """, (
+                        demo_factory_id,
+                        u_id,
+                        d_id,
+                        int(row.get("buffer_capacity", 10)),
+                        float(row.get("transit_time_sec", 5.0))
+                    ))
 
     conn.commit()
     conn.close()

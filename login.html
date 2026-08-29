@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TwinPilot — Enterprise Login & Multi-Tenant Access</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      background: radial-gradient(circle at 50% 0%, #ecfdf5 0%, #f8fafc 55%, #f1f5f9 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-body);
+      color: var(--text-primary);
+      margin: 0;
+      padding: 24px;
+      box-sizing: border-box;
+    }
+
+    .auth-container {
+      width: 100%;
+      max-width: 480px;
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 18px;
+      padding: 36px 32px;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08), 0 0 20px rgba(5, 150, 105, 0.08);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .auth-container::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #059669, #10b981, #34d399);
+    }
+
+    .auth-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 8px;
+      justify-content: center;
+    }
+
+    .auth-logo i {
+      width: 30px;
+      height: 30px;
+      color: var(--accent-healthy);
+    }
+
+    .auth-logo h1 {
+      font-family: var(--font-display);
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin: 0;
+      color: var(--text-primary);
+    }
+
+    .auth-logo .logo-dot {
+      color: var(--accent-healthy);
+    }
+
+    .auth-subtitle {
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: 13.5px;
+      margin-bottom: 24px;
+      line-height: 1.5;
+    }
+
+    .auth-tabs {
+      display: flex;
+      background: #f1f5f9;
+      border-radius: 10px;
+      padding: 4px;
+      margin-bottom: 24px;
+      border: 1px solid var(--border-color);
+    }
+
+    .auth-tab-btn {
+      flex: 1;
+      padding: 10px;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 600;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      border-radius: 7px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: var(--font-body);
+    }
+
+    .auth-tab-btn.active {
+      background: #ffffff;
+      color: var(--accent-healthy);
+      font-weight: 700;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+      border: 1px solid rgba(5, 150, 105, 0.2);
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 11.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+    }
+
+    .form-input {
+      width: 100%;
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 9px;
+      padding: 11px 14px;
+      color: var(--text-primary);
+      font-size: 13.5px;
+      box-sizing: border-box;
+      outline: none;
+      font-family: var(--font-body);
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .form-input:focus {
+      border-color: var(--accent-healthy);
+      box-shadow: 0 0 0 3px var(--accent-healthy-glow);
+    }
+
+    .btn-submit {
+      width: 100%;
+      background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+      color: #ffffff;
+      border: none;
+      border-radius: 9px;
+      padding: 12px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 14px rgba(5, 150, 105, 0.25);
+      transition: transform 0.15s, box-shadow 0.15s;
+      margin-top: 20px;
+      font-family: var(--font-body);
+    }
+
+    .btn-submit:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(5, 150, 105, 0.35);
+    }
+
+    .demo-bypass-card {
+      margin-top: 24px;
+      padding: 16px;
+      border-radius: 12px;
+      background: var(--accent-healthy-bg);
+      border: 1px solid rgba(5, 150, 105, 0.25);
+      text-align: center;
+    }
+
+    .btn-demo-bypass {
+      background: #ffffff;
+      border: 1.5px solid var(--accent-healthy);
+      color: var(--accent-healthy);
+      padding: 9px 18px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+      text-decoration: none;
+      margin-top: 10px;
+      box-shadow: 0 2px 6px rgba(5, 150, 105, 0.1);
+    }
+
+    .btn-demo-bypass:hover {
+      background: var(--accent-healthy);
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25);
+    }
+
+    .auth-alert {
+      display: none;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 12.5px;
+      margin-bottom: 16px;
+      font-weight: 600;
+    }
+
+    .auth-alert.error {
+      display: block;
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #dc2626;
+    }
+
+    .auth-alert.success {
+      display: block;
+      background: var(--accent-healthy-bg);
+      border: 1px solid #a7f3d0;
+      color: var(--accent-healthy);
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="auth-container">
+    <div class="auth-logo">
+      <i data-lucide="cpu"></i>
+      <h1>TwinPilot</h1>
+    </div>
+    <div class="auth-subtitle">
+      Multi-Tenant Manufacturing Intelligence & Dynamic Factory Twin Platform
+    </div>
+
+    <div class="auth-tabs">
+      <button class="auth-tab-btn active" id="tab-login" onclick="switchAuthTab('login')">Sign In</button>
+      <button class="auth-tab-btn" id="tab-register" onclick="switchAuthTab('register')">Register Company</button>
+    </div>
+
+    <div id="auth-alert" class="auth-alert"></div>
+
+    <!-- Login Form -->
+    <form id="form-login" onsubmit="handleLogin(event)">
+      <div class="form-group">
+        <label class="form-label" for="login-email">Corporate Work Email</label>
+        <input type="email" id="login-email" class="form-input" placeholder="operator@automotive-oem.com" required value="demo@twinpilot.ai">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="login-password">Password</label>
+        <input type="password" id="login-password" class="form-input" placeholder="••••••••" required value="demo1234">
+      </div>
+
+      <button type="submit" class="btn-submit" id="btn-login-submit">
+        <i data-lucide="log-in" style="width:16px;height:16px;"></i> Sign In to Plant Workspace
+      </button>
+    </form>
+
+    <!-- Register Form -->
+    <form id="form-register" style="display:none;" onsubmit="handleRegister(event)">
+      <div class="form-group">
+        <label class="form-label" for="reg-company">Company / Brand</label>
+        <input type="text" id="reg-company" class="form-input" placeholder="e.g. BMW Group, Rivian" required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="reg-name">Lead Plant Operator Name</label>
+        <input type="text" id="reg-name" class="form-input" placeholder="Dr. Sarah Chen" required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="reg-email">Work Email</label>
+        <input type="email" id="reg-email" class="form-input" placeholder="sarah.chen@oem.com" required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="reg-password">Password</label>
+        <input type="password" id="reg-password" class="form-input" placeholder="At least 8 characters" required minlength="6">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="reg-location">Location</label>
+        <input type="text" id="reg-location" class="form-input" placeholder="e.g. Leipzig, Germany" required>
+      </div>
+
+      <button type="submit" class="btn-submit" id="btn-register-submit">
+        <i data-lucide="building-2" style="width:16px;height:16px;"></i> Create Company Account
+      </button>
+    </form>
+
+    <!-- Instant Demo Factory Access -->
+    <div class="demo-bypass-card">
+      <div style="font-size:12.5px; font-weight:700; color:var(--accent-healthy);">
+        <i data-lucide="shield-check" style="width:15px;height:15px;display:inline-block;vertical-align:middle;margin-right:4px;"></i>
+        Zero Setup Demo Mode
+      </div>
+      <div style="font-size:12px; color:var(--text-secondary); margin-top:5px; line-height:1.4;">
+        Explore the pre-loaded 31-station automotive factory with live simulations & chatbot immediately.
+      </div>
+      <a href="dashboard.html" class="btn-demo-bypass">
+        <i data-lucide="play" style="width:14px;height:14px;"></i>
+        Launch Detroit 31-Station Demo Factory
+      </a>
+    </div>
+
+  </div>
+
+  <script>
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+
+    function switchAuthTab(tab) {
+      const loginTab = document.getElementById("tab-login");
+      const regTab = document.getElementById("tab-register");
+      const loginForm = document.getElementById("form-login");
+      const regForm = document.getElementById("form-register");
+      const alertBox = document.getElementById("auth-alert");
+
+      alertBox.className = "auth-alert";
+      alertBox.textContent = "";
+
+      if (tab === "login") {
+        loginTab.classList.add("active");
+        regTab.classList.remove("active");
+        loginForm.style.display = "block";
+        regForm.style.display = "none";
+      } else {
+        regTab.classList.add("active");
+        loginTab.classList.remove("active");
+        regForm.style.display = "block";
+        loginForm.style.display = "none";
+      }
+    }
+
+    async function handleLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById("login-email").value;
+      const password = document.getElementById("login-password").value;
+      const alertBox = document.getElementById("auth-alert");
+
+      try {
+        const res = await fetch("/api/auth/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          localStorage.setItem("twinpilot_session_token", data.session_token);
+          sessionStorage.setItem("twinpilot_session_token", data.session_token);
+          alertBox.className = "auth-alert success";
+          alertBox.textContent = `Welcome back, ${data.user.name}! Loading ${data.user.active_factory.name}...`;
+          setTimeout(() => {
+            window.location.href = "dashboard.html";
+          }, 600);
+        } else {
+          alertBox.className = "auth-alert error";
+          alertBox.textContent = data.error || "Login failed.";
+        }
+      } catch (err) {
+        alertBox.className = "auth-alert error";
+        alertBox.textContent = "Could not connect to authentication server.";
+      }
+    }
+
+    async function handleRegister(e) {
+      e.preventDefault();
+      const company_name = document.getElementById("reg-company").value;
+      const user_name = document.getElementById("reg-name").value;
+      const email = document.getElementById("reg-email").value;
+      const password = document.getElementById("reg-password").value;
+      const location = document.getElementById("reg-location").value;
+      const alertBox = document.getElementById("auth-alert");
+
+      try {
+        const res = await fetch("/api/auth/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            company_name, user_name, email, password, location
+          })
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          localStorage.setItem("twinpilot_session_token", data.session_token);
+          sessionStorage.setItem("twinpilot_session_token", data.session_token);
+          alertBox.className = "auth-alert success";
+          alertBox.textContent = `Company created! Directing to Factory Dataset Onboarding Wizard...`;
+          setTimeout(() => {
+            window.location.href = "onboarding.html";
+          }, 800);
+        } else {
+          alertBox.className = "auth-alert error";
+          alertBox.textContent = data.error || "Registration failed.";
+        }
+      } catch (err) {
+        alertBox.className = "auth-alert error";
+        alertBox.textContent = "Could not connect to registration service.";
+      }
+    }
+  </script>
+
+</body>
+</html>

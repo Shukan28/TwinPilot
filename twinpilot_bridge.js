@@ -35,7 +35,7 @@ const TwinPilotAPI = (() => {
       restoredMinute: 168,
       station: "S03", 
       event_id: "RUN024-EVT01", 
-      title: "RUN-024 (S03 Defect Surge — Option C recommended)" 
+      title: "RUN-024 (S03 Defect Surge)" 
     },
     "RUN025-EVT02": { 
       run_id: "RUN-025", 
@@ -47,7 +47,7 @@ const TwinPilotAPI = (() => {
       restoredMinute: 118,
       station: "S16", 
       event_id: "RUN025-EVT02", 
-      title: "RUN-025 (S16 Delay & S21 Dark Zone — Option A recommended)" 
+      title: "RUN-025 (S16 Delay & S21 Dark Zone)" 
     },
   };
 
@@ -196,16 +196,28 @@ const TwinPilotAPI = (() => {
     }
 
     bar.innerHTML = `
-      <div style="display:flex; align-items:center; gap:16px;">
+      <div style="display:flex; align-items:center; gap:16px; flex-wrap:wrap;">
+        <!-- Factory / Tenant Switcher -->
+        <div style="display:flex; align-items:center; gap:6px;">
+          <span style="color:#38bdf8; font-weight:800; letter-spacing:0.04em; text-transform:uppercase;">Plant:</span>
+          <select id="tp-factory-select" style="background:#0f172a; color:#38bdf8; border:1px solid rgba(56,189,248,0.5);
+            border-radius:6px; padding:4px 8px; font-size:11.5px; font-weight:700; cursor:pointer; outline:none; max-width:200px;">
+            <option value="demo-detroit-31">🏭 Detroit Plant #4 (Demo)</option>
+          </select>
+          <a href="onboarding.html" title="Onboard New Factory Datasets" style="background:rgba(99,102,241,0.2); color:#a5b4fc; border:1px solid rgba(99,102,241,0.4); border-radius:5px; padding:3px 8px; font-size:11px; font-weight:700; text-decoration:none; display:inline-flex; align-items:center; gap:3px;">
+            + Onboard Factory
+          </a>
+        </div>
+
         <div style="display:flex; align-items:center; gap:8px;">
           <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#10b981; animation:blink 1.5s infinite;"></span>
           <span style="color:#818cf8; font-weight:800; letter-spacing:0.05em; text-transform:uppercase;">Twin Scenario:</span>
+          <select id="tp-scenario-select" style="background:#0f172a; color:#f8fafc; border:1px solid rgba(99,102,241,0.5);
+            border-radius:6px; padding:4px 10px; font-size:11.5px; font-weight:600; cursor:pointer; outline:none;">
+            <option value="RUN024-EVT01">RUN-024 (S03 Defect Surge)</option>
+            <option value="RUN025-EVT02">RUN-025 (S16 Delay & S21 Dark Zone)</option>
+          </select>
         </div>
-        <select id="tp-scenario-select" style="background:#0f172a; color:#f8fafc; border:1px solid rgba(99,102,241,0.5);
-          border-radius:6px; padding:5px 12px; font-size:12px; font-weight:600; cursor:pointer; outline:none;">
-          <option value="RUN024-EVT01">RUN-024 (S03 Defect Surge — Option C recommended)</option>
-          <option value="RUN025-EVT02">RUN-025 (S16 Delay & S21 Dark Zone — Option A recommended)</option>
-        </select>
 
         <div style="display:flex; align-items:center; gap:8px; background:rgba(255,255,255,0.06); padding:3px 10px; border-radius:6px; border:1px solid rgba(255,255,255,0.1);">
           <span style="font-size:11px; color:#94a3b8;">Clock Speed:</span>
@@ -219,10 +231,13 @@ const TwinPilotAPI = (() => {
         </div>
       </div>
 
-      <!-- Line Structure & Intelligence Pipeline Badge -->
+      <!-- Line Structure & Multi-Tenant Access Badge -->
       <div style="display:flex; align-items:center; gap:12px;">
-        <span style="font-size:11px; color:#94a3b8;">Topology: <strong style="color:#f8fafc;">30 Mainline (S01–S30) + 1 Feeder (ENG01)</strong></span>
-        <span style="background:rgba(16,185,129,0.15); color:#10b981; border:1px solid rgba(16,185,129,0.3); padding:3px 8px; border-radius:4px; font-size:10.5px; font-weight:700;">● Continuous Twin Live</span>
+        <span style="font-size:11px; color:#94a3b8;" id="tp-topology-info">Topology: <strong style="color:#f8fafc;">30 Mainline (S01–S30) + 1 Feeder (ENG01)</strong></span>
+        <span style="background:rgba(16,185,129,0.15); color:#10b981; border:1px solid rgba(16,185,129,0.3); padding:3px 8px; border-radius:4px; font-size:10.5px; font-weight:700;">● Multi-Tenant OS</span>
+        <a href="login.html" title="Login / Switch Company Workspace" style="background:rgba(255,255,255,0.06); color:#cbd5e1; border:1px solid rgba(255,255,255,0.15); border-radius:5px; padding:3px 8px; font-size:11px; font-weight:600; text-decoration:none; display:inline-flex; align-items:center; gap:4px;">
+          Account
+        </a>
       </div>
     `;
 
@@ -232,6 +247,45 @@ const TwinPilotAPI = (() => {
       sel.addEventListener("change", (e) => {
         switchScenario(e.target.value);
       });
+    }
+
+    // Populate factory dropdown
+    populateFactorySelector();
+  }
+
+  async function populateFactorySelector() {
+    const factSel = document.getElementById("tp-factory-select");
+    if (!factSel) return;
+
+    try {
+      const resp = await fetch(`${BASE}/factories`);
+      if (!resp.ok) return;
+      const data = await resp.json();
+      const factories = data.factories || [];
+      let activeFid = localStorage.getItem("twinpilot_active_factory") || "demo-detroit-31";
+
+      if (!factories.some(f => f.id === activeFid)) {
+        activeFid = "demo-detroit-31";
+        localStorage.setItem("twinpilot_active_factory", "demo-detroit-31");
+      }
+
+      factSel.innerHTML = "";
+      factories.forEach(f => {
+        const opt = document.createElement("option");
+        opt.value = f.id;
+        opt.textContent = `${f.is_demo ? "🏭 [Demo] " : "🏭 "}${f.name}`;
+        if (f.id === activeFid) opt.selected = true;
+        factSel.appendChild(opt);
+      });
+
+      factSel.addEventListener("change", (e) => {
+        const newFid = e.target.value;
+        localStorage.setItem("twinpilot_active_factory", newFid);
+        showToast(`Switched active factory workspace to ${e.target.selectedOptions[0].text}.`, "info");
+        fetchAndRenderState();
+      });
+    } catch (e) {
+      console.warn("Could not load factories list:", e);
     }
   }
 
@@ -1317,15 +1371,61 @@ const TwinPilotAPI = (() => {
     }
   }
 
+  // ── Render Responsible AI & Trust Center (responsible-ai.html) ─────────────
+  function renderResponsibleAI(state) {
+    const metrics = state.overall_metrics || {};
+
+    // 1. Header Telemetry & Clock
+    setText("sim-clock", formatSimClockFromSeconds(currentSimSeconds));
+    if (metrics.overall_health_pct != null) {
+      setText("factory-overall-health", `${metrics.overall_health_pct}%`);
+      setStyle("factory-overall-health", "color", metrics.overall_health_pct >= 90 ? "var(--accent-healthy)" : (metrics.overall_health_pct >= 75 ? "var(--accent-warning)" : "var(--accent-critical)"));
+    }
+
+    // 2. Dynamic Trust Score Calibration
+    let trustVal = 94;
+    if (decisionState === "approved") {
+      trustVal = 98;
+    } else if (decisionState === "rejected") {
+      trustVal = 88;
+    } else if (selectedTimelineStepIdx >= 3) {
+      trustVal = 91;
+    }
+
+    setText("trust-score-pct", `${trustVal}%`);
+    const circle = document.getElementById("trust-fill-circle");
+    if (circle) {
+      const circ = 2 * Math.PI * 54; // ~339.29
+      const offset = circ - (circ * (trustVal / 100));
+      circle.style.strokeDashoffset = offset;
+    }
+
+    // 3. Load & Render Live Audit Logs
+    loadRecentAuditLogs();
+  }
+
   // ── Fetch & Load State from API ───────────────────────────────────────────
   async function fetchAndRenderState() {
-    const url = `${BASE}/scenario?run_id=${clock.runId}&minute=${clock.minute}&station=${clock.station}&event_id=${clock.event_id || ""}&step_id=${selectedTimelineStepIdx}`;
+    const activeFid = localStorage.getItem("twinpilot_active_factory") || "demo-detroit-31";
+    let url = `${BASE}/scenario?run_id=${clock.runId}&minute=${clock.minute}&station=${clock.station}&event_id=${clock.event_id || ""}&step_id=${selectedTimelineStepIdx}`;
+    if (activeFid && activeFid !== "demo-detroit-31") {
+      url += `&factory_id=${activeFid}`;
+    }
+
     try {
       const resp = await fetch(url);
       if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
       const state = await resp.json();
       latestState = state;
       window.latestFactoryState = state;
+
+      // Update topology info badge in bar if custom factory
+      const topInfo = document.getElementById("tp-topology-info");
+      if (topInfo && state.is_custom_factory) {
+        topInfo.innerHTML = `Topology: <strong style="color:#38bdf8;">${state.factory_name} (${state.stations.length} Stations)</strong>`;
+      } else if (topInfo) {
+        topInfo.innerHTML = `Topology: <strong style="color:#f8fafc;">30 Mainline (S01–S30) + 1 Feeder (ENG01)</strong>`;
+      }
 
       // Sync approval state from backend
       if (state.approval_state && state.approval_state.status !== "pending") {
@@ -1336,6 +1436,8 @@ const TwinPilotAPI = (() => {
       const path = window.location.pathname;
       if (path.includes("analytics")) {
         renderDiagnostics(state);
+      } else if (path.includes("responsible-ai")) {
+        renderResponsibleAI(state);
       } else {
         renderCockpit(state);
       }

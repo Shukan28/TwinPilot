@@ -776,6 +776,19 @@ def static_files(path):
 
 @app.route("/api/scenario")
 def api_scenario():
+    factory_id = request.args.get("factory_id", None)
+    if factory_id and factory_id not in ("demo", "demo-detroit-31"):
+        try:
+            from tenant_pipeline import build_custom_factory_state
+            step_id_val = int(request.args.get("step_id", "0") or 0)
+            min_val = int(request.args.get("minute", "100") or 100)
+            st_val = request.args.get("station", None)
+            res = build_custom_factory_state(factory_id, minute=min_val, target_station=st_val, step_id=step_id_val)
+            if res:
+                return jsonify(res)
+        except Exception as e:
+            traceback.print_exc()
+
     run_id   = request.args.get("run_id",   "RUN-024")
     minute   = int(request.args.get("minute",  "123"))
     station  = request.args.get("station",  None)
@@ -944,6 +957,96 @@ def api_chat():
         "reply": reply,
         "is_out_of_domain": is_out_of_domain(question)
     })
+
+
+# ── Multi-Tenant Authentication & Factory Workspace Endpoints ───────────────
+@app.route("/api/auth/register", methods=["POST"])
+def api_auth_register():
+    import auth_service
+    body = request.get_json(force=True) if request.data else {}
+    res = auth_service.register_company_and_user(
+        company_name=body.get("company_name", "Enterprise OEM"),
+        industry=body.get("industry", "Automotive"),
+        user_name=body.get("user_name", "Plant Lead"),
+        email=body.get("email", ""),
+        password=body.get("password", ""),
+        factory_name=body.get("factory_name", ""),
+        location=body.get("location", "Global")
+    )
+    return jsonify(res)
+
+
+@app.route("/api/auth/login", methods=["POST"])
+def api_auth_login():
+    import auth_service
+    body = request.get_json(force=True) if request.data else {}
+    res = auth_service.authenticate_user(
+        email=body.get("email", ""),
+        password=body.get("password", "")
+    )
+    return jsonify(res)
+
+
+@app.route("/api/auth/me", methods=["GET"])
+def api_auth_me():
+    import auth_service
+    token = request.headers.get("X-Session-Token") or request.args.get("session_token")
+    user = auth_service.get_session_user(token)
+    return jsonify(user)
+
+
+@app.route("/api/factories", methods=["GET"])
+def api_list_factories():
+    import auth_service
+    token = request.headers.get("X-Session-Token") or request.args.get("session_token")
+    user = auth_service.get_session_user(token)
+    company_id = user.get("company_id", "comp_demo_apex")
+    factories = auth_service.list_company_factories(company_id)
+    return jsonify({"factories": factories, "active_factory": user.get("active_factory")})
+
+
+@app.route("/api/factories/create", methods=["POST"])
+def api_create_factory():
+    import auth_service, onboarding_service
+    body = request.get_json(force=True) if request.data else {}
+    token = request.headers.get("X-Session-Token") or body.get("session_token")
+    user = auth_service.get_session_user(token)
+    company_id = user.get("company_id", "comp_demo_apex")
+
+    name = body.get("name", "New Smart Factory")
+    loc = body.get("location", "Global")
+    res = auth_service.create_factory_for_company(company_id, name, loc)
+
+    if res.get("success") and res.get("factory"):
+        fid = res["factory"]["id"]
+        stations = body.get("stations", [])
+        deps = body.get("dependencies", [])
+        if stations:
+            onboarding_service.save_factory_datasets_and_stations(fid, stations, deps)
+
+    return jsonify(res)
+
+
+@app.route("/api/factories/switch", methods=["POST"])
+def api_switch_factory():
+    import auth_service
+    body = request.get_json(force=True) if request.data else {}
+    token = request.headers.get("X-Session-Token") or body.get("session_token")
+    factory_id = body.get("factory_id", "demo-detroit-31")
+    res = auth_service.switch_active_factory(token, factory_id)
+    return jsonify(res)
+
+
+# ── MongoDB Atlas Backend Health Check ──────────────────────────────────────
+@app.route("/api/db/health", methods=["GET"])
+def api_mongodb_health():
+    import mongodb_client
+    result = mongodb_client.test_mongodb_connection()
+    # Ensure cluster hosts are JSON serializable
+    if "cluster_host" in result:
+        result["cluster_host"] = [f"{h[0]}:{h[1]}" for h in result["cluster_host"]] if result.get("cluster_host") else []
+    status_code = 200 if result.get("success") else 503
+    return jsonify(result), status_code
 
 
 if __name__ == "__main__":

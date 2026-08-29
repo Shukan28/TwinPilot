@@ -69,9 +69,15 @@ def validate_stations_file(file_path: str):
     if errors:
         return {"valid": False, "errors": errors, "warnings": warnings, "stats": {}}
 
+    phase_col = col_map.get("phase") or col_map.get("line_phase") or col_map.get("area") or col_map.get("zone")
+    upstream_col = col_map.get("upstream_station_id") or col_map.get("from_station") or col_map.get("upstream")
+
     # Standardize data
     stations = []
+    embedded_deps = []
     tier_counts = {"RICH": 0, "PARTIAL": 0, "MANUAL": 0}
+    phases_seen = []
+
     for idx, row in df.iterrows():
         sid = str(row[id_col]).strip()
         sname = str(row[name_col]).strip()
@@ -80,14 +86,27 @@ def validate_stations_file(file_path: str):
         if tier not in ("RICH", "PARTIAL", "MANUAL"):
             tier = "PARTIAL"
         tier_counts[tier] = tier_counts.get(tier, 0) + 1
+
+        phase_val = str(row[phase_col]).strip() if phase_col and pd.notnull(row[phase_col]) else "Assembly"
+        if phase_val not in phases_seen:
+            phases_seen.append(phase_val)
+
         stations.append({
             "station_id": sid,
             "station_name": sname,
-            "line_phase": str(row.get("line_phase", "Assembly")),
+            "line_phase": phase_val,
             "baseline_cycle_time_sec": ct,
             "sensor_tier": tier,
             "station_order": idx + 1
         })
+
+        if upstream_col and pd.notnull(row[upstream_col]) and str(row[upstream_col]).strip():
+            embedded_deps.append({
+                "upstream_station_id": str(row[upstream_col]).strip(),
+                "downstream_station_id": sid,
+                "buffer_capacity": 10,
+                "transit_time_sec": 5.0
+            })
 
     return {
         "valid": True,
@@ -96,9 +115,12 @@ def validate_stations_file(file_path: str):
         "stats": {
             "total_stations": len(stations),
             "tier_breakdown": tier_counts,
-            "sample_stations": [s["station_id"] for s in stations[:8]]
+            "phases": phases_seen,
+            "sample_stations": [s["station_id"] for s in stations[:8]],
+            "embedded_dependencies_count": len(embedded_deps)
         },
-        "cleaned_data": stations
+        "cleaned_data": stations,
+        "embedded_dependencies": embedded_deps
     }
 
 
@@ -254,4 +276,39 @@ def save_factory_datasets_and_stations(factory_id: str, stations_data: list, dep
 
     conn.commit()
     conn.close()
+
+    # Mirror to MongoDB Atlas
+    try:
+        import mongodb_client
+        mdb = mongodb_client.get_mongodb_database()
+        for s in stations_data:
+            st_doc = {
+                "_id": f"{factory_id}_{s['station_id']}",
+                "factory_id": factory_id,
+                "station_id": s["station_id"],
+                "station_name": s["station_name"],
+                "line_phase": s.get("line_phase", "Assembly"),
+                "baseline_cycle_time_sec": s.get("baseline_cycle_time_sec", 45.0),
+                "sensor_tier": s.get("sensor_tier", "PARTIAL"),
+                "station_order": s.get("station_order", 1),
+                "created_at": now_str
+            }
+            mdb.factory_stations.update_one({"_id": st_doc["_id"]}, {"$set": st_doc}, upsert=True)
+
+        for d in deps_data:
+            dep_id = f"{factory_id}_{d['upstream_station_id']}_{d['downstream_station_id']}"
+            dep_doc = {
+                "_id": dep_id,
+                "factory_id": factory_id,
+                "upstream_station_id": d["upstream_station_id"],
+                "downstream_station_id": d["downstream_station_id"],
+                "buffer_capacity": d.get("buffer_capacity", 10),
+                "transit_time_sec": d.get("transit_time_sec", 5.0)
+            }
+            mdb.factory_dependencies.update_one({"_id": dep_id}, {"$set": dep_doc}, upsert=True)
+
+        mdb.factories.update_one({"_id": factory_id}, {"$set": {"status": "active"}})
+    except Exception as mex:
+        print("[MongoDB Atlas Stations Mirror Warning]:", mex)
+
     return True

@@ -146,6 +146,39 @@
       box-shadow: 0 0 0 3px var(--accent-healthy-glow);
     }
 
+    .password-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+      width: 100%;
+    }
+
+    .password-input {
+      padding-right: 44px !important;
+    }
+
+    .btn-toggle-pwd {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: transparent;
+      border: none;
+      color: #94a3b8;
+      cursor: pointer;
+      padding: 6px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      transition: color 0.15s ease, background-color 0.15s ease;
+    }
+
+    .btn-toggle-pwd:hover {
+      color: var(--accent-healthy);
+      background: rgba(5, 150, 105, 0.08);
+    }
+
     .btn-submit {
       width: 100%;
       background: linear-gradient(135deg, #059669 0%, #10b981 100%);
@@ -256,7 +289,12 @@
 
       <div class="form-group">
         <label class="form-label" for="login-password">Password</label>
-        <input type="password" id="login-password" class="form-input" placeholder="••••••••" required value="demo1234">
+        <div class="password-wrapper">
+          <input type="password" id="login-password" class="form-input password-input" placeholder="••••••••" required value="demo1234">
+          <button type="button" class="btn-toggle-pwd" onclick="togglePasswordVisibility('login-password', this)" title="Show or hide password" aria-label="Toggle password visibility">
+            <i data-lucide="eye" style="width:16px;height:16px;"></i>
+          </button>
+        </div>
       </div>
 
       <button type="submit" class="btn-submit" id="btn-login-submit">
@@ -283,7 +321,12 @@
 
       <div class="form-group">
         <label class="form-label" for="reg-password">Password</label>
-        <input type="password" id="reg-password" class="form-input" placeholder="At least 8 characters" required minlength="6">
+        <div class="password-wrapper">
+          <input type="password" id="reg-password" class="form-input password-input" placeholder="At least 8 characters" required minlength="6">
+          <button type="button" class="btn-toggle-pwd" onclick="togglePasswordVisibility('reg-password', this)" title="Show or hide password" aria-label="Toggle password visibility">
+            <i data-lucide="eye" style="width:16px;height:16px;"></i>
+          </button>
+        </div>
       </div>
 
       <div class="form-group">
@@ -339,6 +382,19 @@
       }
     }
 
+    function togglePasswordVisibility(inputId, btn) {
+      const input = document.getElementById(inputId);
+      if (!input) return;
+      const isCurrentlyPassword = (input.type === "password");
+      input.type = isCurrentlyPassword ? "text" : "password";
+
+      const icon = btn.querySelector("i");
+      if (icon) {
+        icon.setAttribute("data-lucide", isCurrentlyPassword ? "eye-off" : "eye");
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+      }
+    }
+
     async function handleLogin(e) {
       e.preventDefault();
       const email = document.getElementById("login-email").value;
@@ -355,11 +411,16 @@
 
         if (data.success) {
           localStorage.setItem("twinpilot_session_token", data.session_token);
+          localStorage.setItem("twinpilot_token", data.session_token);
           sessionStorage.setItem("twinpilot_session_token", data.session_token);
+          localStorage.setItem("twinpilot_user", JSON.stringify(data.user));
+          if (data.user && data.user.active_factory) {
+            localStorage.setItem("twinpilot_active_factory", data.user.active_factory.id);
+          }
           alertBox.className = "auth-alert success";
-          alertBox.textContent = `Welcome back, ${data.user.name}! Loading ${data.user.active_factory.name}...`;
+          alertBox.textContent = `Welcome back, ${data.user.name}! Loading ${data.user.active_factory ? data.user.active_factory.name : 'factory'}...`;
           setTimeout(() => {
-            window.location.href = "dashboard.html";
+            window.location.href = "profile.html";
           }, 600);
         } else {
           alertBox.className = "auth-alert error";
@@ -392,11 +453,16 @@
 
         if (data.success) {
           localStorage.setItem("twinpilot_session_token", data.session_token);
+          localStorage.setItem("twinpilot_token", data.session_token);
           sessionStorage.setItem("twinpilot_session_token", data.session_token);
+          localStorage.setItem("twinpilot_user", JSON.stringify(data.user));
+          if (data.user && data.user.active_factory) {
+            localStorage.setItem("twinpilot_active_factory", data.user.active_factory.id);
+          }
           alertBox.className = "auth-alert success";
-          alertBox.textContent = `Company created! Directing to Factory Dataset Onboarding Wizard...`;
+          alertBox.textContent = `Account created for ${data.user.company_name}! Directing to profile...`;
           setTimeout(() => {
-            window.location.href = "onboarding.html";
+            window.location.href = "profile.html";
           }, 800);
         } else {
           alertBox.className = "auth-alert error";

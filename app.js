@@ -173,17 +173,19 @@ async function generateTwinAnswer(q) {
 
 function fallbackLocalAnswer(q, state) {
   const qLower = q.toLowerCase();
+  const stCount = (state && state.stations) ? state.stations.length : 31;
+  const pName = (state && state.factory_name) ? state.factory_name : "active factory";
   if (qLower.includes("how many station") || qLower.includes("total station")) {
-    return "The TwinPilot platform monitors a total of <strong>31 production stations</strong> (30 mainline S01-S30 + 1 dedicated feeder ENG01) across Body Construction, Paint, and Final Assembly.";
+    return `The TwinPilot platform is monitoring a total of <strong>${stCount} production stations</strong> for ${pName}.`;
   }
   if (qLower.includes("feature") || qLower.includes("what can we do")) {
     return "TwinPilot provides real-time digital twin streaming, early anomaly precursor forecasting, 3-factor root cause localization, defect propagation traversal, Dark Zone sensorless inference, vehicle quarantine tracking, counterfactual what-if simulation (Options A/B/C), and reinforcement learning governance.";
   }
   if (state && state.target_station) {
     const target = state.target_station;
-    return `Station <strong>${target.station_id} (${target.station_name})</strong> cycle time: <strong>${target.cycle_time_sec}s</strong>. Queue: <strong>${target.queue_length}</strong> vehicles. Defect risk: <strong>${target.defect_prob_pct}%</strong>.`;
+    return `Station <strong>${target.station_id} (${target.station_name})</strong> cycle time: <strong>${target.cycle_time_sec}s</strong>. Queue: <strong>${target.queue_length}</strong> vehicles. Defect risk: <strong>${target.defect_prob_pct || target.defect_risk_pct || 0}%</strong>.`;
   }
-  return "TwinPilot AI is actively monitoring 31 stations across Body, Paint, and Final Assembly.";
+  return `TwinPilot AI is actively monitoring ${stCount} stations across ${pName}.`;
 }
 
 // --- DOM Initializer ---

@@ -195,6 +195,36 @@ const TwinPilotAPI = (() => {
       document.body.prepend(bar);
     }
 
+    const token = localStorage.getItem("twinpilot_session_token") || localStorage.getItem("twinpilot_token");
+    let rawUser = localStorage.getItem("twinpilot_user");
+    let userObj = null;
+    try { if (rawUser) userObj = JSON.parse(rawUser); } catch(e) {}
+
+    // Async sync profile if token present
+    if (token) {
+      fetch("/api/auth/me", { headers: { "X-Session-Token": token } })
+        .then(r => r.json())
+        .then(d => {
+          if (d && d.is_authenticated) {
+            localStorage.setItem("twinpilot_user", JSON.stringify({
+              name: d.user_name,
+              email: d.email,
+              company_name: d.company_name,
+              role: d.role,
+              active_factory: d.active_factory
+            }));
+            const btn = document.getElementById("tp-account-btn");
+            if (btn) {
+              btn.href = "profile.html";
+              btn.innerHTML = `👤 ${d.user_name.split(' ')[0]}`;
+            }
+          }
+        }).catch(() => {});
+    }
+
+    const accountHref = "profile.html";
+    const accountLabel = (userObj && userObj.name) ? `👤 ${userObj.name.split(' ')[0]}` : "Account";
+
     bar.innerHTML = `
       <div style="display:flex; align-items:center; gap:16px; flex-wrap:wrap;">
         <!-- Factory / Tenant Switcher -->
@@ -233,10 +263,10 @@ const TwinPilotAPI = (() => {
 
       <!-- Line Structure & Multi-Tenant Access Badge -->
       <div style="display:flex; align-items:center; gap:12px;">
-        <span style="font-size:11px; color:#94a3b8;" id="tp-topology-info">Topology: <strong style="color:#f8fafc;">30 Mainline (S01–S30) + 1 Feeder (ENG01)</strong></span>
+        <span style="font-size:11px; color:#94a3b8;" id="tp-topology-info">Topology: <strong style="color:#f8fafc;" id="tp-topology-label">Synchronized Digital Twin</strong></span>
         <span style="background:rgba(16,185,129,0.15); color:#10b981; border:1px solid rgba(16,185,129,0.3); padding:3px 8px; border-radius:4px; font-size:10.5px; font-weight:700;">● Multi-Tenant OS</span>
-        <a href="login.html" title="Login / Switch Company Workspace" style="background:rgba(255,255,255,0.06); color:#cbd5e1; border:1px solid rgba(255,255,255,0.15); border-radius:5px; padding:3px 8px; font-size:11px; font-weight:600; text-decoration:none; display:inline-flex; align-items:center; gap:4px;">
-          Account
+        <a href="${accountHref}" id="tp-account-btn" title="Account Profile & Settings" style="background:rgba(255,255,255,0.06); color:#cbd5e1; border:1px solid rgba(255,255,255,0.15); border-radius:5px; padding:3px 8px; font-size:11px; font-weight:600; text-decoration:none; display:inline-flex; align-items:center; gap:4px;">
+          ${accountLabel}
         </a>
       </div>
     `;
@@ -737,6 +767,9 @@ const TwinPilotAPI = (() => {
         transition: transform .2s ease, border-color .3s ease;
       `;
 
+      const riskVal = (st.defect_prob_pct != null) ? st.defect_prob_pct : ((st.defect_risk_pct != null) ? st.defect_risk_pct : (st.bottleneck_prob_pct || 0));
+      const riskColor = colorForProb(riskVal);
+
       node.innerHTML = `
         <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
           <span style="font-size:11px; font-weight:800; color:${isFeeder ? "#8b5cf6" : "var(--text-primary)"}; font-family:var(--font-display);">${st.station_id}</span>
@@ -745,8 +778,8 @@ const TwinPilotAPI = (() => {
         <div style="font-size:10px; font-weight:600; color:var(--text-secondary); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; width:100%;" title="${st.station_name}">${st.station_name}</div>
         <div style="font-size:13px; font-weight:800; font-family:var(--font-display); color:${nodeColor};">${st.cycle_time_sec}s</div>
         <div style="display:flex; justify-content:space-between; width:100%; font-size:9px; color:var(--text-muted); border-top:1px solid rgba(0,0,0,0.05); padding-top:3px;">
-          <span>Q: <strong style="color:var(--text-primary);">${st.queue_length}</strong></span>
-          <span>Risk: <strong style="color:${colorForProb(st.defect_prob_pct || st.bottleneck_prob_pct)};">${st.defect_prob_pct || st.bottleneck_prob_pct}%</strong></span>
+          <span>Q: <strong style="color:var(--text-primary);">${st.queue_length != null ? st.queue_length : 0}</strong></span>
+          <span>Risk: <strong style="color:${riskColor};">${riskVal}%</strong></span>
         </div>
       `;
 
@@ -897,7 +930,7 @@ const TwinPilotAPI = (() => {
             </div>
             <div>${isStage6 ? "Line Telemetry: <strong>Nominal 46.0s Cycle Time</strong> | Backlog: <strong>0 Units</strong> | Defect Risk: <strong>0.0%</strong>" : `Observed Tput: <strong>${obsTput}</strong> | Observed Queue: <strong>${obsQ}</strong>`}</div>
             <div style="margin-top:3px; color:#10b981; font-weight:700;">RL Agent Reward: <strong>${rlRew}</strong> (Policy Updated Online)</div>
-            <div style="font-size:10.5px; color:var(--text-secondary); margin-top:2px;">${isStage6 ? "All 31 stations running within 100% nominal baseline tolerances." : (acc.feedback || "Audit record active")}</div>
+            <div style="font-size:10.5px; color:var(--text-secondary); margin-top:2px;">${isStage6 ? `All ${(latestState && latestState.stations) ? latestState.stations.length : ''} stations running within 100% nominal baseline tolerances.` : (acc.feedback || "Audit record active")}</div>
           </div>
           <button onclick="TwinPilotAPI.resetDecisionState()" style="background:transparent; border:1px dashed var(--border-color); color:var(--text-secondary); padding:6px 12px; border-radius:6px; font-size:11px; cursor:pointer; align-self:flex-start;">
             ↺ Reset Decision State
@@ -925,12 +958,43 @@ const TwinPilotAPI = (() => {
     if (typeof lucide !== "undefined") lucide.createIcons();
   }
 
+  // ── Dynamic Assembly Line Ribbon Header ───────────────────────────────────
+  function updateAssemblyLineRibbonHeader(state) {
+    if (!state || !state.stations) return;
+    let richCount = 0, partialCount = 0, manualCount = 0;
+    state.stations.forEach(st => {
+      const t = (st.sensor_tier || "").toUpperCase();
+      if (t === "RICH") richCount++;
+      else if (t === "PARTIAL") partialCount++;
+      else if (t === "MANUAL") manualCount++;
+    });
+
+    const cardTitleEl = document.querySelector(".card-title-bar .card-title");
+    if (cardTitleEl) {
+      cardTitleEl.innerHTML = `<i data-lucide="layers" style="width:16px;height:16px;"></i> ${state.stations.length}-Station Assembly Line — Live Telemetry & Sensor Tiers`;
+    }
+
+    const cardSubEl = document.querySelector(".card-title-bar .header-subtitle");
+    if (cardSubEl) {
+      cardSubEl.textContent = `${state.stations.length} Total Stations — ${richCount} Rich, ${partialCount} Partial, ${manualCount} Manual Dark Zones • Active Plant: ${state.factory_name || 'Production Plant'}`;
+    }
+
+    const topInfo = document.getElementById("tp-topology-info");
+    if (topInfo) {
+      topInfo.innerHTML = `Topology: <strong style="color:#38bdf8;">${state.stations.length} Stations (${state.factory_name || 'Plant'})</strong>`;
+    }
+  }
+
   // ── Render Cockpit (dashboard.html) ───────────────────────────────────────
   function renderCockpit(state) {
-    const target = state.target_station;
-    const metrics = state.overall_metrics;
-    const anomaly = state.anomaly_prediction;
-    const pathSet = new Set(state.propagation.path || []);
+    if (!state) return;
+    const target = (typeof state.target_station === 'object' && state.target_station) ? state.target_station : { station_id: (state.target_station || "S01"), station_name: "Target Station" };
+    const metrics = state.overall_metrics || { overall_health_pct: 98.4, line_throughput_uph: 83.2 };
+    const anomaly = state.anomaly_prediction || { alert_title: "Line Monitoring Nominal", alert_message: "All stations operating within nominal tolerance.", confidence_band: "99.8%", est_downtime_mins: 0 };
+    const pathSet = new Set((state.propagation && (state.propagation.path || state.propagation.path_stations)) || []);
+
+    // 0. Update dynamic assembly line ribbon header & subtitle
+    updateAssemblyLineRibbonHeader(state);
 
     // 1. Header Telemetry
     setText("sim-clock", formatSimClockFromSeconds(currentSimSeconds));
@@ -938,8 +1002,13 @@ const TwinPilotAPI = (() => {
     setStyle("factory-overall-health", "color", metrics.overall_health_pct >= 90 ? "var(--accent-healthy)" : (metrics.overall_health_pct >= 75 ? "var(--accent-warning)" : "var(--accent-critical)"));
     setText("factory-throughput", `${metrics.line_throughput_uph} u/h`);
 
-    // 2. 31-Station Factory Strip
+    // 2. Factory Strip (renders all stations dynamically)
     render31StationsStrip(state.stations, target.station_id, pathSet);
+
+    // 3. Render Timeline Steps if present
+    if (state.timeline_steps && state.timeline_steps.length > 0) {
+      renderTwinTimeline(state.timeline_steps);
+    }
 
     // 3. Predictive Alert Card (Stage-Dependent Styling & Icons)
     const alertCard = document.getElementById("predictive-alert-card");
@@ -1059,17 +1128,21 @@ const TwinPilotAPI = (() => {
 
   // ── Render Diagnostics (analytics.html) ───────────────────────────────────
   function renderDiagnostics(state) {
-    const target = state.target_station;
-    const metrics = state.overall_metrics;
-    const prop = state.propagation;
-    const pathSet = new Set(prop.path || []);
+    if (!state) return;
+    const target = (typeof state.target_station === 'object' && state.target_station) ? state.target_station : { station_id: (state.target_station || "S01"), station_name: "Target Station" };
+    const metrics = state.overall_metrics || { overall_health_pct: 98.4, line_throughput_uph: 83.2 };
+    const prop = state.propagation || { path: [], path_stations: [] };
+    const pathSet = new Set((prop.path || prop.path_stations) || []);
+
+    // 0. Update dynamic assembly line ribbon header & subtitle
+    updateAssemblyLineRibbonHeader(state);
 
     // 1. Header Telemetry
     setText("sim-clock", formatSimClockFromSeconds(currentSimSeconds));
     setText("factory-overall-health", `${metrics.overall_health_pct}%`);
     setText("factory-throughput", `${metrics.line_throughput_uph} u/h`);
 
-    // 2. 31-Station Factory Strip
+    // 2. Factory Strip
     render31StationsStrip(state.stations, target.station_id, pathSet);
 
     // 3. Causal Chain Row
@@ -1195,14 +1268,16 @@ const TwinPilotAPI = (() => {
       }
     }
 
-    // 6. Dynamic Dark Zone Matrix (6 Manual Stations)
+    // 6. Dynamic Dark Zone Matrix (Adapts to exact manual station count)
     const dzList = state.dark_zones || [];
+    const dzCount = dzList.length;
     const degradingDz = dzList.find(d => d.is_degrading);
     const dzHeader = document.getElementById("dz-card-title");
     const dzCenterBadge = document.getElementById("inferred-dz-badge");
     const dzConf = document.getElementById("sensorless-confidence");
     const dzDesc = document.getElementById("sensorless-desc-text");
     const dzMatrix = document.getElementById("dz-stations-matrix");
+    const dzIdsList = dzList.map(d => `<strong>${d.station_id}</strong>`).join(", ") || "None";
 
     if (degradingDz) {
       if (dzHeader) {
@@ -1223,20 +1298,20 @@ const TwinPilotAPI = (() => {
       }
     } else {
       if (dzHeader) {
-        dzHeader.innerHTML = `<i data-lucide="eye-off" style="width:16px;height:16px;color:var(--accent-info);"></i> Dark Zone Sensorless Inference (6 Manual Stations)`;
+        dzHeader.innerHTML = `<i data-lucide="eye-off" style="width:16px;height:16px;color:var(--accent-info);"></i> Dark Zone Sensorless Inference (${dzCount} Manual Stations)`;
       }
       if (dzCenterBadge) {
-        dzCenterBadge.textContent = "6 Manual Stations Monitored";
+        dzCenterBadge.textContent = `${dzCount} Manual Stations Monitored`;
         dzCenterBadge.style.background = "var(--accent-healthy-bg)";
         dzCenterBadge.style.borderColor = "var(--accent-healthy)";
         dzCenterBadge.style.color = "var(--accent-healthy)";
       }
       if (dzConf) {
-        dzConf.textContent = "All 6 Sensorless Stations Operating Nominally";
+        dzConf.textContent = `All ${dzCount} Sensorless Stations Operating Nominally`;
         dzConf.style.color = "var(--accent-healthy)";
       }
       if (dzDesc) {
-        dzDesc.innerHTML = `Monitoring manual assembly stations <strong>S18, S20, S21, S22, S29, S30</strong> via proxy telemetry. Zero degradation detected across manual zones.`;
+        dzDesc.innerHTML = `Monitoring manual assembly stations ${dzIdsList} via proxy telemetry. Zero degradation detected across manual zones.`;
       }
     }
 
@@ -1419,12 +1494,10 @@ const TwinPilotAPI = (() => {
       latestState = state;
       window.latestFactoryState = state;
 
-      // Update topology info badge in bar if custom factory
+      // Update topology info badge in bar dynamically from state
       const topInfo = document.getElementById("tp-topology-info");
-      if (topInfo && state.is_custom_factory) {
-        topInfo.innerHTML = `Topology: <strong style="color:#38bdf8;">${state.factory_name} (${state.stations.length} Stations)</strong>`;
-      } else if (topInfo) {
-        topInfo.innerHTML = `Topology: <strong style="color:#f8fafc;">30 Mainline (S01–S30) + 1 Feeder (ENG01)</strong>`;
+      if (topInfo && state.stations) {
+        topInfo.innerHTML = `Topology: <strong style="color:#38bdf8;">${state.stations.length} Stations (${state.factory_name || 'Active Plant'})</strong>`;
       }
 
       // Sync approval state from backend
@@ -1438,6 +1511,11 @@ const TwinPilotAPI = (() => {
         renderDiagnostics(state);
       } else if (path.includes("responsible-ai")) {
         renderResponsibleAI(state);
+      } else if (path.includes("profile")) {
+        setText("sim-clock", formatSimClockFromSeconds(currentSimSeconds));
+        if (state.overall_metrics && state.overall_metrics.overall_health_pct != null) {
+          setText("factory-overall-health", `${state.overall_metrics.overall_health_pct}%`);
+        }
       } else {
         renderCockpit(state);
       }

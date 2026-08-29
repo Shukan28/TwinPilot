@@ -79,6 +79,35 @@ def register_company_and_user(company_name: str, industry: str, user_name: str, 
 
         conn.commit()
 
+        # Mirror directly to MongoDB Atlas
+        try:
+            import mongodb_client
+            mdb = mongodb_client.get_mongodb_database()
+            mdb.companies.update_one({"_id": company_id}, {"$set": {
+                "name": company_name.strip(),
+                "industry": industry.strip() or "Manufacturing",
+                "tier": "Enterprise",
+                "created_at": now_str
+            }}, upsert=True)
+            mdb.users.update_one({"_id": user_id}, {"$set": {
+                "company_id": company_id,
+                "name": user_name.strip(),
+                "email": email.strip().lower(),
+                "role": "admin",
+                "created_at": now_str
+            }}, upsert=True)
+            mdb.factories.update_one({"_id": factory_id}, {"$set": {
+                "company_id": company_id,
+                "name": fname,
+                "slug": slug,
+                "location": location.strip() or "Global",
+                "is_demo": False,
+                "status": "pending_onboarding",
+                "created_at": now_str
+            }}, upsert=True)
+        except Exception as mex:
+            print("[MongoDB Atlas Registration Sync Warning]:", mex)
+
         return {
             "success": True,
             "session_token": token,
@@ -120,6 +149,39 @@ def authenticate_user(email: str, password: str):
     user_row = cur.fetchone()
 
     if not user_row:
+        # Fallback to check MongoDB Atlas directly
+        try:
+            import mongodb_client
+            mdb = mongodb_client.get_mongodb_database()
+            mongo_user = mdb.users.find_one({"email": email.strip().lower()})
+            if mongo_user and verify_password(password, mongo_user.get("password_hash", "")):
+                company_doc = mdb.companies.find_one({"_id": mongo_user["company_id"]})
+                comp_name = company_doc.get("name", "Enterprise OEM") if company_doc else "Enterprise OEM"
+                
+                # Restore user and company into SQLite
+                cur.execute("INSERT OR REPLACE INTO companies (id, name, industry, tier, created_at) VALUES (?, ?, ?, ?, ?)",
+                            (mongo_user["company_id"], comp_name, company_doc.get("industry", "Manufacturing") if company_doc else "Manufacturing", "Enterprise", mongo_user.get("created_at", "")))
+                cur.execute("INSERT OR REPLACE INTO users (id, company_id, name, email, password_hash, role, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                            (mongo_user["_id"], mongo_user["company_id"], mongo_user["name"], mongo_user["email"], mongo_user["password_hash"], mongo_user.get("role", "admin"), mongo_user.get("created_at", "")))
+                
+                fact_doc = mdb.factories.find_one({"company_id": mongo_user["company_id"]})
+                if fact_doc:
+                    cur.execute("INSERT OR REPLACE INTO factories (id, company_id, name, slug, location, is_demo, status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+                                (fact_doc["_id"], mongo_user["company_id"], fact_doc["name"], fact_doc.get("slug", ""), fact_doc.get("location", "Global"), 0, fact_doc.get("status", "active"), fact_doc.get("created_at", "")))
+                
+                conn.commit()
+
+                cur.execute("""
+                SELECT u.id, u.company_id, u.name, u.email, u.password_hash, u.role, c.name as company_name
+                FROM users u
+                JOIN companies c ON u.company_id = c.id
+                WHERE lower(u.email) = lower(?)
+                """, (email.strip(),))
+                user_row = cur.fetchone()
+        except Exception as mex:
+            print("[MongoDB Auth Check Warning]:", mex)
+
+    if not user_row:
         conn.close()
         return {"success": False, "error": "Invalid email or password."}
 
@@ -147,6 +209,18 @@ def authenticate_user(email: str, password: str):
 
     conn.commit()
     conn.close()
+
+    # Mirror session to MongoDB Atlas
+    try:
+        import mongodb_client
+        mdb = mongodb_client.get_mongodb_database()
+        mdb.user_sessions.update_one({"_id": token}, {"$set": {
+            "user_id": user_row["id"],
+            "active_factory_id": active_factory_id,
+            "expires_at": expires_at
+        }}, upsert=True)
+    except Exception as mex:
+        pass
 
     return {
         "success": True,
@@ -291,6 +365,22 @@ def create_factory_for_company(company_id: str, factory_name: str, location: str
 
     conn.commit()
     conn.close()
+
+    # Mirror to MongoDB Atlas
+    try:
+        import mongodb_client
+        mdb = mongodb_client.get_mongodb_database()
+        mdb.factories.update_one({"_id": factory_id}, {"$set": {
+            "company_id": company_id,
+            "name": factory_name.strip(),
+            "slug": slug,
+            "location": location.strip(),
+            "is_demo": False,
+            "status": "pending_onboarding",
+            "created_at": now_str
+        }}, upsert=True)
+    except Exception as mex:
+        print("[MongoDB Atlas Factory Sync Warning]:", mex)
 
     return {
         "success": True,

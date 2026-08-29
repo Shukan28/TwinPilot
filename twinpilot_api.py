@@ -1037,6 +1037,70 @@ def api_switch_factory():
     return jsonify(res)
 
 
+@app.route("/api/factories/validate", methods=["POST"])
+def api_validate_factory_schema():
+    import os, tempfile, onboarding_service
+    
+    st_file = request.files.get("file_stations") or request.files.get("stations")
+    dep_file = request.files.get("file_dependencies") or request.files.get("dependencies")
+
+    if not st_file:
+        return jsonify({"success": False, "error": "No station metadata file was uploaded."}), 400
+
+    scratch_dir = os.path.join(os.path.dirname(__file__), "scratch")
+    os.makedirs(scratch_dir, exist_ok=True)
+    st_path = os.path.join(scratch_dir, f"upload_stations_{os.getpid()}.csv")
+    dep_path = os.path.join(scratch_dir, f"upload_deps_{os.getpid()}.csv") if dep_file else None
+
+    try:
+        st_file.save(st_path)
+        st_res = onboarding_service.validate_stations_file(st_path)
+        if not st_res.get("valid"):
+            return jsonify({"success": False, "errors": st_res.get("errors", []), "warnings": st_res.get("warnings", [])}), 400
+
+        stations = st_res.get("cleaned_data", [])
+        valid_station_ids = {s["station_id"] for s in stations}
+        
+        deps = []
+        dag_valid = True
+        if dep_file:
+            dep_file.save(dep_path)
+            dep_res = onboarding_service.validate_dependencies_file(dep_path, valid_station_ids)
+            if dep_res.get("valid"):
+                deps = dep_res.get("cleaned_data", [])
+            else:
+                return jsonify({"success": False, "errors": dep_res.get("errors", []), "warnings": dep_res.get("warnings", [])}), 400
+        elif st_res.get("embedded_dependencies"):
+            deps = st_res.get("embedded_dependencies", [])
+        else:
+            for i in range(len(stations) - 1):
+                deps.append({
+                    "upstream_station_id": stations[i]["station_id"],
+                    "downstream_station_id": stations[i+1]["station_id"],
+                    "buffer_capacity": 10,
+                    "transit_time_sec": 5.0
+                })
+
+        stats = st_res.get("stats", {})
+        return jsonify({
+            "success": True,
+            "station_count": len(stations),
+            "dependency_count": len(deps),
+            "tier_breakdown": stats.get("tier_breakdown", {}),
+            "phases": stats.get("phases", ["Assembly"]),
+            "dag_valid": dag_valid,
+            "stations": stations,
+            "dependencies": deps
+        })
+    finally:
+        if os.path.exists(st_path):
+            try: os.remove(st_path)
+            except: pass
+        if dep_path and os.path.exists(dep_path):
+            try: os.remove(dep_path)
+            except: pass
+
+
 # ── MongoDB Atlas Backend Health Check ──────────────────────────────────────
 @app.route("/api/db/health", methods=["GET"])
 def api_mongodb_health():
@@ -1047,6 +1111,14 @@ def api_mongodb_health():
         result["cluster_host"] = [f"{h[0]}:{h[1]}" for h in result["cluster_host"]] if result.get("cluster_host") else []
     status_code = 200 if result.get("success") else 503
     return jsonify(result), status_code
+
+
+@app.after_request
+def add_no_cache_headers(response):
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate, max-age=0"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+    return response
 
 
 if __name__ == "__main__":

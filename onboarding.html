@@ -271,12 +271,7 @@
 
     <!-- Step 2: Upload Files -->
     <div id="step-content-2" style="display:none;">
-      <div style="display:flex; justify-content:space-between; align-items:center;">
-        <h3 style="margin:0; font-size:17px; font-family:var(--font-display);">Step 2: Upload Factory Datasets</h3>
-        <button class="btn-secondary" onclick="loadSampleModularDataset()" style="display:flex; align-items:center; gap:6px; font-size:12px; padding:8px 14px; border-color:var(--accent-healthy); color:var(--accent-healthy);">
-          <i data-lucide="zap" style="width:14px;height:14px;color:var(--accent-healthy);"></i> Auto-Load 12-Station Modular Assembly Template
-        </button>
-      </div>
+      <h3 style="margin:0; font-size:17px; font-family:var(--font-display);">Step 2: Upload Factory Datasets</h3>
       <p style="font-size:13.5px; color:var(--text-secondary); line-height:1.5; margin-top:8px;">
         Upload CSV files for your assembly stations and line dependencies. Telemetry timeseries and vehicle production logs can also be attached.
       </p>
@@ -321,6 +316,7 @@
         <div id="validation-stats-list" style="display:grid; grid-template-columns: repeat(3, 1fr); gap:12px; margin-top:16px;">
           <!-- Dynamically populated -->
         </div>
+        <div id="validation-preview-table"></div>
       </div>
 
       <div style="margin-top:28px; display:flex; justify-content:space-between;">
@@ -395,76 +391,142 @@
       if (typeof lucide !== 'undefined') lucide.createIcons();
     }
 
-    function loadSampleModularDataset() {
-      // 12-Station Modular Template
-      uploadedStationsData = [
-        { station_id: "MOD-01", station_name: "Underbody Robot Welding", line_phase: "Body", baseline_cycle_time_sec: 42.0, sensor_tier: "RICH", station_order: 1 },
-        { station_id: "MOD-02", station_name: "Side Panel Laser Marriage", line_phase: "Body", baseline_cycle_time_sec: 44.0, sensor_tier: "RICH", station_order: 2 },
-        { station_id: "MOD-03", station_name: "Roof Hemming & Sealing", line_phase: "Body", baseline_cycle_time_sec: 45.0, sensor_tier: "PARTIAL", station_order: 3 },
-        { station_id: "MOD-04", station_name: "Anti-Corrosion Dip & Bake", line_phase: "Paint", baseline_cycle_time_sec: 48.0, sensor_tier: "RICH", station_order: 4 },
-        { station_id: "MOD-05", station_name: "Basecoat Robotic Spray", line_phase: "Paint", baseline_cycle_time_sec: 45.0, sensor_tier: "RICH", station_order: 5 },
-        { station_id: "MOD-06", station_name: "Clearcoat Oven Curing", line_phase: "Paint", baseline_cycle_time_sec: 46.0, sensor_tier: "PARTIAL", station_order: 6 },
-        { station_id: "MOD-07", station_name: "High-Voltage Harness Install", line_phase: "Assembly", baseline_cycle_time_sec: 50.0, sensor_tier: "MANUAL", station_order: 7 },
-        { station_id: "MOD-08", station_name: "Cockpit & Instrument Marriage", line_phase: "Assembly", baseline_cycle_time_sec: 46.0, sensor_tier: "PARTIAL", station_order: 8 },
-        { station_id: "MOD-09", station_name: "EV Battery Pack Lift & Torque", line_phase: "Assembly", baseline_cycle_time_sec: 44.0, sensor_tier: "RICH", station_order: 9 },
-        { station_id: "MOD-10", station_name: "Seat & Interior Module Fit", line_phase: "Assembly", baseline_cycle_time_sec: 45.0, sensor_tier: "MANUAL", station_order: 10 },
-        { station_id: "MOD-11", station_name: "Windshield Glass Urethane", line_phase: "Assembly", baseline_cycle_time_sec: 42.0, sensor_tier: "PARTIAL", station_order: 11 },
-        { station_id: "MOD-12", station_name: "Dynamometer & Final Release", line_phase: "Assembly", baseline_cycle_time_sec: 40.0, sensor_tier: "RICH", station_order: 12 }
-      ];
-
-      uploadedDepsData = [];
-      for (let i = 0; i < uploadedStationsData.length - 1; i++) {
-        uploadedDepsData.push({
-          upstream_station_id: uploadedStationsData[i].station_id,
-          downstream_station_id: uploadedStationsData[i+1].station_id,
-          buffer_capacity: 10,
-          transit_time_sec: 5.0
-        });
-      }
-
-      const stStatus = document.getElementById("status-stations");
-      stStatus.style.display = "inline-flex";
-      stStatus.className = "validation-badge success";
-      stStatus.textContent = "✓ 12 Modular Stations Loaded";
-
-      const depStatus = document.getElementById("status-dependencies");
-      depStatus.style.display = "inline-flex";
-      depStatus.className = "validation-badge success";
-      depStatus.textContent = "✓ 11 Linear Line Dependencies Loaded";
-    }
+    let selectedStationsFile = null;
+    let selectedDepsFile = null;
 
     function handleFileSelected(event, type) {
       const file = event.target.files[0];
       if (!file) return;
 
+      if (type === 'stations') selectedStationsFile = file;
+      if (type === 'dependencies') selectedDepsFile = file;
+
       const badge = document.getElementById(`status-${type}`);
       badge.style.display = "inline-flex";
       badge.className = "validation-badge success";
-      badge.textContent = `✓ ${file.name} selected`;
+      badge.textContent = `✓ ${file.name} attached (${(file.size / 1024).toFixed(1)} KB)`;
     }
 
     async function runValidationAndGoToStep3() {
-      if (!uploadedStationsData) {
-        loadSampleModularDataset();
+      if (!selectedStationsFile) {
+        alert("Please upload your Station Metadata CSV file first.");
+        return;
       }
 
-      const statsContainer = document.getElementById("validation-stats-list");
-      statsContainer.innerHTML = `
-        <div style="background:rgba(255,255,255,0.05); padding:12px; border-radius:8px;">
-          <div style="font-size:10px; color:#94a3b8; text-transform:uppercase;">Stations</div>
-          <div style="font-size:18px; font-weight:800; color:#fff; margin-top:2px;">${uploadedStationsData.length} Stations</div>
-        </div>
-        <div style="background:rgba(255,255,255,0.05); padding:12px; border-radius:8px;">
-          <div style="font-size:10px; color:#94a3b8; text-transform:uppercase;">Sensor Architecture</div>
-          <div style="font-size:13px; font-weight:700; color:#38bdf8; margin-top:4px;">5 Rich | 5 Partial | 2 Dark Zones</div>
-        </div>
-        <div style="background:rgba(255,255,255,0.05); padding:12px; border-radius:8px;">
-          <div style="font-size:10px; color:#94a3b8; text-transform:uppercase;">Topology Status</div>
-          <div style="font-size:13px; font-weight:700; color:#34d399; margin-top:4px;">Direct Acyclic Graph (DAG) Verified</div>
-        </div>
-      `;
+      const btn = document.getElementById("btn-to-validate");
+      const oldText = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = `Analyzing Manufacturing Architecture...`;
 
-      goToStep(3);
+      const formData = new FormData();
+      formData.append("file_stations", selectedStationsFile);
+      if (selectedDepsFile) {
+        formData.append("file_dependencies", selectedDepsFile);
+      }
+
+      try {
+        const res = await fetch("/api/factories/validate", {
+          method: "POST",
+          body: formData
+        });
+        const data = await res.json();
+
+        if (!res.ok || !data.success) {
+          const errList = data.errors ? data.errors.join("\n• ") : (data.error || "Dataset schema validation failed.");
+          alert(`Schema Validation Failed:\n• ${errList}`);
+          return;
+        }
+
+        // Successfully validated from real Python pandas parser!
+        uploadedStationsData = data.stations || [];
+        uploadedDepsData = data.dependencies || [];
+
+        const stats = data.tier_breakdown || {};
+        const richCount = stats.RICH || 0;
+        const partialCount = stats.PARTIAL || 0;
+        const manualCount = stats.MANUAL || 0;
+
+        const statsContainer = document.getElementById("validation-stats-list");
+        statsContainer.innerHTML = `
+          <div style="background:#ffffff; border:1px solid var(--border-color); padding:16px; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+            <div style="font-size:11px; color:var(--text-secondary); text-transform:uppercase; font-weight:700; letter-spacing:0.5px;">Stations Detected</div>
+            <div style="font-size:22px; font-weight:800; color:var(--text-primary); margin-top:4px;">${data.station_count} Stations</div>
+          </div>
+          <div style="background:#ffffff; border:1px solid var(--border-color); padding:16px; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+            <div style="font-size:11px; color:var(--text-secondary); text-transform:uppercase; font-weight:700; letter-spacing:0.5px;">Sensor Architecture</div>
+            <div style="font-size:13.5px; font-weight:700; color:#0284c7; margin-top:6px;">
+              ${richCount} Rich | ${partialCount} Partial | <span style="color:#d97706;">${manualCount} Dark Zones</span>
+            </div>
+          </div>
+          <div style="background:#ffffff; border:1px solid var(--border-color); padding:16px; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+            <div style="font-size:11px; color:var(--text-secondary); text-transform:uppercase; font-weight:700; letter-spacing:0.5px;">Topology Status</div>
+            <div style="font-size:13.5px; font-weight:700; color:var(--accent-healthy); margin-top:6px;">
+              Direct Acyclic Graph (${data.dependency_count} Links Verified)
+            </div>
+          </div>
+        `;
+
+        // Interactive Table Preview
+        let tableHtml = `
+          <div style="margin-top:20px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <h4 style="margin:0; font-size:13px; font-weight:700; color:var(--text-primary); text-transform:uppercase; letter-spacing:0.5px;">
+                Detected Assembly Line Architecture Preview (${data.station_count} Stations)
+              </h4>
+              <span style="font-size:11.5px; color:var(--text-secondary);">Phases: ${data.phases.join(", ")}</span>
+            </div>
+            <div style="max-height:220px; overflow-y:auto; border:1px solid var(--border-color); border-radius:8px; background:#ffffff;">
+              <table style="width:100%; border-collapse:collapse; font-size:12px; text-align:left;">
+                <thead>
+                  <tr style="background:#f8fafc; border-bottom:1px solid var(--border-color); color:var(--text-secondary);">
+                    <th style="padding:8px 12px; font-weight:700;">#</th>
+                    <th style="padding:8px 12px; font-weight:700;">Station ID</th>
+                    <th style="padding:8px 12px; font-weight:700;">Station Name</th>
+                    <th style="padding:8px 12px; font-weight:700;">Line Phase</th>
+                    <th style="padding:8px 12px; font-weight:700;">Base CT</th>
+                    <th style="padding:8px 12px; font-weight:700;">Sensor Tier</th>
+                  </tr>
+                </thead>
+                <tbody>
+        `;
+
+        uploadedStationsData.forEach((st, idx) => {
+          const tierBadge = st.sensor_tier === 'RICH' 
+            ? '<span style="background:#ecfdf5; color:#059669; font-weight:700; padding:2px 8px; border-radius:4px; border:1px solid #a7f3d0;">RICH (Full Automation)</span>'
+            : (st.sensor_tier === 'MANUAL'
+              ? '<span style="background:#fef3c7; color:#b45309; font-weight:700; padding:2px 8px; border-radius:4px; border:1px solid #fde68a;">DARK ZONE (Manual Operator)</span>'
+              : '<span style="background:#f1f5f9; color:#475569; font-weight:600; padding:2px 8px; border-radius:4px;">PARTIAL</span>');
+          tableHtml += `
+            <tr style="border-bottom:1px solid #f1f5f9;">
+              <td style="padding:6px 12px; color:var(--text-muted);">${idx + 1}</td>
+              <td style="padding:6px 12px; font-weight:700; color:var(--text-primary);">${st.station_id}</td>
+              <td style="padding:6px 12px; color:var(--text-secondary);">${st.station_name}</td>
+              <td style="padding:6px 12px; color:var(--text-secondary);">${st.line_phase}</td>
+              <td style="padding:6px 12px; font-weight:600; color:var(--text-primary);">${st.baseline_cycle_time_sec}s</td>
+              <td style="padding:6px 12px;">${tierBadge}</td>
+            </tr>
+          `;
+        });
+
+        tableHtml += `
+                </tbody>
+              </table>
+            </div>
+          </div>
+        `;
+
+        const previewContainer = document.getElementById("validation-preview-table");
+        if (previewContainer) {
+          previewContainer.innerHTML = tableHtml;
+        }
+
+        goToStep(3);
+      } catch (err) {
+        alert("Connection error during schema validation: " + err.message);
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = oldText;
+      }
     }
 
     async function startTwinGeneration() {
@@ -497,14 +559,19 @@
         console.warn("Factory save fallback:", e);
       }
 
-      // Step-by-step simulated pipeline compilation
+      const darkZones = (uploadedStationsData || []).filter(s => s.sensor_tier === 'MANUAL').map(s => s.station_id);
+      const darkZoneStr = darkZones.length > 0 ? darkZones.slice(0, 5).join(", ") : "None";
+      const totalStations = (uploadedStationsData || []).length;
+      const totalDeps = (uploadedDepsData || []).length;
+
+      // Dynamic pipeline compilation logs
       const logEntries = [
-        "Computing per-station baseline cycle times (μ = 45.2s, σ = 1.4s)...",
-        "Building directed adjacency matrix & defect propagation pathways...",
+        `Computing per-station baseline cycle times across ${totalStations} stations...`,
+        `Compiling line adjacency matrix & defect propagation graph (${totalDeps} dependencies)...`,
         "Calibrating Isolation Forest anomaly threshold at τ = 0.02...",
-        "Configuring Dark Zone proxy inference for MOD-07 and MOD-10...",
-        "Synthesizing counterfactual action matrix (Speed Override vs Upstream Throttle vs Rebalance)...",
-        "Persisting Digital Twin state to factory database. Ready!"
+        `Configuring Dark Zone proxy inference models for manual stations (${darkZoneStr})...`,
+        "Synthesizing counterfactual action matrix (Speed Override vs Buffer Throttle vs Workload Rebalance)...",
+        "Persisting Digital Twin topology to factory database. Ready!"
       ];
 
       for (let i = 0; i < logEntries.length; i++) {

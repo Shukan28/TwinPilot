@@ -75,9 +75,9 @@
       <div class="card-title-bar">
         <h3 class="card-title">
           <i data-lucide="layers" style="width:16px;height:16px;"></i>
-          31-Station Assembly Line — Live Telemetry & Sensor Tiers
+          Assembly Line — Live Telemetry & Sensor Tiers
         </h3>
-        <span class="header-subtitle" style="font-size:11px; color:var(--text-secondary);">30 Mainline (S01–S30) + 1 Feeder (ENG01) — Synced Across Twin</span>
+        <span class="header-subtitle" style="font-size:11px; color:var(--text-secondary);">Synchronizing plant topology & sensors...</span>
       </div>
 
       <div class="factory-twin-row" id="stations-row">
@@ -146,7 +146,7 @@
             <div class="card-title-bar">
               <h3 class="card-title" style="color: var(--accent-info);" id="dz-card-title">
                 <i data-lucide="eye-off" style="width:16px;height:16px;color:var(--accent-info);"></i>
-                Dark Zone Sensorless Inference (6 Manual Stations)
+                Dark Zone Sensorless Inference (Manual Stations)
               </h3>
               <span class="header-subtitle" style="font-size:11px; color:var(--text-secondary);">
                 Inferring manual stations from proxy telemetry
@@ -166,7 +166,7 @@
                   <div class="proxy-node">Upstream Pacing</div>
                   <div class="proxy-node">Downstream Buffers</div>
                 </div>
-                <div class="proxy-node sensorless-center" id="inferred-dz-badge">6 Manual Zones Monitored</div>
+                <div class="proxy-node sensorless-center" id="inferred-dz-badge">Manual Zones Monitored</div>
                 <div style="display:flex; justify-content:space-between; width:100%; z-index:2;">
                   <div class="proxy-node">Temporal Rolling Trends</div>
                   <div class="proxy-node">Graph Topology</div>
@@ -175,13 +175,13 @@
 
               <div class="sensorless-explain">
                 <p class="sensorless-desc" id="sensorless-desc-text" style="font-size:13px; line-height:1.6;">
-                  Monitoring uninstrumented manual stations (S18, S20, S21, S22, S29, S30) purely from upstream cycle-time jitter and downstream buffer queue backlogs.
+                  Monitoring uninstrumented manual stations purely from upstream cycle-time jitter and downstream buffer queue backlogs.
                 </p>
                 <div class="sensorless-highlight" id="sensorless-confidence" style="font-size:15px; margin-top:10px;">
-                  All 6 Sensorless Stations Nominal
+                  Sensorless Stations Nominal
                 </div>
                 
-                <!-- Dynamic 6-Station Dark Zone Matrix -->
+                <!-- Dynamic Dark Zone Matrix -->
                 <div id="dz-stations-matrix" style="margin-top: 12px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;">
                   <!-- Dynamically rendered for S18, S20, S21, S22, S29, S30 -->
                 </div>

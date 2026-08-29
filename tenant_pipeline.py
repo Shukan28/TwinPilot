@@ -113,6 +113,8 @@ def build_custom_factory_state(factory_id: str, minute: int = 100, target_statio
             "vibration": vib_val,
             "temperature": 42.0,
             "defect_risk_pct": round(d_prob * 100.0, 1),
+            "defect_prob_pct": round(d_prob * 100.0, 1),
+            "bottleneck_prob_pct": 2.0 if not is_target else (42.0 if step_id >= 3 else 12.0),
             "status": status_str,
             "sensor_tier": tier
         }
@@ -159,25 +161,182 @@ def build_custom_factory_state(factory_id: str, minute: int = 100, target_statio
     }
 
     rec_key = "Option A"
+    
+    # Target station object
+    target_obj = {
+        "station_id": target_sid,
+        "station_name": target_info["station_name"],
+        "line_phase": target_info.get("line_phase", "Assembly"),
+        "sensor_tier": target_info["sensor_tier"],
+        "baseline_cycle_time_sec": float(target_info.get("baseline_cycle_time_sec", 45.0)),
+        "cycle_time_sec": round(float(target_info.get("baseline_cycle_time_sec", 45.0)) + (8.5 if step_id >= 3 else (3.2 if step_id == 2 else 0.0)), 1),
+        "queue_length": (9 if step_id >= 3 else (4 if step_id == 2 else 0)),
+        "defect_prob_pct": (35.0 if step_id >= 3 else (10.0 if step_id == 2 else 1.5)),
+        "bottleneck_prob_pct": (42.0 if step_id >= 3 else (12.0 if step_id == 2 else 2.0))
+    }
+
+    # Overall metrics
+    health = 99.2 if step_id == 5 else (98.4 if step_id < 2 else (91.2 if step_id == 2 else 78.5))
+    uph = 83.2 if step_id < 2 else (76.4 if step_id in (3, 4) else 82.8)
+    overall_metrics = {
+        "overall_health_pct": health,
+        "line_throughput_uph": uph,
+        "stations_monitored": len(stations_list),
+        "active_anomalies_count": 1 if step_id >= 2 else 0,
+        "sim_clock": f"10:{minute:02d}:00 AM" if minute < 60 else f"{10 + minute//60}:{minute%60:02d}:00 AM",
+        "minute_index": minute
+    }
+
+    # Anomaly prediction
+    anomaly_prediction = {
+        "primary_risk_type": "defect" if step_id >= 2 else "nominal",
+        "station_id": target_sid,
+        "station_name": target_info["station_name"],
+        "alert_title": f"Stage {step_id+1}/6: {'Predictive Variance Detected' if step_id >= 2 else 'Line Operating Within Nominal Baseline'}",
+        "alert_message": f"Station {target_sid} ({target_info['station_name']}) {'exhibits cycle time micro-drift and buffer queue buildup.' if step_id >= 2 else 'operating with zero active queue accumulation.'}",
+        "confidence_band": "94.2% (High Confidence)" if step_id >= 2 else "99.8% (Nominal)",
+        "est_downtime_mins": 18 if step_id in (3, 4) else (6 if step_id == 2 else 0),
+        "defect_prob_pct": 35.5 if step_id >= 3 else (12.0 if step_id == 2 else 1.5),
+        "bottleneck_prob_pct": 42.0 if step_id >= 3 else (15.0 if step_id == 2 else 2.0),
+        "prediction_factors": [
+            {
+                "name": f"Station {target_sid} Cycle Time Drift",
+                "delta_str": f"+{8.5 if step_id >= 3 else 3.2}s" if step_id >= 2 else "Nominal",
+                "type": "critical" if step_id >= 3 else ("warning" if step_id == 2 else "normal"),
+                "raw_val": f"{target_info.get('baseline_cycle_time_sec', 45.0)}s baseline"
+            },
+            {
+                "name": "Buffer Queue Backlog",
+                "delta_str": f"{9 if step_id >= 3 else 4} units" if step_id >= 2 else "0 units",
+                "type": "critical" if step_id >= 3 else ("warning" if step_id == 2 else "normal"),
+                "raw_val": "Nominal: 0"
+            },
+            {
+                "name": f"Dark Zone Sensorless Inference ({len(dark_zones)} unmonitored stations)",
+                "delta_str": f"{len(dark_zones)} Proxies Calibrated",
+                "type": "normal",
+                "raw_val": "Isolation Forest Active"
+            }
+        ]
+    }
+
+    # Propagation
+    path_stations = [s["station_id"] for s in stations_list[:min(len(stations_list), 6)]]
+    propagation = {
+        "path": path_stations,
+        "path_stations": path_stations,
+        "earliest_cause": f"Station {target_sid} ({target_info['station_name']})",
+        "predicted_defect": f"Cycle Time Jitter & Queue Backlog ({35.5 if step_id >= 3 else 1.5}%)",
+        "recommended_action": f"{rec_key} — {options[rec_key]['name']} (+{options[rec_key]['tput_pct']}% Tput)",
+        "propagation_path": [
+            {
+                "station_id": sid,
+                "station_name": next((s["station_name"] for s in stations_list if s["station_id"] == sid), sid),
+                "risk_pct": 35.0 if sid == target_sid else 15.0,
+                "role": "Origin" if sid == target_sid else "Transfer"
+            }
+            for sid in path_stations
+        ]
+    }
+
+    # 6-step twin timeline
+    twin_timeline = [
+        {
+            "step_id": 0,
+            "phase_name": "1. Baseline",
+            "stage_title": "Nominal Baseline",
+            "category_badge": "OBSERVED TELEMETRY",
+            "category_type": "observed",
+            "minute": 10,
+            "sim_clock": "10:10:00 AM",
+            "status": "Nominal Pacing Active",
+            "telemetry_highlight": f"All {len(stations_list)} Stations Nominal | Zero Active Queue",
+            "summary": f"{fact['name']} operating at steady-state. Zero active queue accumulation."
+        },
+        {
+            "step_id": 1,
+            "phase_name": "2. Emerging Signal",
+            "stage_title": "Emerging Jitter Signal",
+            "category_badge": "OBSERVED TELEMETRY",
+            "category_type": "observed",
+            "minute": 15,
+            "sim_clock": "10:15:00 AM",
+            "status": "Emerging Micro-Jitter",
+            "telemetry_highlight": f"Station {target_sid} variance: +3.2s | Vibration: 1.1 mm/s",
+            "summary": f"Subtle pacing irregularity detected at Station {target_sid}."
+        },
+        {
+            "step_id": 2,
+            "phase_name": "3. Rising Risk",
+            "stage_title": "Threshold Breached",
+            "category_badge": "LIVE PREDICTION",
+            "category_type": "live_prediction",
+            "minute": 20,
+            "sim_clock": "10:20:00 AM",
+            "status": "Precursor Breached",
+            "telemetry_highlight": f"Station {target_sid} queue accumulation: 4 vehicles | Defect Risk: 12%",
+            "summary": f"Station {target_sid} threshold breach. Recommended {rec_key} primed."
+        },
+        {
+            "step_id": 3,
+            "phase_name": "4. Live Prediction",
+            "stage_title": "Defect Surge Predicted",
+            "category_badge": "LIVE PREDICTION",
+            "category_type": "live_prediction",
+            "minute": 25,
+            "sim_clock": "10:25:00 AM",
+            "status": "Bottleneck Critical",
+            "telemetry_highlight": f"Station {target_sid} cycle time: +8.5s | Backlog: 9 vehicles | Defect Risk: 35.5%",
+            "summary": f"Critical bottleneck at Station {target_sid} threatening downstream starvation."
+        },
+        {
+            "step_id": 4,
+            "phase_name": "5. Dynamic Future",
+            "stage_title": "Mitigated / Counterfactual Outcome",
+            "category_badge": "INTERVENTION EXECUTED",
+            "category_type": "intervention_projection",
+            "minute": 35,
+            "sim_clock": "10:35:00 AM",
+            "status": "Line Stabilized",
+            "telemetry_highlight": f"Throughput gain: +{options[rec_key]['tput_pct']}% | Queue reduced: {options[rec_key]['queue_change']} units",
+            "summary": f"Executing {rec_key} successfully relieves congestion at {fact['name']}."
+        },
+        {
+            "step_id": 5,
+            "phase_name": "6. Nominal Restored",
+            "stage_title": "Full Nominal State Restored",
+            "category_badge": "NOMINAL RESTORED",
+            "category_type": "intervention_projection",
+            "minute": 45,
+            "sim_clock": "10:45:00 AM",
+            "status": "Full Steady State",
+            "telemetry_highlight": f"All {len(stations_list)} Stations Nominal | Cycle Time: 45.0s | Defect Risk: 0.0%",
+            "summary": f"All {len(stations_list)} stations in {fact['name']} restored to full production capacity."
+        }
+    ]
+
     return {
         "factory_id": factory_id,
         "factory_name": fact["name"],
         "is_custom_factory": True,
         "minute": minute,
-        "target_station": target_sid,
+        "sim_clock": overall_metrics["sim_clock"],
+        "target_station": target_obj,
         "step_id": step_id,
         "stations": station_telemetry_list,
         "dark_zones": dark_zones,
         "interventions": options,
+        "overall_metrics": overall_metrics,
+        "anomaly_prediction": anomaly_prediction,
+        "propagation": propagation,
+        "timeline_steps": twin_timeline,
+        "approval_state": {
+            "status": "pending",
+            "record": None
+        },
         "recommendation": {
             "option_key": rec_key,
             "rationale": f"Adaptive pipeline recommendation for {fact['name']} at station {target_sid}."
-        },
-        "propagation": {
-            "earliest_cause": f"Station {target_sid} ({target_info['station_name']})",
-            "predicted_defect": f"Cycle Time Jitter & Queue Backlog ({station_telemetry_list[0]['defect_risk_pct']}%)",
-            "recommended_action": f"{rec_key} — {options[rec_key]['name']} (+{options[rec_key]['tput_pct']}% Tput)",
-            "path_stations": [s["station_id"] for s in stations_list[:min(len(stations_list), 6)]]
         },
         "at_risk_vehicles": {
             "total_count": 8 if step_id in (3, 4) else 0,

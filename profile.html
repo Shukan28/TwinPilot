@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TwinPilot — Operator Profile & Factory Settings</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    body {
+      background: radial-gradient(circle at 50% 0%, #ecfdf5 0%, #f8fafc 55%, #f1f5f9 100%);
+      min-height: 100vh;
+      font-family: var(--font-body);
+      color: var(--text-primary);
+      margin: 0;
+    }
+
+    .profile-layout {
+      max-width: 1060px;
+      margin: 28px auto 60px auto;
+      padding: 0 24px;
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 24px;
+    }
+
+    .profile-card {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 4px 20px rgba(15, 23, 42, 0.05);
+      position: relative;
+    }
+
+    .user-avatar-large {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      font-size: 26px;
+      font-weight: 700;
+      font-family: var(--font-display);
+      box-shadow: 0 8px 18px rgba(5, 150, 105, 0.25);
+      margin-bottom: 16px;
+    }
+
+    .profile-section-title {
+      font-size: 11.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid #f1f5f9;
+      font-size: 13px;
+    }
+
+    .detail-row:last-child {
+      border-bottom: none;
+    }
+
+    .detail-label {
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .detail-value {
+      color: var(--text-primary);
+      font-weight: 600;
+    }
+
+    .db-status-banner {
+      background: #ecfdf5;
+      border: 1px solid #a7f3d0;
+      border-radius: 12px;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .setting-box {
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 18px;
+      margin-bottom: 16px;
+      background: #ffffff;
+    }
+
+    .setting-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .setting-desc {
+      font-size: 12.5px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+      line-height: 1.4;
+    }
+
+    .btn-action-emerald {
+      background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+      color: #ffffff;
+      border: none;
+      border-radius: 8px;
+      padding: 9px 18px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 4px 12px rgba(5, 150, 105, 0.2);
+      text-decoration: none;
+    }
+
+    .btn-action-emerald:hover {
+      box-shadow: 0 6px 16px rgba(5, 150, 105, 0.3);
+      transform: translateY(-1px);
+    }
+
+    .btn-logout {
+      width: 100%;
+      background: #fff;
+      color: #e11d48;
+      border: 1px solid #fecdd3;
+      border-radius: 10px;
+      padding: 12px;
+      font-size: 13.5px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 16px;
+      transition: all 0.2s;
+    }
+
+    .btn-logout:hover {
+      background: #fff1f2;
+      border-color: #fda4af;
+      color: #be123c;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Shared Header Navigation -->
+  <header class="site-header">
+    <a href="index.html" class="logo-container">
+      <div class="logo-icon">
+        <i data-lucide="cpu" style="width:16px;height:16px;color:#ffffff;"></i>
+      </div>
+      <span class="logo-text">TwinPilot</span>
+    </a>
+
+    <nav>
+      <ul class="nav-links">
+        <li class="nav-item"><a href="index.html"><i data-lucide="home" style="width:14px;height:14px;"></i> Concept</a></li>
+        <li class="nav-item"><a href="dashboard.html"><i data-lucide="layout" style="width:14px;height:14px;"></i> Cockpit</a></li>
+        <li class="nav-item"><a href="analytics.html"><i data-lucide="activity" style="width:14px;height:14px;"></i> Diagnostics</a></li>
+        <li class="nav-item"><a href="responsible-ai.html"><i data-lucide="shield-check" style="width:14px;height:14px;"></i> Trust Center</a></li>
+        <li class="nav-item"><a href="onboarding.html"><i data-lucide="plus-circle" style="width:14px;height:14px;"></i> Onboard Plant</a></li>
+      </ul>
+    </nav>
+
+    <div class="header-telemetry">
+      <div class="header-status-badge">
+        <span class="live-dot"></span> Live Twin
+      </div>
+      <div class="telemetry-item">
+        <span class="telemetry-label">Sim Time</span>
+        <span class="telemetry-value" id="sim-clock">10:02:00 AM</span>
+      </div>
+      <div class="telemetry-item">
+        <span class="telemetry-label">Overall Health</span>
+        <span class="telemetry-value" id="factory-overall-health" style="color:var(--accent-healthy);">98.4%</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Profile Content Container -->
+  <main class="profile-layout">
+
+    <!-- Left Column: User Card & Quick Actions -->
+    <div>
+      <div class="profile-card">
+        <div class="user-avatar-large" id="avatar-initials">TP</div>
+        <h2 style="font-size:20px; font-weight:700; margin:0 0 4px 0; font-family:var(--font-display);" id="user-display-name">Loading...</h2>
+        <div style="font-size:13px; color:var(--text-secondary); margin-bottom:12px;" id="user-display-email">...</div>
+        
+        <div style="display:inline-flex; align-items:center; gap:6px; background:#ecfdf5; border:1px solid #a7f3d0; color:#059669; font-size:11.5px; font-weight:700; padding:3px 10px; border-radius:6px; margin-bottom:20px;">
+          <i data-lucide="shield-check" style="width:14px;height:14px;"></i>
+          <span id="user-role-badge">Lead Systems Engineer</span>
+        </div>
+
+        <div class="profile-section-title">Corporate Account</div>
+        <div class="detail-row">
+          <span class="detail-label">Company / OEM:</span>
+          <span class="detail-value" id="user-company-name">Apex Mobility Global</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Security Tier:</span>
+          <span class="detail-value" style="color:var(--accent-healthy);">Enterprise Multi-Tenant</span>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Session ID:</span>
+          <span class="detail-value" style="font-family:'JetBrains Mono', monospace; font-size:11px;" id="user-session-id">Active</span>
+        </div>
+
+        <div style="margin-top:24px;">
+          <button class="btn-logout" onclick="handleLogout()">
+            <i data-lucide="log-out" style="width:16px;height:16px;"></i> Sign Out of Plant Workspace
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column: Factory Workspace, MongoDB Status, Settings & Support -->
+    <div>
+      
+      <!-- 1. MongoDB Atlas Live Cluster Banner -->
+      <div class="db-status-banner">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <div style="width:36px; height:36px; border-radius:8px; background:#059669; color:#fff; display:flex; align-items:center; justify-content:center;">
+            <i data-lucide="database" style="width:20px;height:20px;"></i>
+          </div>
+          <div>
+            <div style="font-size:14px; font-weight:700; color:#065f46;">
+              MongoDB Atlas Cloud Connected
+            </div>
+            <div style="font-size:12px; color:#047857; margin-top:2px;">
+              Cluster: <code>TwinPilotCluster</code> (AWS Multi-Shard) &bull; Database: <code>twinpilot</code>
+            </div>
+          </div>
+        </div>
+        <span style="display:inline-flex; align-items:center; gap:6px; background:#ffffff; color:#059669; font-weight:700; font-size:12px; padding:4px 10px; border-radius:6px; border:1px solid #a7f3d0;">
+          <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#10b981;"></span>
+          Live Sync
+        </span>
+      </div>
+
+      <!-- 2. Active Factory Workspace Card -->
+      <div class="profile-card" style="margin-bottom:24px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+          <h3 style="margin:0; font-size:16px; font-family:var(--font-display);">Active Factory Workspace</h3>
+          <a href="onboarding.html" class="btn-action-emerald">
+            <i data-lucide="plus-circle" style="width:15px;height:15px;"></i> Onboard New Factory
+          </a>
+        </div>
+
+        <div style="background:#f8fafc; border:1px solid var(--border-color); border-radius:12px; padding:18px;">
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;">
+            <i data-lucide="factory" style="width:24px;height:24px;color:var(--accent-healthy);"></i>
+            <div>
+              <div style="font-size:15px; font-weight:700; color:var(--text-primary);" id="active-plant-name">Detroit Assembly Plant #4 (31 Stations — Pre-loaded Demo)</div>
+              <div style="font-size:12px; color:var(--text-secondary);" id="active-plant-location">Detroit, MI, USA &bull; Status: Production Active</div>
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:12px; margin-top:14px; border-top:1px solid #e2e8f0; padding-top:14px;">
+            <div>
+              <div style="font-size:11px; color:var(--text-muted); font-weight:700; text-transform:uppercase;">Line Topology</div>
+              <div style="font-size:14px; font-weight:700; color:var(--text-primary); margin-top:2px;" id="active-plant-stations">31 Stations</div>
+            </div>
+            <div>
+              <div style="font-size:11px; color:var(--text-muted); font-weight:700; text-transform:uppercase;">Dark Zone Proxies</div>
+              <div style="font-size:14px; font-weight:700; color:#d97706; margin-top:2px;" id="active-plant-dark-zones">-- Sensorless Stations</div>
+            </div>
+            <div>
+              <div style="font-size:11px; color:var(--text-muted); font-weight:700; text-transform:uppercase;">Counterfactual Engine</div>
+              <div style="font-size:14px; font-weight:700; color:var(--accent-healthy); margin-top:2px;">Reinforcement Learning</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. System Preferences & Simulation Settings -->
+      <div class="profile-card" style="margin-bottom:24px;">
+        <h3 style="margin:0 0 16px 0; font-size:16px; font-family:var(--font-display);">Simulation & Platform Preferences</h3>
+
+        <div class="setting-box">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <div class="setting-title"><i data-lucide="clock" style="width:16px;height:16px;color:var(--accent-healthy);"></i> Default Clock Speed Multiplier</div>
+              <div class="setting-desc">Sets default playback speed across Cockpit and Diagnostics dashboards.</div>
+            </div>
+            <select id="pref-clock-speed" onchange="savePreference('sim_speed', this.value)" style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:6px; padding:6px 12px; font-size:13px; font-weight:600; color:var(--text-primary); outline:none;">
+              <option value="1">1x (Real-Time)</option>
+              <option value="5">5x Speed</option>
+              <option value="10">10x Speed</option>
+              <option value="30">30x Speed</option>
+              <option value="60" selected>60x Speed (1s = 1m)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="setting-box">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <div class="setting-title"><i data-lucide="volume-2" style="width:16px;height:16px;color:var(--accent-healthy);"></i> Acoustic Milestone Notification Audio</div>
+              <div class="setting-desc">Play synthesized frequency chimes upon critical anomaly transitions and mitigation approvals.</div>
+            </div>
+            <input type="checkbox" id="pref-audio" checked onchange="savePreference('audio_enabled', this.checked)" style="width:18px;height:18px;accent-color:#059669;cursor:pointer;">
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. Help, Documentation & OEM Customer Support -->
+      <div class="profile-card">
+        <h3 style="margin:0 0 16px 0; font-size:16px; font-family:var(--font-display);">Help & Mission-Critical Support</h3>
+        
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+          <div style="border:1px solid var(--border-color); border-radius:10px; padding:16px; background:#f8fafc;">
+            <div style="font-size:13.5px; font-weight:700; color:var(--text-primary); display:flex; align-items:center; gap:8px;">
+              <i data-lucide="headphones" style="width:16px;height:16px;color:var(--accent-healthy);"></i> 24/7 OEM Priority Engineering
+            </div>
+            <p style="font-size:12.5px; color:var(--text-secondary); margin:8px 0 12px 0; line-height:1.4;">
+              For live production line emergency overrides, model drift escalations, or database schema migration assistance.
+            </p>
+            <a href="mailto:support@twinpilot.ai?subject=TwinPilot%20Enterprise%20Support%20Request" style="font-size:12px; font-weight:700; color:var(--accent-healthy); text-decoration:none; display:inline-flex; align-items:center; gap:4px;">
+              support@twinpilot.ai &rarr;
+            </a>
+          </div>
+
+          <div style="border:1px solid var(--border-color); border-radius:10px; padding:16px; background:#f8fafc;">
+            <div style="font-size:13.5px; font-weight:700; color:var(--text-primary); display:flex; align-items:center; gap:8px;">
+              <i data-lucide="book-open" style="width:16px;height:16px;color:#0284c7;"></i> Technical Architecture & API
+            </div>
+            <p style="font-size:12.5px; color:var(--text-secondary); margin:8px 0 12px 0; line-height:1.4;">
+              Access OpenAPI 3.0 schema definitions, MongoDB collection structures, and counterfactual simulation guides.
+            </p>
+            <a href="/api/db/health" target="_blank" style="font-size:12px; font-weight:700; color:#0284c7; text-decoration:none; display:inline-flex; align-items:center; gap:4px;">
+              View Database Health Endpoint &rarr;
+            </a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Toast Notification Anchor -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Bridge and App logic -->
+  <script src="app.js"></script>
+  <script src="twinpilot_bridge.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      loadUserProfileData();
+    });
+
+    async function loadUserProfileData() {
+      const token = localStorage.getItem("twinpilot_session_token") || localStorage.getItem("twinpilot_token");
+      let user = null;
+
+      if (token) {
+        try {
+          const resp = await fetch("/api/auth/me", {
+            headers: { "X-Session-Token": token }
+          });
+          if (resp.ok) {
+            const data = await resp.json();
+            if (data && data.is_authenticated) {
+              user = {
+                name: data.user_name,
+                email: data.email,
+                company_name: data.company_name,
+                role: data.role,
+                active_factory: data.active_factory
+              };
+              localStorage.setItem("twinpilot_user", JSON.stringify(user));
+            }
+          }
+        } catch (e) {
+          console.warn("Could not sync /api/auth/me:", e);
+        }
+      }
+
+      if (!user) {
+        const rawUser = localStorage.getItem("twinpilot_user");
+        try { if (rawUser) user = JSON.parse(rawUser); } catch(e) {}
+      }
+
+      if (!user) {
+        user = {
+          name: "Chief Plant Operator",
+          email: "demo@twinpilot.ai",
+          company_name: "Apex Mobility Global",
+          role: "Enterprise Administrator",
+          active_factory: {
+            name: "Detroit Assembly Plant #4 (31 Stations — Pre-loaded Demo)",
+            location: "Detroit, MI, USA"
+          }
+        };
+      }
+
+      document.getElementById("user-display-name").textContent = user.name || "Plant Operator";
+      document.getElementById("user-display-email").textContent = user.email || "operator@factory.com";
+      document.getElementById("user-company-name").textContent = user.company_name || "Apex Mobility Global";
+      document.getElementById("user-role-badge").textContent = user.role ? (user.role.toUpperCase() + " / Lead Systems Engineer") : "Lead Systems Engineer";
+      
+      const initials = (user.name || "TwinPilot").split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase();
+      document.getElementById("avatar-initials").textContent = initials;
+
+      document.getElementById("user-session-id").textContent = token ? (token.slice(0, 14) + "...") : "Active Demo";
+
+      if (user.active_factory) {
+        document.getElementById("active-plant-name").textContent = user.active_factory.name || "Detroit Assembly Plant #4";
+        document.getElementById("active-plant-location").textContent = (user.active_factory.location || "Detroit, MI, USA") + " • Status: Production Active";
+      }
+
+      // Fetch dynamic active factory topology counts
+      try {
+        const activeFid = localStorage.getItem("twinpilot_active_factory") || "demo-detroit-31";
+        const scResp = await fetch(`/api/scenario?factory_id=${activeFid}`);
+        if (scResp.ok) {
+          const scData = await scResp.json();
+          if (scData) {
+            const stCount = (scData.stations || []).length;
+            const dzCount = (scData.dark_zones || []).length;
+            const stEl = document.getElementById("active-plant-stations");
+            if (stEl && stCount) stEl.textContent = `${stCount} Stations`;
+            const dzEl = document.getElementById("active-plant-dark-zones");
+            if (dzEl && dzCount != null) dzEl.textContent = `${dzCount} Sensorless Stations`;
+            if (scData.factory_name) {
+              document.getElementById("active-plant-name").textContent = scData.factory_name;
+            }
+          }
+        }
+      } catch (e) {}
+
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+
+    function savePreference(key, val) {
+      localStorage.setItem(`twinpilot_pref_${key}`, val);
+      if (typeof showToast === 'function') {
+        showToast("Preference saved successfully.", "success");
+      } else {
+        alert("Preference saved.");
+      }
+    }
+
+    function handleLogout() {
+      localStorage.removeItem("twinpilot_token");
+      localStorage.removeItem("twinpilot_user");
+      localStorage.setItem("twinpilot_active_factory", "demo-detroit-31");
+      
+      if (typeof showToast === 'function') {
+        showToast("Signed out successfully. Returning to login...", "info");
+      }
+      setTimeout(() => {
+        window.location.href = "login.html";
+      }, 600);
+    }
+  </script>
+
+</body>
+</html>

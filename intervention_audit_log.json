@@ -4131,5 +4131,238 @@
       "is_successful": true,
       "feedback": "Recommendation validated \u2014 prediction and outcome aligned."
     }
+  },
+  {
+    "event_id": "RUN025-EVT02",
+    "run_id": "RUN-025",
+    "minute_index": 104,
+    "observation_window_min": 20,
+    "before_state": {
+      "station_id": "S16",
+      "cycle_time_sec": 78.17,
+      "queue_length": 5.0,
+      "defect_prob": 0.025,
+      "bottleneck_prob": 0.0,
+      "root_cause_station": "S17",
+      "propagation_path": [
+        "S16",
+        "S17",
+        "S18",
+        "S19",
+        "S20",
+        "S21",
+        "S22",
+        "S23"
+      ],
+      "at_risk_vins": 16
+    },
+    "twinpilot_prediction": {
+      "recommended_option": "Option A",
+      "option_name": "Speed Override / Move Operator",
+      "tput_pct": 17.6,
+      "queue_change": -3.2,
+      "defect_risk_change": 6.8,
+      "financial_impact": 1450.0,
+      "confidence_pct": 79.8
+    },
+    "human_decision": {
+      "operator_action": "approve",
+      "accepted_recommendation": true,
+      "timestamp": "2026-08-29T17:40:13.798579+00:00"
+    },
+    "observed_outcome": {
+      "pre_ct": 78.17,
+      "post_ct": 57.45,
+      "pre_queue": 5.0,
+      "post_queue": 1.0,
+      "pre_minute": 104,
+      "post_minute": 124,
+      "observed_tput_pct": 36.07,
+      "observed_queue_change": -4.0,
+      "observed_defect_risk_change": -1.0
+    },
+    "accuracy": {
+      "tput_accuracy_pct": 48.8,
+      "queue_accuracy_pct": 80.0,
+      "defect_accuracy_pct": 0.0,
+      "overall_accuracy_pct": 42.9,
+      "is_directionally_correct": true,
+      "is_successful": true,
+      "feedback": "Recommendation validated \u2014 prediction and outcome aligned."
+    }
+  },
+  {
+    "event_id": "RUN025-EVT02",
+    "run_id": "RUN-025",
+    "minute_index": 95,
+    "observation_window_min": 20,
+    "before_state": {
+      "station_id": "S16",
+      "cycle_time_sec": 81.48,
+      "queue_length": 10.0,
+      "defect_prob": 0.03,
+      "bottleneck_prob": 0.0,
+      "root_cause_station": "S17",
+      "propagation_path": [
+        "S16",
+        "S17",
+        "S18",
+        "S19",
+        "S20",
+        "S21",
+        "S22",
+        "S23"
+      ],
+      "at_risk_vins": 16
+    },
+    "twinpilot_prediction": {
+      "recommended_option": "Option A",
+      "option_name": "Speed Override / Move Operator",
+      "tput_pct": 25.0,
+      "queue_change": -6.5,
+      "defect_risk_change": 7.4,
+      "financial_impact": 2352.0,
+      "confidence_pct": 68.0
+    },
+    "human_decision": {
+      "operator_action": "approve",
+      "accepted_recommendation": true,
+      "timestamp": "2026-08-29T18:21:49.745533+00:00"
+    },
+    "observed_outcome": {
+      "pre_ct": 81.48,
+      "post_ct": 57.65,
+      "pre_queue": 10.0,
+      "post_queue": 2.0,
+      "pre_minute": 95,
+      "post_minute": 115,
+      "observed_tput_pct": 41.34,
+      "observed_queue_change": -8.0,
+      "observed_defect_risk_change": 1.5
+    },
+    "accuracy": {
+      "tput_accuracy_pct": 60.5,
+      "queue_accuracy_pct": 81.2,
+      "defect_accuracy_pct": 20.3,
+      "overall_accuracy_pct": 54.0,
+      "is_directionally_correct": true,
+      "is_successful": true,
+      "feedback": "Recommendation validated \u2014 prediction and outcome aligned."
+    }
+  },
+  {
+    "event_id": "RUN024-EVT01",
+    "run_id": "RUN-024",
+    "minute_index": 147,
+    "observation_window_min": 20,
+    "before_state": {
+      "station_id": "S03",
+      "cycle_time_sec": 74.03,
+      "queue_length": 12.0,
+      "defect_prob": 0.04,
+      "bottleneck_prob": 0.02,
+      "root_cause_station": "S09",
+      "propagation_path": [
+        "S03",
+        "S04",
+        "S05",
+        "S06",
+        "S07"
+      ],
+      "at_risk_vins": 44
+    },
+    "twinpilot_prediction": {
+      "recommended_option": "Option A",
+      "option_name": "Speed Override / Move Operator",
+      "tput_pct": 28.2,
+      "queue_change": -7.8,
+      "defect_risk_change": 9.5,
+      "financial_impact": 2466.0,
+      "confidence_pct": 60.8
+    },
+    "human_decision": {
+      "operator_action": "approve",
+      "accepted_recommendation": true,
+      "timestamp": "2026-08-29T18:23:34.900191+00:00"
+    },
+    "observed_outcome": {
+      "pre_ct": 74.03,
+      "post_ct": 62.15,
+      "pre_queue": 12.0,
+      "post_queue": 7.0,
+      "pre_minute": 147,
+      "post_minute": 167,
+      "observed_tput_pct": 19.12,
+      "observed_queue_change": -5.0,
+      "observed_defect_risk_change": null
+    },
+    "accuracy": {
+      "tput_accuracy_pct": 67.8,
+      "queue_accuracy_pct": 64.1,
+      "defect_accuracy_pct": null,
+      "overall_accuracy_pct": 66.0,
+      "is_directionally_correct": true,
+      "is_successful": true,
+      "feedback": "Recommendation validated \u2014 prediction and outcome aligned."
+    }
+  },
+  {
+    "event_id": "RUN025-EVT02",
+    "run_id": "RUN-025",
+    "minute_index": 95,
+    "observation_window_min": 20,
+    "before_state": {
+      "station_id": "S16",
+      "cycle_time_sec": 81.48,
+      "queue_length": 10.0,
+      "defect_prob": 0.03,
+      "bottleneck_prob": 0.0,
+      "root_cause_station": "S17",
+      "propagation_path": [
+        "S16",
+        "S17",
+        "S18",
+        "S19",
+        "S20",
+        "S21",
+        "S22",
+        "S23"
+      ],
+      "at_risk_vins": 16
+    },
+    "twinpilot_prediction": {
+      "recommended_option": "Option A",
+      "option_name": "Speed Override / Move Operator",
+      "tput_pct": 25.0,
+      "queue_change": -6.5,
+      "defect_risk_change": 7.4,
+      "financial_impact": 2352.0,
+      "confidence_pct": 61.9
+    },
+    "human_decision": {
+      "operator_action": "approve",
+      "accepted_recommendation": true,
+      "timestamp": "2026-08-29T18:24:48.311242+00:00"
+    },
+    "observed_outcome": {
+      "pre_ct": 81.48,
+      "post_ct": 57.65,
+      "pre_queue": 10.0,
+      "post_queue": 2.0,
+      "pre_minute": 95,
+      "post_minute": 115,
+      "observed_tput_pct": 41.34,
+      "observed_queue_change": -8.0,
+      "observed_defect_risk_change": 1.5
+    },
+    "accuracy": {
+      "tput_accuracy_pct": 60.5,
+      "queue_accuracy_pct": 81.2,
+      "defect_accuracy_pct": 20.3,
+      "overall_accuracy_pct": 54.0,
+      "is_directionally_correct": true,
+      "is_successful": true,
+      "feedback": "Recommendation validated \u2014 prediction and outcome aligned."
+    }
   }
 ]

@@ -47,7 +47,7 @@ def register_company_and_user(company_name: str, industry: str, user_name: str, 
     user_id = f"user_{uuid.uuid4().hex[:12]}"
     factory_id = f"fact_{uuid.uuid4().hex[:12]}"
 
-    slug = factory_name.lower().replace(" ", "-").replace("/", "-") if factory_name else f"plant-{uuid.uuid4().hex[:6]}"
+    slug = f"{factory_name.lower().replace(' ', '-').replace('/', '-')}-{factory_id[5:11]}" if factory_name else f"plant-{uuid.uuid4().hex[:6]}"
 
     try:
         # 1. Create Company
@@ -367,7 +367,7 @@ def create_factory_for_company(company_id: str, factory_name: str, location: str
     cur = conn.cursor()
 
     factory_id = f"fact_{uuid.uuid4().hex[:12]}"
-    slug = factory_name.lower().replace(" ", "-").replace("/", "-")
+    slug = f"{factory_name.lower().replace(' ', '-').replace('/', '-')}-{factory_id[5:11]}"
     now_str = datetime.utcnow().isoformat() + "Z"
 
     cur.execute("""

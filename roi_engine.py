@@ -78,10 +78,15 @@ class ROIEngine:
             }
         }
 
-    def compute_plant_roi(self, assumptions=None, audit_interventions=None, station_count=31, dark_zone_count=6):
+    def compute_plant_roi(self, assumptions=None, audit_interventions=None, station_count=None, dark_zone_count=None):
         """
         Computes the complete financial business case and rollout ROI.
         """
+        if station_count is None or dark_zone_count is None:
+            # Fallback only if called directly without parameters
+            station_count = 31
+            dark_zone_count = 6
+
         p = dict(self.default_assumptions)
         if assumptions:
             for k, v in assumptions.items():
@@ -93,20 +98,22 @@ class ROIEngine:
 
         # Scaling factors based on station scale and instrumented coverage
         coverage_ratio = (station_count - dark_zone_count) / max(1, station_count)
-        scale_mult = station_count / 31.0
+        # Using normalized per-station ratios instead of hardcoding 31 as the center of the universe
+        per_station_surges_ratio = 100.0 / 31.0 
+        per_station_downtime_ratio = 35.0 / 31.0
 
         annual_shifts = p["operating_weeks_per_year"] * 5 * p["shifts_per_day"]
 
         # Defect prevention metrics
         # Conservative: 0.20 defect surges per shift with 0.9 prevented per surge
-        est_annual_defect_surges = int(round(100 * scale_mult))
+        est_annual_defect_surges = int(round(per_station_surges_ratio * station_count))
         defects_prevented_per_surge = 0.9  # conservative: minimal downstream prevention
         annual_defects_avoided = int(round(est_annual_defect_surges * defects_prevented_per_surge * coverage_ratio))
         annual_scrap_savings = annual_defects_avoided * p["cost_per_defect"]
 
         # Downtime prevention metrics
         # Conservative: 10 mins saved per event, only 35 events/year avoided per plant scale
-        est_downtime_events_prevented = int(round(35 * scale_mult * coverage_ratio))
+        est_downtime_events_prevented = int(round(per_station_downtime_ratio * station_count * coverage_ratio))
         mins_saved_per_event = 10.0
         annual_downtime_hours_avoided = round((est_downtime_events_prevented * mins_saved_per_event) / 60.0, 1)
         annual_downtime_savings = annual_downtime_hours_avoided * p["cost_per_downtime_hour"]

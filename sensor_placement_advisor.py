@@ -141,7 +141,7 @@ def _load_dark_zone_stations(factory_id: str) -> list:
     return candidates
 
 
-def compute_sensor_placement_recommendations(factory_id: str = "demo-detroit-31") -> dict:
+def compute_sensor_placement_recommendations(factory_id: str) -> dict:
     """
     Computes an active-learning VoI ranking over candidate Dark Zone workcells.
     Candidate stations are loaded live from the database.

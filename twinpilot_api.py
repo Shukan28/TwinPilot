@@ -984,13 +984,9 @@ def api_leadership_metrics():
         # Query station count and dark zone count
         cur.execute("SELECT COUNT(*) FROM factory_stations WHERE factory_id = ?", (fid,))
         st_count = cur.fetchone()[0]
-        if st_count == 0 and is_demo:
-            st_count = 31
 
         cur.execute("SELECT COUNT(*) FROM factory_stations WHERE factory_id = ? AND UPPER(sensor_tier) = 'MANUAL'", (fid,))
         dark_count = cur.fetchone()[0]
-        if dark_count == 0 and is_demo:
-            dark_count = 6
 
         # Query sensor tiers
         cur.execute("SELECT sensor_tier, COUNT(*) FROM factory_stations WHERE factory_id = ? GROUP BY sensor_tier", (fid,))
@@ -1308,8 +1304,11 @@ def api_federated_status():
 @app.route("/api/leadership/sensor_placement", methods=["GET"])
 def api_leadership_sensor_placement():
     """Returns active-learning Value-of-Information sensor placement rankings."""
+    import auth_service
     from sensor_placement_advisor import compute_sensor_placement_recommendations
-    factory_id = request.args.get("factory_id", "demo-detroit-31")
+    token = request.headers.get("X-Session-Token") or request.args.get("session_token")
+    user = auth_service.get_session_user(token)
+    factory_id = request.args.get("factory_id") or user.get("active_factory", {}).get("id", "demo-detroit-31")
     return jsonify(compute_sensor_placement_recommendations(factory_id=factory_id))
 
 
@@ -1346,8 +1345,24 @@ def api_leadership_roi():
         "discount_rate_pct":         _get_val("discount_rate_pct",         eng_defaults["discount_rate_pct"])
     }
 
-    station_count  = int(_get_val("station_count",  31))
-    dark_zone_count = int(_get_val("dark_zone_count", 6))
+    import auth_service
+    from database import get_db_connection
+
+    token = request.headers.get("X-Session-Token") or request.args.get("session_token")
+    user = auth_service.get_session_user(token)
+    active_factory = user.get("active_factory", {}).get("id", "demo-detroit-31")
+
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("SELECT COUNT(*) FROM factory_stations WHERE factory_id = ?", (active_factory,))
+    db_station_count = cur.fetchone()[0]
+
+    cur.execute("SELECT COUNT(*) FROM factory_stations WHERE factory_id = ? AND UPPER(sensor_tier) = 'MANUAL'", (active_factory,))
+    db_dark_zone_count = cur.fetchone()[0]
+    conn.close()
+
+    station_count  = int(_get_val("station_count",  db_station_count))
+    dark_zone_count = int(_get_val("dark_zone_count", db_dark_zone_count))
 
     result = roi_engine.compute_plant_roi(
         assumptions=assumptions,

@@ -1,5 +1,8 @@
 # TwinPilot: Data-Driven Propagation & Vehicle Impact Validation
 
+> **Scientific Validation Framing:**  
+> *“The prototype is validated on unseen simulated production shifts and includes an outcome-feedback mechanism designed for continuous real-world validation.”*
+
 This report documents the design, execution, and validation results for **Steps 1, 2, and 3** of TwinPilot's defect propagation and vehicle tracking pipeline.
 
 ---

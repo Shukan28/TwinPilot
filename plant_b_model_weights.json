@@ -1,0 +1,107 @@
+{
+  "factory_id": "factory-fremont-61",
+  "factory_name": "Fremont EV Gigafactory (61 Stations)",
+  "station_count": 61,
+  "defect_roc_auc": 0.9026,
+  "defect_precision": 0.0104,
+  "defect_recall": 1.0,
+  "defect_f1": 0.0207,
+  "bottleneck_roc_auc": 0.8888,
+  "optimal_threshold_tau": 0.02,
+  "features": [
+    "cycle_time_sec",
+    "queue_length",
+    "vibration_mm_s",
+    "torque_nm",
+    "temperature_c",
+    "avg_cycle_time_5m",
+    "avg_cycle_time_10m",
+    "avg_queue_5m",
+    "avg_queue_10m",
+    "change_cycle_time_5m",
+    "queue_growth_5m",
+    "change_vibration_5m",
+    "change_torque_5m"
+  ],
+  "feature_importances": {
+    "cycle_time_sec": 0.1343,
+    "queue_length": 0.0037,
+    "vibration_mm_s": 0.0862,
+    "torque_nm": 0.1231,
+    "temperature_c": 0.0685,
+    "avg_cycle_time_5m": 0.2012,
+    "avg_cycle_time_10m": 0.2143,
+    "avg_queue_5m": 0.0447,
+    "avg_queue_10m": 0.039,
+    "change_cycle_time_5m": 0.0133,
+    "queue_growth_5m": 0.0041,
+    "change_vibration_5m": 0.0488,
+    "change_torque_5m": 0.0187
+  },
+  "dark_zone_proxies": {
+    "ST06": {
+      "station_id": "ST06",
+      "station_name": "Stamped Panel Inspection",
+      "baseline_cycle_time": 45.0,
+      "proxy_confidence_pct": 89.2,
+      "calibrated": true
+    },
+    "B12": {
+      "station_id": "B12",
+      "station_name": "BIW Manual Touch-Up",
+      "baseline_cycle_time": 50.0,
+      "proxy_confidence_pct": 89.2,
+      "calibrated": true
+    },
+    "P10": {
+      "station_id": "P10",
+      "station_name": "Paint Quality & Polish",
+      "baseline_cycle_time": 52.0,
+      "proxy_confidence_pct": 89.2,
+      "calibrated": true
+    },
+    "BAT04": {
+      "station_id": "BAT04",
+      "station_name": "BMS Harness Installation",
+      "baseline_cycle_time": 46.0,
+      "proxy_confidence_pct": 89.2,
+      "calibrated": true
+    },
+    "GA03": {
+      "station_id": "GA03",
+      "station_name": "Main Body Wiring Harness",
+      "baseline_cycle_time": 50.0,
+      "proxy_confidence_pct": 89.2,
+      "calibrated": true
+    },
+    "GA06": {
+      "station_id": "GA06",
+      "station_name": "Carpet & Acoustic Dampers",
+      "baseline_cycle_time": 45.0,
+      "proxy_confidence_pct": 89.2,
+      "calibrated": true
+    },
+    "GA07": {
+      "station_id": "GA07",
+      "station_name": "Ergonomic Seat Mounting",
+      "baseline_cycle_time": 44.0,
+      "proxy_confidence_pct": 89.2,
+      "calibrated": true
+    },
+    "GA09": {
+      "station_id": "GA09",
+      "station_name": "Door Weatherstrip & Clad",
+      "baseline_cycle_time": 46.0,
+      "proxy_confidence_pct": 89.2,
+      "calibrated": true
+    },
+    "EOL07": {
+      "station_id": "EOL07",
+      "station_name": "Final Customer Buyoff",
+      "baseline_cycle_time": 60.0,
+      "proxy_confidence_pct": 89.2,
+      "calibrated": true
+    }
+  },
+  "trained_at": "2026-09-02T11:40:24.369562Z"
+}

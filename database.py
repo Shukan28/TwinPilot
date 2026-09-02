@@ -247,7 +247,6 @@ def seed_default_demo_factory():
                         int(row.get("buffer_capacity", 10)),
                         float(row.get("transit_time_sec", 5.0))
                     ))
-
     conn.commit()
     conn.close()
 

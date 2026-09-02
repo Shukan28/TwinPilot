@@ -306,17 +306,29 @@ def get_default_demo_user():
 
 
 def list_company_factories(company_id: str):
-    """Lists all factories belonging to a company, plus the universal demo factory."""
+    """
+    Lists all factories belonging to a company, plus the universal demo factory.
+    Enforces strict multi-tenant isolation: demo accounts only see is_demo=1 plants.
+    """
     conn = get_db_connection()
     cur = conn.cursor()
 
-    cur.execute("""
-    SELECT id, name, slug, location, is_demo, status, created_at,
-           (SELECT COUNT(*) FROM factory_stations WHERE factory_id = factories.id) as station_count
-    FROM factories
-    WHERE company_id = ? OR is_demo = 1
-    ORDER BY is_demo DESC, created_at DESC
-    """, (company_id,))
+    if company_id == "comp_demo_apex":
+        cur.execute("""
+        SELECT id, name, slug, location, is_demo, status, created_at,
+               (SELECT COUNT(*) FROM factory_stations WHERE factory_id = factories.id) as station_count
+        FROM factories
+        WHERE is_demo = 1
+        ORDER BY is_demo DESC, created_at DESC
+        """)
+    else:
+        cur.execute("""
+        SELECT id, name, slug, location, is_demo, status, created_at,
+               (SELECT COUNT(*) FROM factory_stations WHERE factory_id = factories.id) as station_count
+        FROM factories
+        WHERE (company_id = ? AND is_demo = 0) OR is_demo = 1
+        ORDER BY is_demo DESC, created_at DESC
+        """, (company_id,))
     rows = [dict(r) for r in cur.fetchall()]
     conn.close()
     return rows

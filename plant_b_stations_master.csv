@@ -1,0 +1,62 @@
+station_id,station_name,phase,sequence_order,sensor_tier,sensors_available,baseline_cycle_time_sec,upstream,baseline_throughput_uph
+ST01,Coil Feed & Blanking,Stamping,1,rich,"cycle_time,vibration,torque",35.0,,102.9
+ST02,Main Body Press 2500T,Stamping,2,rich,"cycle_time,vibration,temperature,torque",38.0,ST01,94.7
+ST03,Side Aperture Draw Press,Stamping,3,rich,"cycle_time,vibration,torque",40.0,ST02,90.0
+ST04,Door Inner Trim & Pierce,Stamping,4,partial,"cycle_time,vibration",36.0,ST03,100.0
+ST05,Hood & Tailgate Stamping,Stamping,5,rich,"cycle_time,vibration,torque",42.0,ST04,85.7
+ST06,Stamped Panel Inspection,Stamping,6,manual,,45.0,ST05,80.0
+B01,Underbody Front Laser Weld,Body Framing,7,rich,"cycle_time,torque,vibration",42.0,ST06,85.7
+B02,Battery Tray Framing,Body Framing,8,rich,"cycle_time,torque,vibration",44.0,B01,81.8
+B03,Floor Pan Spot Weld L1,Body Framing,9,rich,"cycle_time,torque,vibration",39.0,B02,92.3
+B04,Floor Pan Spot Weld L2,Body Framing,10,rich,"cycle_time,torque,vibration",41.0,B03,87.8
+B05,Left Aperture Sub-framing,Body Framing,11,rich,"cycle_time,torque,vibration",43.0,B04,83.7
+B06,Right Aperture Sub-framing,Body Framing,12,rich,"cycle_time,torque,vibration",43.0,B05,83.7
+B07,Main Robogate Framing,Body Framing,13,rich,"cycle_time,torque,vibration,temperature",46.0,B06,78.3
+B08,Roof Laser Brazing,Body Framing,14,rich,"cycle_time,torque,vibration",38.0,B07,94.7
+B09,Door Hang & Hinge Align,Body Framing,15,partial,"cycle_time,torque",42.0,B08,85.7
+B10,Hood & Liftgate Fitment,Body Framing,16,partial,"cycle_time,torque",40.0,B09,90.0
+B11,Inline Laser CMM Metrology,Body Framing,17,rich,"cycle_time,vibration,temperature",48.0,B10,75.0
+B12,BIW Manual Touch-Up,Body Framing,18,manual,,50.0,B11,72.0
+P01,Pre-treatment Degrease,Paint,19,partial,"cycle_time,temperature",48.0,B12,75.0
+P02,E-Coat Dip Tank,Paint,20,rich,"cycle_time,temperature,vibration",55.0,P01,65.5
+P03,E-Coat Curing Oven,Paint,21,rich,"cycle_time,temperature",58.0,P02,62.1
+P04,Underbody PVC Sealer,Paint,22,rich,"cycle_time,temperature,vibration",44.0,P03,81.8
+P05,Primer Coat Robotic Bell,Paint,23,rich,"cycle_time,temperature,vibration",42.0,P04,85.7
+P06,Primer Flash-off Zone,Paint,24,partial,"cycle_time,temperature",40.0,P05,90.0
+P07,Base Coat Application,Paint,25,rich,"cycle_time,temperature,vibration",45.0,P06,80.0
+P08,Clear Coat High Gloss,Paint,26,rich,"cycle_time,temperature,vibration",46.0,P07,78.3
+P09,Paint Main Bake Oven,Paint,27,rich,"cycle_time,temperature",60.0,P08,60.0
+P10,Paint Quality & Polish,Paint,28,manual,,52.0,P09,69.2
+BAT01,Cell Sorting & Impedance,Battery Assembly,29,rich,"cycle_time,temperature,vibration",36.0,,100.0
+BAT02,Laser Busbar Wire Bonding,Battery Assembly,30,rich,"cycle_time,temperature,torque",40.0,BAT01,90.0
+BAT03,Thermal Interface Dispense,Battery Assembly,31,rich,"cycle_time,temperature,vibration",38.0,BAT02,94.7
+BAT04,BMS Harness Installation,Battery Assembly,32,manual,,46.0,BAT03,78.3
+BAT05,Module Pack Torquing,Battery Assembly,33,rich,"cycle_time,torque,vibration",44.0,BAT04,81.8
+BAT06,Coolant Leak Helium Test,Battery Assembly,34,rich,"cycle_time,temperature",50.0,BAT05,72.0
+BAT07,Top Cover Multi-Torque,Battery Assembly,35,rich,"cycle_time,torque,vibration",42.0,BAT06,85.7
+BAT08,EOL Hi-Pot & Capacity,Battery Assembly,36,rich,"cycle_time,temperature",54.0,BAT07,66.7
+PT01,Dual-Motor Gearbox Build,Powertrain,37,rich,"cycle_time,torque,vibration,temperature",45.0,,80.0
+PT02,Drive Unit Spin Dyno,Powertrain,38,rich,"cycle_time,torque,vibration,temperature",48.0,PT01,75.0
+PT03,Subframe Bushing Press,Powertrain,39,partial,"cycle_time,torque",44.0,PT02,81.8
+PT04,Fluid Vacuum Fill,Powertrain,40,rich,"cycle_time,temperature",40.0,PT03,90.0
+GA01,Cockpit Sub-Assembly,General Assembly,41,partial,"cycle_time,torque",42.0,P10,85.7
+GA02,Dashboard Robotic Decking,General Assembly,42,rich,"cycle_time,torque,vibration",44.0,GA01,81.8
+GA03,Main Body Wiring Harness,General Assembly,43,manual,,50.0,GA02,72.0
+GA04,HVAC Unit & Thermal Ducts,General Assembly,44,partial,"cycle_time,torque",42.0,GA03,85.7
+GA05,Windshield Urethane & Glass,General Assembly,45,rich,"cycle_time,vibration",39.0,GA04,92.3
+GA06,Carpet & Acoustic Dampers,General Assembly,46,manual,,45.0,GA05,80.0
+GA07,Ergonomic Seat Mounting,General Assembly,47,manual,,44.0,GA06,81.8
+GA08,Center Console & Steering,General Assembly,48,partial,"cycle_time,torque",41.0,GA07,87.8
+GA09,Door Weatherstrip & Clad,General Assembly,49,manual,,46.0,GA08,78.3
+GA10,Battery Pack Marriage,General Assembly,50,rich,"cycle_time,torque,vibration",48.0,"GA09,BAT08",75.0
+GA11,Drive Unit Marriage,General Assembly,51,rich,"cycle_time,torque,vibration",50.0,"GA10,PT04",72.0
+GA12,Suspension Strut Bolting,General Assembly,52,rich,"cycle_time,torque,vibration",45.0,GA11,80.0
+GA13,Robotic Wheel Mounting,General Assembly,53,rich,"cycle_time,torque",38.0,GA12,94.7
+GA14,Brake Fluid Vacuum Bleed,General Assembly,54,rich,"cycle_time,temperature",42.0,GA13,85.7
+EOL01,ECU Flashing & Wake-Up,End of Line,55,partial,"cycle_time,temperature",46.0,GA14,78.3
+EOL02,3D Wheel Alignment,End of Line,56,rich,"cycle_time,torque,vibration",44.0,EOL01,81.8
+EOL03,ADAS Radar/Optical Cal,End of Line,57,rich,"cycle_time,temperature",52.0,EOL02,69.2
+EOL04,4-Wheel Dyno Roll Test,End of Line,58,rich,"cycle_time,torque,vibration,temperature",55.0,EOL03,65.5
+EOL05,Monsoon Water Ingress,End of Line,59,partial,"cycle_time,temperature",48.0,EOL04,75.0
+EOL06,Squeak & Rattle Track,End of Line,60,rich,"cycle_time,vibration",45.0,EOL05,80.0
+EOL07,Final Customer Buyoff,End of Line,61,manual,,60.0,EOL06,60.0

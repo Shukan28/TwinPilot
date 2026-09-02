@@ -288,15 +288,17 @@ const TwinPilotAPI = (() => {
     if (!factSel) return;
 
     try {
-      const resp = await fetch(`${BASE}/factories`);
+      const token = localStorage.getItem("twinpilot_session_token") || sessionStorage.getItem("twinpilot_session_token") || "";
+      const headers = token ? { "X-Session-Token": token } : {};
+      const resp = await fetch(`${BASE}/factories`, { headers });
       if (!resp.ok) return;
       const data = await resp.json();
       const factories = data.factories || [];
-      let activeFid = localStorage.getItem("twinpilot_active_factory") || "demo-detroit-31";
+      let activeFid = localStorage.getItem("twinpilot_active_factory") || (data.active_factory ? data.active_factory.id : "demo-detroit-31");
 
       if (!factories.some(f => f.id === activeFid)) {
-        activeFid = "demo-detroit-31";
-        localStorage.setItem("twinpilot_active_factory", "demo-detroit-31");
+        activeFid = factories.length > 0 ? factories[0].id : "demo-detroit-31";
+        localStorage.setItem("twinpilot_active_factory", activeFid);
       }
 
       factSel.innerHTML = "";
@@ -308,9 +310,18 @@ const TwinPilotAPI = (() => {
         factSel.appendChild(opt);
       });
 
-      factSel.addEventListener("change", (e) => {
+      factSel.addEventListener("change", async (e) => {
         const newFid = e.target.value;
         localStorage.setItem("twinpilot_active_factory", newFid);
+        if (token) {
+          try {
+            await fetch(`${BASE}/factories/switch`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json", "X-Session-Token": token },
+              body: JSON.stringify({ factory_id: newFid })
+            });
+          } catch (_) {}
+        }
         showToast(`Switched active factory workspace to ${e.target.selectedOptions[0].text}.`, "info");
         fetchAndRenderState();
       });

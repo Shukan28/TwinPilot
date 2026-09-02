@@ -4364,5 +4364,409 @@
       "is_successful": true,
       "feedback": "Recommendation validated \u2014 prediction and outcome aligned."
     }
+  },
+  {
+    "event_id": "RUN024-EVT01",
+    "run_id": "RUN-024",
+    "minute_index": 146,
+    "observation_window_min": 20,
+    "before_state": {
+      "station_id": "S03",
+      "cycle_time_sec": 66.18,
+      "queue_length": 4.0,
+      "defect_prob": 0.12,
+      "bottleneck_prob": 0.0,
+      "root_cause_station": "S09",
+      "propagation_path": [
+        "S03",
+        "S04",
+        "S05",
+        "S06",
+        "S07"
+      ],
+      "at_risk_vins": 44
+    },
+    "twinpilot_prediction": {
+      "recommended_option": "Option C",
+      "option_name": "Workload Rebalance / Reroute",
+      "tput_pct": 7.5,
+      "queue_change": -1.6,
+      "defect_risk_change": -4.2,
+      "financial_impact": 1266.0,
+      "confidence_pct": 77.6
+    },
+    "human_decision": {
+      "operator_action": "approve",
+      "accepted_recommendation": true,
+      "timestamp": "2026-08-30T17:07:49.586979+00:00"
+    },
+    "observed_outcome": {
+      "pre_ct": 66.18,
+      "post_ct": 65.43,
+      "pre_queue": 4.0,
+      "post_queue": 9.0,
+      "pre_minute": 146,
+      "post_minute": 166,
+      "observed_tput_pct": 1.15,
+      "observed_queue_change": 5.0,
+      "observed_defect_risk_change": null
+    },
+    "accuracy": {
+      "tput_accuracy_pct": 15.3,
+      "queue_accuracy_pct": 0.0,
+      "defect_accuracy_pct": null,
+      "overall_accuracy_pct": 7.7,
+      "is_directionally_correct": false,
+      "is_successful": true,
+      "feedback": "Outcome successful but direction mis-predicted \u2014 model underestimated scale."
+    }
+  },
+  {
+    "event_id": "RUN024-EVT01",
+    "run_id": "RUN-024",
+    "minute_index": 153,
+    "observation_window_min": 20,
+    "before_state": {
+      "station_id": "S03",
+      "cycle_time_sec": 69.16,
+      "queue_length": 11.0,
+      "defect_prob": 0.015,
+      "bottleneck_prob": 0.0,
+      "root_cause_station": "S09",
+      "propagation_path": [
+        "S03",
+        "S04",
+        "S05",
+        "S06",
+        "S07"
+      ],
+      "at_risk_vins": 44
+    },
+    "twinpilot_prediction": {
+      "recommended_option": "Option A",
+      "option_name": "Speed Override / Move Operator",
+      "tput_pct": 26.6,
+      "queue_change": -7.2,
+      "defect_risk_change": 7.6,
+      "financial_impact": 2717.0,
+      "confidence_pct": 58.1
+    },
+    "human_decision": {
+      "operator_action": "approve",
+      "accepted_recommendation": true,
+      "timestamp": "2026-08-30T17:15:33.473056+00:00"
+    },
+    "observed_outcome": {
+      "pre_ct": 69.16,
+      "post_ct": 60.48,
+      "pre_queue": 11.0,
+      "post_queue": 9.0,
+      "pre_minute": 153,
+      "post_minute": 173,
+      "observed_tput_pct": 14.35,
+      "observed_queue_change": -2.0,
+      "observed_defect_risk_change": null
+    },
+    "accuracy": {
+      "tput_accuracy_pct": 53.9,
+      "queue_accuracy_pct": 27.8,
+      "defect_accuracy_pct": null,
+      "overall_accuracy_pct": 40.9,
+      "is_directionally_correct": true,
+      "is_successful": true,
+      "feedback": "Recommendation validated \u2014 prediction and outcome aligned."
+    }
+  },
+  {
+    "event_id": "RUN025-EVT02",
+    "run_id": "RUN-025",
+    "minute_index": 104,
+    "observation_window_min": 20,
+    "before_state": {
+      "station_id": "S16",
+      "cycle_time_sec": 78.17,
+      "queue_length": 5.0,
+      "defect_prob": 0.025,
+      "bottleneck_prob": 0.0,
+      "root_cause_station": "S17",
+      "propagation_path": [
+        "S16",
+        "S17",
+        "S18",
+        "S19",
+        "S20",
+        "S21",
+        "S22",
+        "S23"
+      ],
+      "at_risk_vins": 16
+    },
+    "twinpilot_prediction": {
+      "recommended_option": "Option A",
+      "option_name": "Speed Override / Move Operator",
+      "tput_pct": 17.6,
+      "queue_change": -3.2,
+      "defect_risk_change": 6.8,
+      "financial_impact": 1450.0,
+      "confidence_pct": 60.9
+    },
+    "human_decision": {
+      "operator_action": "approve",
+      "accepted_recommendation": true,
+      "timestamp": "2026-08-30T17:16:58.181719+00:00"
+    },
+    "observed_outcome": {
+      "pre_ct": 78.17,
+      "post_ct": 57.45,
+      "pre_queue": 5.0,
+      "post_queue": 1.0,
+      "pre_minute": 104,
+      "post_minute": 124,
+      "observed_tput_pct": 36.07,
+      "observed_queue_change": -4.0,
+      "observed_defect_risk_change": -1.0
+    },
+    "accuracy": {
+      "tput_accuracy_pct": 48.8,
+      "queue_accuracy_pct": 80.0,
+      "defect_accuracy_pct": 0.0,
+      "overall_accuracy_pct": 42.9,
+      "is_directionally_correct": true,
+      "is_successful": true,
+      "feedback": "Recommendation validated \u2014 prediction and outcome aligned."
+    }
+  },
+  {
+    "event_id": "RUN025-EVT02",
+    "run_id": "RUN-025",
+    "minute_index": 94,
+    "observation_window_min": 20,
+    "before_state": {
+      "station_id": "S16",
+      "cycle_time_sec": 70.48,
+      "queue_length": 4.0,
+      "defect_prob": 0.035,
+      "bottleneck_prob": 0.0,
+      "root_cause_station": "S17",
+      "propagation_path": [
+        "S16",
+        "S17",
+        "S18",
+        "S19",
+        "S20",
+        "S21",
+        "S22",
+        "S23"
+      ],
+      "at_risk_vins": 16
+    },
+    "twinpilot_prediction": {
+      "recommended_option": "Option A",
+      "option_name": "Speed Override / Move Operator",
+      "tput_pct": 16.3,
+      "queue_change": -2.6,
+      "defect_risk_change": 6.1,
+      "financial_impact": 1221.0,
+      "confidence_pct": 57.9
+    },
+    "human_decision": {
+      "operator_action": "reject",
+      "accepted_recommendation": false,
+      "timestamp": "2026-08-30T17:17:48.533989+00:00"
+    },
+    "observed_outcome": {
+      "pre_ct": 70.48,
+      "post_ct": 59.88,
+      "pre_queue": 4.0,
+      "post_queue": 4.0,
+      "pre_minute": 94,
+      "post_minute": 114,
+      "observed_tput_pct": 17.7,
+      "observed_queue_change": 0.0,
+      "observed_defect_risk_change": 1.5
+    },
+    "accuracy": {
+      "tput_accuracy_pct": 92.1,
+      "queue_accuracy_pct": 0.0,
+      "defect_accuracy_pct": 24.6,
+      "overall_accuracy_pct": 38.9,
+      "is_directionally_correct": true,
+      "is_successful": true,
+      "feedback": "Recommendation validated \u2014 prediction and outcome aligned."
+    }
+  },
+  {
+    "event_id": "RUN024-EVT01",
+    "run_id": "RUN-024",
+    "minute_index": 162,
+    "observation_window_min": 20,
+    "before_state": {
+      "station_id": "S03",
+      "cycle_time_sec": 67.12,
+      "queue_length": 9.0,
+      "defect_prob": 0.005,
+      "bottleneck_prob": 0.0,
+      "root_cause_station": "S09",
+      "propagation_path": [
+        "S03",
+        "S04",
+        "S05",
+        "S06",
+        "S07"
+      ],
+      "at_risk_vins": 44
+    },
+    "twinpilot_prediction": {
+      "recommended_option": "Option A",
+      "option_name": "Speed Override / Move Operator",
+      "tput_pct": 23.5,
+      "queue_change": -5.9,
+      "defect_risk_change": 6.9,
+      "financial_impact": 2473.0,
+      "confidence_pct": 59.3
+    },
+    "human_decision": {
+      "operator_action": "approve",
+      "accepted_recommendation": true,
+      "timestamp": "2026-08-30T18:28:18.603858+00:00"
+    },
+    "observed_outcome": {
+      "pre_ct": 67.12,
+      "post_ct": 54.52,
+      "pre_queue": 9.0,
+      "post_queue": 7.0,
+      "pre_minute": 162,
+      "post_minute": 182,
+      "observed_tput_pct": 23.11,
+      "observed_queue_change": -2.0,
+      "observed_defect_risk_change": null
+    },
+    "accuracy": {
+      "tput_accuracy_pct": 98.3,
+      "queue_accuracy_pct": 33.9,
+      "defect_accuracy_pct": null,
+      "overall_accuracy_pct": 66.1,
+      "is_directionally_correct": true,
+      "is_successful": true,
+      "feedback": "Recommendation validated \u2014 prediction and outcome aligned."
+    }
+  },
+  {
+    "event_id": "RUN025-EVT02",
+    "run_id": "RUN-025",
+    "minute_index": 101,
+    "observation_window_min": 20,
+    "before_state": {
+      "station_id": "S16",
+      "cycle_time_sec": 76.96,
+      "queue_length": 7.0,
+      "defect_prob": 0.015,
+      "bottleneck_prob": 0.0,
+      "root_cause_station": "S17",
+      "propagation_path": [
+        "S16",
+        "S17",
+        "S18",
+        "S19",
+        "S20",
+        "S21",
+        "S22",
+        "S23"
+      ],
+      "at_risk_vins": 16
+    },
+    "twinpilot_prediction": {
+      "recommended_option": "Option A",
+      "option_name": "Speed Override / Move Operator",
+      "tput_pct": 20.5,
+      "queue_change": -4.5,
+      "defect_risk_change": 6.2,
+      "financial_impact": 2019.0,
+      "confidence_pct": 59.4
+    },
+    "human_decision": {
+      "operator_action": "approve",
+      "accepted_recommendation": true,
+      "timestamp": "2026-08-30T18:28:59.591017+00:00"
+    },
+    "observed_outcome": {
+      "pre_ct": 76.96,
+      "post_ct": 55.35,
+      "pre_queue": 7.0,
+      "post_queue": 2.0,
+      "pre_minute": 101,
+      "post_minute": 121,
+      "observed_tput_pct": 39.04,
+      "observed_queue_change": -5.0,
+      "observed_defect_risk_change": 3.0
+    },
+    "accuracy": {
+      "tput_accuracy_pct": 52.5,
+      "queue_accuracy_pct": 90.0,
+      "defect_accuracy_pct": 48.4,
+      "overall_accuracy_pct": 63.6,
+      "is_directionally_correct": true,
+      "is_successful": true,
+      "feedback": "Recommendation validated \u2014 prediction and outcome aligned."
+    }
+  },
+  {
+    "event_id": "RUN025-EVT02",
+    "run_id": "RUN-025",
+    "minute_index": 94,
+    "observation_window_min": 20,
+    "before_state": {
+      "station_id": "S16",
+      "cycle_time_sec": 70.48,
+      "queue_length": 4.0,
+      "defect_prob": 0.035,
+      "bottleneck_prob": 0.0,
+      "root_cause_station": "S17",
+      "propagation_path": [
+        "S16",
+        "S17",
+        "S18",
+        "S19",
+        "S20",
+        "S21",
+        "S22",
+        "S23"
+      ],
+      "at_risk_vins": 16
+    },
+    "twinpilot_prediction": {
+      "recommended_option": "Option A",
+      "option_name": "Speed Override / Move Operator",
+      "tput_pct": 16.3,
+      "queue_change": -2.6,
+      "defect_risk_change": 6.1,
+      "financial_impact": 1221.0,
+      "confidence_pct": 57.0
+    },
+    "human_decision": {
+      "operator_action": "reject",
+      "accepted_recommendation": false,
+      "timestamp": "2026-08-30T18:33:33.918638+00:00"
+    },
+    "observed_outcome": {
+      "pre_ct": 70.48,
+      "post_ct": 59.88,
+      "pre_queue": 4.0,
+      "post_queue": 4.0,
+      "pre_minute": 94,
+      "post_minute": 114,
+      "observed_tput_pct": 17.7,
+      "observed_queue_change": 0.0,
+      "observed_defect_risk_change": 1.5
+    },
+    "accuracy": {
+      "tput_accuracy_pct": 92.1,
+      "queue_accuracy_pct": 0.0,
+      "defect_accuracy_pct": 24.6,
+      "overall_accuracy_pct": 38.9,
+      "is_directionally_correct": true,
+      "is_successful": true,
+      "feedback": "Recommendation validated \u2014 prediction and outcome aligned."
+    }
   }
 ]

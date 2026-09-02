@@ -77,8 +77,48 @@ def build_custom_factory_state(factory_id: str, minute: int = 100, target_statio
     if not stations_list:
         return None
 
-    target_sid = target_station if target_station else stations_list[min(len(stations_list) - 1, 2)]["station_id"]
+    if not target_station:
+        if factory_id == "factory-fremont-61":
+            target_sid = "BAT05"
+        else:
+            target_sid = stations_list[min(len(stations_list) - 1, 2)]["station_id"]
+    else:
+        target_sid = target_station
+
     target_info = next((s for s in stations_list if s["station_id"] == target_sid), stations_list[0])
+
+    # Fetch DAG dependencies for realistic propagation path
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("SELECT upstream_station_id, downstream_station_id FROM factory_dependencies WHERE factory_id = ?", (factory_id,))
+    dep_rows = cur.fetchall()
+    conn.close()
+
+    adj_downstream = {}
+    for r in dep_rows:
+        u, d = r["upstream_station_id"], r["downstream_station_id"]
+        adj_downstream.setdefault(u, []).append(d)
+
+    # Breadth/depth traverse downstream from target_sid up to 6 stations
+    path_stations = [target_sid]
+    curr = target_sid
+    visited = {target_sid}
+    while len(path_stations) < 6:
+        next_nodes = [n for n in adj_downstream.get(curr, []) if n not in visited]
+        if not next_nodes:
+            break
+        curr = next_nodes[0]
+        path_stations.append(curr)
+        visited.add(curr)
+
+    # Fallback if topology is linear or disconnected
+    if len(path_stations) < 3:
+        st_ids = [s["station_id"] for s in stations_list]
+        if target_sid in st_ids:
+            idx = st_ids.index(target_sid)
+            path_stations = st_ids[idx:min(len(st_ids), idx + 6)]
+        else:
+            path_stations = st_ids[:min(len(st_ids), 6)]
 
     # Dynamic status per station based on step_id
     station_telemetry_list = []
@@ -221,7 +261,6 @@ def build_custom_factory_state(factory_id: str, minute: int = 100, target_statio
     }
 
     # Propagation
-    path_stations = [s["station_id"] for s in stations_list[:min(len(stations_list), 6)]]
     propagation = {
         "path": path_stations,
         "path_stations": path_stations,
